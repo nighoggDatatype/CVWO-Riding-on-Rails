@@ -26,7 +26,7 @@ class Item extends React.Component {
         />
         {done ? <s>{this.state.task}</s> : this.state.task}
         {!done &&
-        <IconButton onClick={() => this.setState(() => ({editDialogOpen: true}))}>
+        <IconButton onClick={() => this.setState((prev) => ({editDialogOpen: true, editTextField: prev.task}))}>
             <EditIcon/>
         </IconButton>
         }
