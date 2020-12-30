@@ -2,3 +2,4 @@
 <p>Find me in app/views/welcome/index.html.erb</p>
 <%= react_component("HelloWorld", { greeting: "Hello from react-rails." }) %>
 <%= react_component("Item", { id: 1234, done:true, task:"Walk the Dog", tags:["Monday", "Pets"] }) %>
+<%= react_component("ListBody", {entries: [{ id: 1111, done:false, task:"Go Jog", tags:["Monday"] },{ id: 888, done:true, task:"Butcher Cow", tags:["Pets"] }]}) %>
