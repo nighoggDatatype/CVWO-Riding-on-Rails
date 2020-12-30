@@ -3,7 +3,7 @@
 ### Identifying details
 **Author:** Sherman Ho Wei Jun 
 
-**Matriculation number** A0201413A
+**Matriculation number:** A0201413A
 
 ### Personal Notes
 
