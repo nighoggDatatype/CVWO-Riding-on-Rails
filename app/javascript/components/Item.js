@@ -16,7 +16,7 @@ class Item extends React.Component {
         Id: {this.props.id}, 
         <Checkbox
           checked={this.state.done}
-          onClick={() => this.setState({done: !this.state.done})}
+          onClick={() => this.setState((prev) => ({done: !prev.done}))}
           inputProps={{ 'aria-label': 'primary checkbox' }}
         />
         {done ? <s>{this.props.task}</s> : this.props.task}
