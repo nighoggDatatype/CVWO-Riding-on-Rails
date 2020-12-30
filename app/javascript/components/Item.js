@@ -16,7 +16,7 @@ class Item extends React.Component {
   }
   render () {
     const done = this.state.done;
-    const handleClose = () => this.setState(() => ({editDialogOpen: false}));
+    const handleClose = () => this.setState({editDialogOpen: false});
     return (
       <li>
         Id: {this.props.id}, 
@@ -39,8 +39,11 @@ class Item extends React.Component {
               id="task-name-field"
               label="Task Description"
               defaultValue= {this.state.task}
-              fullWidth
-              onChange={(e) => this.setState(() => ({editTextField: e.target.value}))}
+              fullWidth 
+              multiline
+              value={this.state.editTextField}
+              rowsMax={7}
+              onChange={(e) => this.setState({editTextField: e.target.value.replace("\n","")})}
             />
           </DialogContent>
           <DialogActions>
