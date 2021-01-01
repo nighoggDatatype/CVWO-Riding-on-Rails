@@ -9,6 +9,11 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Paper from '@material-ui/core/Paper';
+import TagRender from "./TagRender";
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 class Item extends React.Component {
   constructor(props) {
     super(props);
@@ -27,45 +32,57 @@ class Item extends React.Component {
     }
     
     const toggleCheckbox = () => this.setState((prev) => ({done: !prev.done}))
+    
+    const paperStyle = {padding: "4px", margin: "2px", display:"flex"}
     return (
-      <li>
-        Id: {this.props.id}, 
-        <Checkbox
-          checked={this.state.done}
-          onClick={toggleCheckbox}
-        />
-        {done ? <s>{this.state.task}</s> : this.state.task}
-        {!done &&
-        <IconButton onClick={handleOpen}>
-            <EditIcon/>
-        </IconButton>
-        }
-        <Dialog open={this.state.editDialogOpen} onClose={handleClose} aria-labelledby="form-dialog-title" fullWidth maxWidth='md'>
-          <DialogTitle id="form-dialog-title">Edit Task</DialogTitle>
-          <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="task-name-field"
-              label="Task Description"
-              defaultValue= {this.state.task}
-              fullWidth 
-              multiline
-              value={this.state.editTextField}
-              rowsMax={7}
-              onChange={handleTextbox}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={handleSubmit} color="primary">
-              Change
-            </Button>
-          </DialogActions>
-        </Dialog>
-        Tags: {this.props.tags}
+      <li key={this.props.id}>
+        <Paper style={paperStyle}>
+          <Checkbox
+            checked={this.state.done}
+            onClick={toggleCheckbox}
+          />
+          {done ? <s>{this.state.task}</s> : this.state.task}
+          {!done &&
+          <IconButton onClick={handleOpen}>
+              <EditIcon/>
+          </IconButton>
+          }
+          <Dialog open={this.state.editDialogOpen} onClose={handleClose} aria-labelledby="form-dialog-title" fullWidth maxWidth='md'>
+            <DialogTitle id="form-dialog-title">Edit Task</DialogTitle>
+            <DialogContent>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="task-name-field"
+                label="Task Description"
+                defaultValue= {this.state.task}
+                fullWidth 
+                multiline
+                value={this.state.editTextField}
+                rowsMax={7}
+                onChange={handleTextbox}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose} color="primary">
+                Cancel
+              </Button>
+              <Button onClick={handleSubmit} color="primary">
+                Change
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <TagRender tags={this.props.tags}/>
+          <IconButton style={{marginLeft:"auto"}}>
+              <ArrowUpwardIcon/>
+          </IconButton>
+          <IconButton >
+              <ArrowDownwardIcon/>
+          </IconButton>
+          <IconButton>
+              <DeleteForeverIcon/>
+          </IconButton>
+        </Paper>
       </li>
     );
   }

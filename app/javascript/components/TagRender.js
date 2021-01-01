@@ -3,17 +3,15 @@ import PropTypes from "prop-types"
 import Chip from '@material-ui/core/Chip';
 class TagRender extends React.Component {
   render () {
-    const handleDelete = (data) => console.log("");
+    const handleDelete = (data) => console.log("");//TODO: Make this work properly
     return (
       <React.Fragment>
         {this.props.tags.map((data) => 
-          <li key={data}>
             <Chip
               size="small"
               label={data}
               onDelete={handleDelete(data)}
             />
-          </li>
         )}
       </React.Fragment>
     );
