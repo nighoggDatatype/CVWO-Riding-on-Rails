@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 import Chip from '@material-ui/core/Chip';
 import AddIcon from '@material-ui/icons/Add';
 class TagRender extends React.Component {
-  render () {
+  render () {//NOTE: Don't reuse this for tag-cloud management, the interface requirements per tag are deletion, include, exclude, subtag creation, renaming, ect, and its too complex in general
     const handleDelete = (data) => console.log("");//TODO: Make this work properly
     return (
       <React.Fragment>
