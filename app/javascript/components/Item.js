@@ -14,6 +14,7 @@ import TagRender from "./TagRender";
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import Divider from '@material-ui/core/Divider';
 class Item extends React.Component {
   constructor(props) {
     super(props);
@@ -33,21 +34,35 @@ class Item extends React.Component {
     
     const toggleCheckbox = () => this.setState((prev) => ({done: !prev.done}))
     
-    const paperStyle = {padding: "4px", margin: "2px", display:"flex"}
-    return (
-      <li key={this.props.id}>
-        <Paper style={paperStyle}>
-          <Checkbox
-            checked={this.state.done}
-            onClick={toggleCheckbox}
-          />
-          {done ? <s>{this.state.task}</s> : this.state.task}
-          {!done &&
-          <IconButton onClick={handleOpen}>
-              <EditIcon/>
-          </IconButton>
-          }
-          <Dialog open={this.state.editDialogOpen} onClose={handleClose} aria-labelledby="form-dialog-title" fullWidth maxWidth='md'>
+    //TODO: Intergrate this into proper css styling
+    const paperStyle = {
+        padding: "4px", 
+        margin: "2px", 
+        display:"flex", 
+        alignItems:"safe center"
+    }
+    const genericDivStyle = {margin: "4px"}
+    const startOfRightButtons = {
+        margin: genericDivStyle.margin,
+        marginLeft: "auto"
+    }
+    const textStyle = {
+        flex: 3, //Test this out, by making the text and tags very long
+        display:"flex", 
+        flexWrap: "wrap",
+        alignItems:"safe center"
+    }
+    const tagStyle = {
+        flex: 1, 
+        display:"flex", 
+        flexWrap: "wrap" //TODO: Test this, by cramming tags until it oveflows
+    }
+    
+    const dialogCode = <Dialog 
+        open={this.state.editDialogOpen} 
+        onClose={handleClose} 
+        aria-labelledby="form-dialog-title" 
+        fullWidth maxWidth='md'>
             <DialogTitle id="form-dialog-title">Edit Task</DialogTitle>
             <DialogContent>
               <TextField
@@ -72,16 +87,21 @@ class Item extends React.Component {
               </Button>
             </DialogActions>
           </Dialog>
-          <TagRender tags={this.props.tags}/>
-          <IconButton style={{marginLeft:"auto"}}>
-              <ArrowUpwardIcon/>
-          </IconButton>
-          <IconButton >
-              <ArrowDownwardIcon/>
-          </IconButton>
-          <IconButton>
-              <DeleteForeverIcon/>
-          </IconButton>
+    return (
+      <li key={this.props.id}>
+        <Paper style={paperStyle}>
+          <Checkbox checked={this.state.done} onClick={toggleCheckbox} style={genericDivStyle}/>
+          <div style={textStyle}>
+            {done ? <s>{this.state.task}</s> : this.state.task}
+            {!done && <IconButton onClick={handleOpen} style={genericDivStyle}><EditIcon/></IconButton>}
+            {dialogCode}
+          </div>
+          <Divider style={genericDivStyle} orientation="vertical" flexItem />
+          <div style={tagStyle}><TagRender tags={this.props.tags}/></div>
+          <Divider style={genericDivStyle} orientation="vertical" flexItem />
+          <IconButton style={startOfRightButtons}><ArrowUpwardIcon/></IconButton>
+          <IconButton style={genericDivStyle}><ArrowDownwardIcon/></IconButton>
+          <IconButton style={genericDivStyle}><DeleteForeverIcon/></IconButton>
         </Paper>
       </li>
     );

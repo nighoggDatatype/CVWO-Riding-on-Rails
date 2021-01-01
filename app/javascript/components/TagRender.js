@@ -1,6 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 import Chip from '@material-ui/core/Chip';
+import AddIcon from '@material-ui/icons/Add';
 class TagRender extends React.Component {
   render () {
     const handleDelete = (data) => console.log("");//TODO: Make this work properly
@@ -11,8 +12,10 @@ class TagRender extends React.Component {
               size="small"
               label={data}
               onDelete={handleDelete(data)}
+              style={{margin:"4px"}}
             />
         )}
+        <Chip variant="outlined" size="small" style={{margin:"4px"}} icon={<AddIcon />} />
       </React.Fragment>
     );
   }
