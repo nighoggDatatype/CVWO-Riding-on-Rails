@@ -16,17 +16,27 @@ class Item extends React.Component {
   }
   render () {
     const done = this.state.done;
+    const handleOpen = () => this.setState((prev) => ({editDialogOpen: true, editTextField: prev.task}))
     const handleClose = () => this.setState({editDialogOpen: false});
+    const handleSubmit = () => this.setState((prev) => ({task: prev.editTextField, editDialogOpen: false}));
+    const handleTextbox = (e) => {
+        let newInput = e.target.value;
+        this.setState({editTextField: newInput.replace("\n","")});
+        //TODO: See about setting input of newline to trigger submition
+        //See here for reasons: https://stackoverflow.com/questions/30782948/why-calling-react-setstate-method-doesnt-mutate-the-state-immediately
+    }
+    
+    const toggleCheckbox = () => this.setState((prev) => ({done: !prev.done}))
     return (
       <li>
         Id: {this.props.id}, 
         <Checkbox
           checked={this.state.done}
-          onClick={() => this.setState((prev) => ({done: !prev.done}))}
+          onClick={toggleCheckbox}
         />
         {done ? <s>{this.state.task}</s> : this.state.task}
         {!done &&
-        <IconButton onClick={() => this.setState((prev) => ({editDialogOpen: true, editTextField: prev.task}))}>
+        <IconButton onClick={handleOpen}>
             <EditIcon/>
         </IconButton>
         }
@@ -43,14 +53,14 @@ class Item extends React.Component {
               multiline
               value={this.state.editTextField}
               rowsMax={7}
-              onChange={(e) => this.setState({editTextField: e.target.value.replace("\n","")})}
+              onChange={handleTextbox}
             />
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={() => this.setState((prev) => ({task: prev.editTextField, editDialogOpen: false}))} color="primary">
+            <Button onClick={handleSubmit} color="primary">
               Change
             </Button>
           </DialogActions>
