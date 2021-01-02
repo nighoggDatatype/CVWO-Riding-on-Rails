@@ -18,18 +18,35 @@ import Divider from '@material-ui/core/Divider';
 class Item extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { done: this.props.done, task: this.props.task, editDialogOpen: false, editTextField : this.props.task}
+    this.state = {
+        done: this.props.done,
+        task: this.props.task, 
+        editDialogOpen: false, 
+        editTextField : this.props.task,
+        textBoxEnter : false
+    }
+    this.handleSubmit = () => this.setState((prev) => ({task: prev.editTextField, editDialogOpen: false}));
   }
+  componentDidUpdate(){
+      if(this.state.textBoxEnter){
+          this.setState({textBoxEnter : false});
+          this.handleSubmit();
+      }
+  }
+  
+  isInvalidDescription(potentialDescription){
+      return !/\S/.test(potentialDescription);
+  }
+  
   render () {
     const done = this.state.done;
     const handleOpen = () => this.setState((prev) => ({editDialogOpen: true, editTextField: prev.task}))
     const handleClose = () => this.setState({editDialogOpen: false});
-    const handleSubmit = () => this.setState((prev) => ({task: prev.editTextField, editDialogOpen: false}));//TODO: Supress submission if there is no text
     const handleTextbox = (e) => {
-        let newInput = e.target.value;
-        this.setState({editTextField: newInput.replace("\n","")});
-        //TODO: See about setting input of newline to trigger submition
-        //See here for reasons: https://stackoverflow.com/questions/30782948/why-calling-react-setstate-method-doesnt-mutate-the-state-immediately
+        let newInputRaw = e.target.value;
+        let newInput = newInputRaw.replace("\n","");
+        let altEnter = !this.isInvalidDescription(newInput) && newInputRaw.includes('\n');
+        this.setState({editTextField: newInput, textBoxEnter: altEnter});
     }
     
     const toggleCheckbox = () => this.setState((prev) => ({done: !prev.done}))
@@ -58,6 +75,7 @@ class Item extends React.Component {
         flexWrap: "wrap" //TODO: Test this, by cramming tags until it oveflows
     }
     //NOTE: Try to set trash icon to a danger colour
+    const dialogIsEmpty = this.isInvalidDescription(this.state.editTextField);
     const dialogCode = <Dialog 
         open={this.state.editDialogOpen} 
         onClose={handleClose} 
@@ -76,13 +94,15 @@ class Item extends React.Component {
                 value={this.state.editTextField}
                 rowsMax={7}
                 onChange={handleTextbox}
+                error={dialogIsEmpty}
+                helperText="Task Description cannot be empty"
               />
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose} color="primary">
                 Cancel
               </Button>
-              <Button onClick={handleSubmit} color="primary">
+              <Button onClick={this.handleSubmit} color="primary" disabled={dialogIsEmpty}>
                 Change
               </Button>
             </DialogActions>
