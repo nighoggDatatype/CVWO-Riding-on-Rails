@@ -24,7 +24,7 @@ class Item extends React.Component {
     const done = this.state.done;
     const handleOpen = () => this.setState((prev) => ({editDialogOpen: true, editTextField: prev.task}))
     const handleClose = () => this.setState({editDialogOpen: false});
-    const handleSubmit = () => this.setState((prev) => ({task: prev.editTextField, editDialogOpen: false}));
+    const handleSubmit = () => this.setState((prev) => ({task: prev.editTextField, editDialogOpen: false}));//TODO: Supress submission if there is no text
     const handleTextbox = (e) => {
         let newInput = e.target.value;
         this.setState({editTextField: newInput.replace("\n","")});
@@ -46,10 +46,10 @@ class Item extends React.Component {
         margin: genericDivStyle.margin,
         marginLeft: "auto"
     }
-    const textStyle = {
+    const texStyle = {margin: "8px"}//Set this as twice the genericDivStyle when I properly implement this. But this will do for now
+    const textGroupStyle = {
         flex: 3, //Test this out, by making the text and tags very long
         display:"flex", 
-        flexWrap: "wrap",
         alignItems:"safe center"
     }
     const tagStyle = {
@@ -57,7 +57,7 @@ class Item extends React.Component {
         display:"flex", 
         flexWrap: "wrap" //TODO: Test this, by cramming tags until it oveflows
     }
-    
+    //NOTE: Try to set trash icon to a danger colour
     const dialogCode = <Dialog 
         open={this.state.editDialogOpen} 
         onClose={handleClose} 
@@ -91,17 +91,17 @@ class Item extends React.Component {
       <li key={this.props.id}>
         <Paper style={paperStyle}>
           <Checkbox checked={this.state.done} onClick={toggleCheckbox} style={genericDivStyle}/>
-          <div style={textStyle}>
-            {done ? <s>{this.state.task}</s> : this.state.task}
+          <div style={textGroupStyle}>
+            <div style={texStyle}>{done ? <s>{this.state.task}</s> : this.state.task}</div>
             {!done && <IconButton onClick={handleOpen} style={genericDivStyle}><EditIcon/></IconButton>}
             {dialogCode}
           </div>
           <Divider style={genericDivStyle} orientation="vertical" flexItem />
           <div style={tagStyle}><TagRender tags={this.props.tags}/></div>
           <Divider style={genericDivStyle} orientation="vertical" flexItem />
-          <IconButton style={startOfRightButtons}><ArrowUpwardIcon/></IconButton>
-          <IconButton style={genericDivStyle}><ArrowDownwardIcon/></IconButton>
-          <IconButton style={genericDivStyle}><DeleteForeverIcon/></IconButton>
+          <IconButton style={startOfRightButtons} size='small'><ArrowUpwardIcon/></IconButton>
+          <IconButton style={genericDivStyle} size='small'><ArrowDownwardIcon/></IconButton>
+          <IconButton style={genericDivStyle} size='small'><DeleteForeverIcon/></IconButton>
         </Paper>
       </li>
     );
