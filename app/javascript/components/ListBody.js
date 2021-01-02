@@ -8,6 +8,31 @@ import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
 import SortIcon from '@material-ui/icons/Sort';
 class ListBody extends React.Component {
+  constructor(props) {
+    super(props);
+    let order = [];
+    let hashedEntries = {};
+    this.props.entries.forEach((value) => {
+        let id = value.id;
+        order.push(id);
+        hashedEntries[id] = value;
+    }); 
+    this.state = {
+        entries: hashedEntries,
+        displayOrder: order
+    }
+    //this.updateTask = (identity, done, task, tags) => this.setState((prevState) => {
+    //    let entries = prevState.entries;
+    //    entries[identity] = {id: id, done: done, task: task, tags: tags}; //TODO: see if there is namespace fuckery
+    //});
+    this.moveEntriesFuncGenerator = (src, dst) => () => this.setState(prevState => {
+        let entries = prevState.entries;
+        let temp = data[src];
+        data[src] = data[dst];
+        data[dst] = temp;
+        return {entries: data};//TODO: Test this function later
+    })
+  }
   render () {
     const search = [];
     const paperStyle = {
@@ -25,7 +50,11 @@ class ListBody extends React.Component {
     const genericDivStyle = {margin: "4px"}
     const searchTagsStyle = {
         margin: genericDivStyle.margin,
-        //marginLeft: "auto" //NOTE: For now, stick to only search by tags
+        //marginLeft: "auto" //NOTE: For now, stick to only search by tags, only uncomment if we are doing text search
+    }
+    const ItemHTMLBuilder = (value, index, array) => {
+        let data = this.state.entries[value];
+        return <Item {...data}/>
     }
     return (
       <React.Fragment>
@@ -35,7 +64,7 @@ class ListBody extends React.Component {
           <IconButton style={genericDivStyle}><SearchIcon/></IconButton>
           <div style={searchTagsStyle}><TagRender tags={search}/></div>
         </Paper>
-        <Paper style={resultsStyle}>{this.props.entries.map((data) => <Item {...data}/>)}</Paper>
+        <Paper style={resultsStyle}>{this.state.displayOrder.map(ItemHTMLBuilder)}</Paper>
       </React.Fragment>
     );
   }
