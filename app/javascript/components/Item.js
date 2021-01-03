@@ -119,19 +119,40 @@ class Item extends React.Component {
           <Divider style={genericDivStyle} orientation="vertical" flexItem />
           <div style={tagStyle}><TagRender tags={this.props.tags}/></div>
           <Divider style={genericDivStyle} orientation="vertical" flexItem />
-          <IconButton style={startOfRightButtons} size='small'><ArrowUpwardIcon/></IconButton>
-          <IconButton style={genericDivStyle} size='small'><ArrowDownwardIcon/></IconButton>
-          <IconButton style={genericDivStyle} size='small'><DeleteForeverIcon/></IconButton>
+          <IconButton 
+            style={startOfRightButtons} size='small'
+            onClick={this.props.moveUpFunc} disabled={!this.props.moveUpFunc}><ArrowUpwardIcon/></IconButton>
+          <IconButton 
+            style={genericDivStyle} size='small' 
+            onClick={this.props.moveDownFunc} disabled={!this.props.moveDownFunc}>
+            <ArrowDownwardIcon/>
+          </IconButton>
+          <IconButton style={genericDivStyle} size='small' onClick={this.props.deleteFunc}><DeleteForeverIcon/></IconButton>
         </Paper>
       </li>
     );
   }
 }
 
-Item.propTypes = {
+Item.itemOnlyPropTypes = {
   id: PropTypes.number,
   done: PropTypes.bool,
   task: PropTypes.string,
   tags: PropTypes.arrayOf(PropTypes.string)
 };
+const funcPropTypeChecker = function(props, propName, componentName) {
+    let fn = props[propName];
+    if(!fn.prototype || typeof fn.prototype.constructor !== 'function') {
+        return new Error(propName + 'must be a function');
+    }
+}
+
+var funcPropTypes = {
+  updateFunc: funcPropTypeChecker,
+  moveUpFunc: funcPropTypeChecker,
+  moveDownFunc: funcPropTypeChecker,
+  deleteFunc: funcPropTypeChecker
+}
+Item.propTypes = Object.assign(funcPropTypes, Item.itemOnlyPropTypes);
+
 export default Item

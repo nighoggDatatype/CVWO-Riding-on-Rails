@@ -10,21 +10,13 @@ import SortIcon from '@material-ui/icons/Sort';
 class ListBody extends React.Component {
   constructor(props) {
     super(props);
-    let order = [];
-    let hashedEntries = {};
-    this.props.entries.forEach((value) => {
-        let id = value.id;
-        order.push(id);
-        hashedEntries[id] = value;
-    }); 
     this.state = {
-        entries: hashedEntries,
-        displayOrder: order
+        entries: this.props.entries
     }
-    //this.updateTask = (identity, done, task, tags) => this.setState((prevState) => {
-    //    let entries = prevState.entries;
-    //    entries[identity] = {id: id, done: done, task: task, tags: tags}; //TODO: see if there is namespace fuckery
-    //});
+    this.updateTask = (identity, done, task, tags) => this.setState((prevState) => {
+        let entries = prevState.entries;
+        entries[identity] = {id: id, done: done, task: task, tags: tags}; //TODO: see if there is namespace fuckery
+    });
     this.moveEntriesFuncGenerator = (src, dst) => () => this.setState(prevState => {
         let entries = prevState.entries;
         let temp = data[src];
@@ -53,8 +45,7 @@ class ListBody extends React.Component {
         //marginLeft: "auto" //NOTE: For now, stick to only search by tags, only uncomment if we are doing text search
     }
     const ItemHTMLBuilder = (value, index, array) => {
-        let data = this.state.entries[value];
-        return <Item {...data}/>
+        return <Item {...value}/>
     }
     return (
       <React.Fragment>
@@ -64,13 +55,13 @@ class ListBody extends React.Component {
           <IconButton style={genericDivStyle}><SearchIcon/></IconButton>
           <div style={searchTagsStyle}><TagRender tags={search}/></div>
         </Paper>
-        <Paper style={resultsStyle}>{this.state.displayOrder.map(ItemHTMLBuilder)}</Paper>
+        <Paper style={resultsStyle}>{this.state.entries.map(ItemHTMLBuilder)}</Paper>
       </React.Fragment>
     );
   }
 }
 
 ListBody.propTypes = {
-  entries: PropTypes.arrayOf(PropTypes.shape(Item.propTypes))
+  entries: PropTypes.arrayOf(PropTypes.shape(Item.itemOnlyPropTypes))
 };
 export default ListBody
