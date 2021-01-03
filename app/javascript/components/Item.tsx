@@ -15,7 +15,31 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import Divider from '@material-ui/core/Divider';
-class Item extends React.Component {
+
+export interface itemRecordProps {
+  id: number,
+  done: boolean,
+  task: string,
+  tags: string[],
+}
+
+interface Props extends itemRecordProps {//TODO: Change the functions as needed
+  updateFunc: () => void,
+  moveUpFunc?: () => void,
+  moveDownFunc?: () => void,
+  deleteFunc: () => void,
+}
+
+interface State {
+  done: boolean,
+  task: string,
+  editDialogOpen: boolean,
+  editTextField: string,
+  textBoxEnter: boolean,
+}
+
+class Item extends React.Component<Props,State> {
+  handleSubmit: () => void;
   constructor(props) {
     super(props);
     this.state = {
@@ -27,6 +51,7 @@ class Item extends React.Component {
     }
     this.handleSubmit = () => this.setState((prev) => ({task: prev.editTextField, editDialogOpen: false}));
   }
+
   componentDidUpdate(){
       if(this.state.textBoxEnter){
           this.setState({textBoxEnter : false});
@@ -133,26 +158,5 @@ class Item extends React.Component {
     );
   }
 }
-
-Item.itemOnlyPropTypes = {
-  id: PropTypes.number,
-  done: PropTypes.bool,
-  task: PropTypes.string,
-  tags: PropTypes.arrayOf(PropTypes.string)
-};
-const funcPropTypeChecker = function(props, propName, componentName) {
-    let fn = props[propName];
-    if(!fn.prototype || typeof fn.prototype.constructor !== 'function') {
-        return new Error(propName + 'must be a function');
-    }
-}
-
-var funcPropTypes = {
-  updateFunc: funcPropTypeChecker,
-  moveUpFunc: funcPropTypeChecker,
-  moveDownFunc: funcPropTypeChecker,
-  deleteFunc: funcPropTypeChecker
-}
-Item.propTypes = Object.assign(funcPropTypes, Item.itemOnlyPropTypes);
 
 export default Item

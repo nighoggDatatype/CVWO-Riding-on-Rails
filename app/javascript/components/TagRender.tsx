@@ -1,17 +1,21 @@
 import React from "react"
-import PropTypes from "prop-types"
 import Chip from '@material-ui/core/Chip';
 import AddIcon from '@material-ui/icons/Add';
-class TagRender extends React.Component {
+
+interface Props {
+  tags: string[]
+};
+
+class TagRender extends React.Component<Props,{}> {
   render () {//NOTE: Don't reuse this for tag-cloud management, the interface requirements per tag are deletion, include, exclude, subtag creation, renaming, ect, and its too complex in general
-    const handleDelete = (data) => console.log("");//TODO: Make this work properly
+    const handleDelete = (event) => {console.log(event)};//TODO: Make this work properly
     return (
       <React.Fragment>
         {this.props.tags.map((data) => 
             <Chip
               size="small"
               label={data}
-              onDelete={handleDelete(data)}
+              onDelete={handleDelete}
               style={{margin:"4px"}}
             />
         )}
@@ -20,8 +24,4 @@ class TagRender extends React.Component {
     );
   }
 }
-
-TagRender.propTypes = {
-  tags: PropTypes.arrayOf(PropTypes.string)
-};
 export default TagRender

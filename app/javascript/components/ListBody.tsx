@@ -1,24 +1,33 @@
 import React from "react";
-import PropTypes from "prop-types";
-import Item from "./Item";
+import Item, {itemRecordProps} from "./Item";
 import TagRender from "./TagRender";
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
 import SortIcon from '@material-ui/icons/Sort';
-class ListBody extends React.Component {
+
+
+interface Props {
+  entries: itemRecordProps[]
+};
+
+class ListBody extends React.Component<Props,Props> {
+  moveEntriesFuncGenerator: (src: any, dst: any) => () => void;
+  updateTask: (data: itemRecordProps) => void;
   constructor(props) {
     super(props);
     this.state = {
         entries: this.props.entries
     }
-    this.updateTask = (identity, done, task, tags) => this.setState((prevState) => {
+    this.updateTask = (data: itemRecordProps) => this.setState((prevState) => {
         let entries = prevState.entries;
-        entries[identity] = {id: id, done: done, task: task, tags: tags}; //TODO: see if there is namespace fuckery
+        let identity = data.id;
+        entries[identity] = data;//TODO: Fix this part cause this doesn't work for sure 
+        return {entries: entries};
     });
     this.moveEntriesFuncGenerator = (src, dst) => () => this.setState(prevState => {
-        let entries = prevState.entries;
+        let data = prevState.entries;
         let temp = data[src];
         data[src] = data[dst];
         data[dst] = temp;
@@ -28,24 +37,34 @@ class ListBody extends React.Component {
   render () {
     const search = [];
     const paperStyle = {
-        padding: "4px", 
-        margin: "2px", 
-        display:"flex", 
-        alignItems:"safe center"
+      padding: "4px", 
+      margin: "2px", 
+      display:"flex", 
+      alignItems:"safe center"
     }
     const resultsStyle = {//TODO: This should result in the top being visible whenever possible and the results scrolling
-        padding: "4px", 
-        margin: "2px", 
-        maxHeight: '100%', 
-        overflow: 'auto'
+      padding: "4px", 
+      margin: "2px", 
+      maxHeight: '100%', 
+      overflow: 'auto'
     }
     const genericDivStyle = {margin: "4px"}
     const searchTagsStyle = {
-        margin: genericDivStyle.margin,
-        //marginLeft: "auto" //NOTE: For now, stick to only search by tags, only uncomment if we are doing text search
+      margin: genericDivStyle.margin,
+      //marginLeft: "auto" //NOTE: For now, stick to only search by tags, only uncomment if we are doing text search
     }
     const ItemHTMLBuilder = (value, index, array) => {
-        return <Item {...value}/>
+      let data: itemRecordProps = {} as itemRecordProps //NOTE this needs to be the props for Item, fix later
+      data = Object.assign(data, value);
+      if (index != 0){
+        let prev = array[index-1];
+        value.moveUpFunc = this.moveEntriesFuncGenerator(data.id, prev.id);
+      }
+      if (index < array.length - 1){
+        let next = array[index+1];
+        value.moveDownFunc = this.moveEntriesFuncGenerator(data.id, next.id);
+      }
+      return <Item {...data}/>
     }
     return (
       <React.Fragment>
@@ -60,8 +79,4 @@ class ListBody extends React.Component {
     );
   }
 }
-
-ListBody.propTypes = {
-  entries: PropTypes.arrayOf(PropTypes.shape(Item.itemOnlyPropTypes))
-};
 export default ListBody
