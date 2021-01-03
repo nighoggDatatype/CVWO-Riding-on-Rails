@@ -23,7 +23,7 @@ class ListBody extends React.Component<Props,Props> {
     this.updateTask = (data: itemRecordProps) => this.setState((prevState) => {
         let entries = prevState.entries;
         let identity = data.id;
-        entries[identity] = data;//TODO: Fix this part cause this doesn't work for sure 
+        entries[identity] = data;//TODO: Fix this part cause this doesn't work for sure.
         return {entries: entries};
     });
     this.moveEntriesFuncGenerator = (src, dst) => () => this.setState(prevState => {
@@ -31,7 +31,7 @@ class ListBody extends React.Component<Props,Props> {
         let temp = data[src];
         data[src] = data[dst];
         data[dst] = temp;
-        return {entries: data};//TODO: Test this function later
+        return {entries: data};//Note: This definitely breaks. TODO: Seperate id->data and [id,id,id] information
     })
   }
   render () {
@@ -54,15 +54,24 @@ class ListBody extends React.Component<Props,Props> {
       //marginLeft: "auto" //NOTE: For now, stick to only search by tags, only uncomment if we are doing text search
     }
     const ItemHTMLBuilder = (value, index, array) => {
-      let data: itemRecordProps = {} as itemRecordProps //NOTE this needs to be the props for Item, fix later
+      type Mutable<T> = {//TODO: Move this into its own helper file
+        -readonly [P in keyof T]: T[P];
+      };//See: https://www.reddit.com/r/reactjs/comments/4dya4z/where_to_put_helper_functions_in_a_react_component/
+      type ItemProps = Mutable<Item['props']>
+
+      //Right now this still should be spitting out errors
+      //I think its because it thinks I passed it update and delete Func because of "{} as ItemProps"
+      //Need to change it later probably if I want to be perfect.
+      let data: ItemProps = {} as ItemProps 
+
       data = Object.assign(data, value);
       if (index != 0){
         let prev = array[index-1];
-        value.moveUpFunc = this.moveEntriesFuncGenerator(data.id, prev.id);
+        data.moveUpFunc = this.moveEntriesFuncGenerator(data.id, prev.id);
       }
       if (index < array.length - 1){
         let next = array[index+1];
-        value.moveDownFunc = this.moveEntriesFuncGenerator(data.id, next.id);
+        data.moveDownFunc = this.moveEntriesFuncGenerator(data.id, next.id);
       }
       return <Item {...data}/>
     }

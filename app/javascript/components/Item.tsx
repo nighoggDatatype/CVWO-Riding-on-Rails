@@ -97,7 +97,7 @@ class Item extends React.Component<Props,State> {
     const tagStyle = {
         flex: 1, 
         display:"flex", 
-        flexWrap: "wrap" //TODO: Test this, by cramming tags until it oveflows
+        flexWrap: "wrap" as "wrap" //Suppresses weird warnings from typescript 
     }
     //NOTE: Try to set trash icon to a danger colour
     const dialogIsEmpty = this.isInvalidDescription(this.state.editTextField);

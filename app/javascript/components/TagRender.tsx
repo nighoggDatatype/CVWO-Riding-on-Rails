@@ -6,7 +6,7 @@ interface Props {
   tags: string[]
 };
 
-class TagRender extends React.Component<Props,{}> {
+class TagRender extends React.Component<Props> {
   render () {//NOTE: Don't reuse this for tag-cloud management, the interface requirements per tag are deletion, include, exclude, subtag creation, renaming, ect, and its too complex in general
     const handleDelete = (event) => {console.log(event)};//TODO: Make this work properly
     return (
