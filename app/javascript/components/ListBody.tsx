@@ -54,6 +54,7 @@ class ListBody extends React.Component<Props,Props> {
       //marginLeft: "auto" //NOTE: For now, stick to only search by tags, only uncomment if we are doing text search
     }
     const ItemHTMLBuilder = (value, index, array) => {
+      //From: https://stackoverflow.com/a/50769802
       type Mutable<T> = {//TODO: Move this into its own helper file
         -readonly [P in keyof T]: T[P];
       };//See: https://www.reddit.com/r/reactjs/comments/4dya4z/where_to_put_helper_functions_in_a_react_component/
