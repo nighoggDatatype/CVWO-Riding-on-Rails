@@ -10,43 +10,45 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import Divider from '@material-ui/core/Divider';
 import EditTextDialog from './EditTextDialog'
 
-export interface itemRecordProps {
-  id: number,
+export interface itemDataProps {
   done: boolean,
   task: string,
   tags: string[],
 }
-
+export interface itemRecordProps extends itemDataProps{
+  id: number,
+}
+export interface updateFunc{
+  (prev:itemDataProps): itemDataProps
+}
 interface Props extends itemRecordProps {//TODO: Change the functions as needed, also rename them to follow convension
-  onUpdate: () => void,
+  onUpdate: (id: number, func: updateFunc) => void,
   onMoveUp?: () => void,
   onMoveDown?: () => void,
   onDelete: () => void,
 }
-
 interface State {
-  done: boolean,
-  task: string,
   editDialogOpen: boolean,
 }
-
 class Item extends React.Component<Props,State> {
   handleSubmit: () => void;
   constructor(props) {
     super(props);
     this.state = {
-        done: this.props.done,
-        task: this.props.task, 
         editDialogOpen: false, 
     }
   }
   
   render () {
-    const done = this.state.done;
+    const props = this.props;
+    const done = props.done;
     const handleOpen = () => this.setState({editDialogOpen: true});
     const handleClose = () => this.setState({editDialogOpen: false});
-    const handleSubmit = (newText:string) => this.setState({task: newText, editDialogOpen: false});
-    const toggleCheckbox = () => this.setState((prev) => ({done: !prev.done}))
+    const handleSubmit = (newText:string) => 
+      props.onUpdate(props.id, prev => ({done: prev.done, task:newText, tags: prev.tags}));
+    const toggleCheckbox = () => props.onUpdate(props.id, prev =>
+      ({done: !prev.done, task: prev.task, tags: prev.tags})
+    );
     
     //TODO: Intergrate this into proper css styling
     const paperStyle = {
@@ -73,28 +75,28 @@ class Item extends React.Component<Props,State> {
     }
     //NOTE: Try to set trash icon to a danger colour
     return (
-      <li key={this.props.id}>
+      <li key={props.id}>
         <Paper style={paperStyle}>
-          <Checkbox checked={this.state.done} onClick={toggleCheckbox} style={genericDivStyle}/>
+          <Checkbox checked={props.done} onClick={toggleCheckbox} style={genericDivStyle}/>
           <div style={textGroupStyle}>
-            <div style={texStyle}>{done ? <s>{this.state.task}</s> : this.state.task}</div>
+            <div style={texStyle}>{done ? <s>{props.task}</s> : props.task}</div>
             {!done && <IconButton onClick={handleOpen} style={genericDivStyle}><EditIcon/></IconButton>}
             <EditTextDialog 
-              open={this.state.editDialogOpen} defaultInput={this.state.task} textName='Task Description'
+              open={this.state.editDialogOpen} defaultInput={props.task} textName='Task Description'
               onSubmit={handleSubmit} onClose={handleClose}/>
           </div>
           <Divider style={genericDivStyle} orientation="vertical" flexItem />
-          <div style={tagStyle}><TagRender tags={this.props.tags}/></div>
+          <div style={tagStyle}><TagRender tags={props.tags}/></div>
           <Divider style={genericDivStyle} orientation="vertical" flexItem />
           <IconButton 
             style={startOfRightButtons} size='small'
-            onClick={this.props.onMoveUp} disabled={!this.props.onMoveUp}><ArrowUpwardIcon/></IconButton>
+            onClick={props.onMoveUp} disabled={!props.onMoveUp}><ArrowUpwardIcon/></IconButton>
           <IconButton 
             style={genericDivStyle} size='small' 
-            onClick={this.props.onMoveDown} disabled={!this.props.onMoveDown}>
+            onClick={props.onMoveDown} disabled={!props.onMoveDown}>
             <ArrowDownwardIcon/>
           </IconButton>
-          <IconButton style={genericDivStyle} size='small' onClick={this.props.onDelete}><DeleteForeverIcon/></IconButton>
+          <IconButton style={genericDivStyle} size='small' onClick={props.onDelete}><DeleteForeverIcon/></IconButton>
         </Paper>
       </li>
     );
