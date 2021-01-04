@@ -1,20 +1,14 @@
 import React from "react"
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
-import PropTypes from "prop-types"
 import EditIcon from '@material-ui/icons/Edit';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import Paper from '@material-ui/core/Paper';
 import TagRender from "./TagRender";
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import Divider from '@material-ui/core/Divider';
+import EditTextDialog from './EditTextDialog'
 
 export interface itemRecordProps {
   id: number,
@@ -23,7 +17,7 @@ export interface itemRecordProps {
   tags: string[],
 }
 
-interface Props extends itemRecordProps {//TODO: Change the functions as needed
+interface Props extends itemRecordProps {//TODO: Change the functions as needed, also rename them to follow convension
   updateFunc: () => void,
   moveUpFunc?: () => void,
   moveDownFunc?: () => void,
@@ -34,8 +28,6 @@ interface State {
   done: boolean,
   task: string,
   editDialogOpen: boolean,
-  editTextField: string,
-  textBoxEnter: boolean,
 }
 
 class Item extends React.Component<Props,State> {
@@ -46,34 +38,14 @@ class Item extends React.Component<Props,State> {
         done: this.props.done,
         task: this.props.task, 
         editDialogOpen: false, 
-        editTextField : this.props.task,
-        textBoxEnter : false
     }
-    this.handleSubmit = () => this.setState((prev) => ({task: prev.editTextField, editDialogOpen: false}));
-  }
-
-  componentDidUpdate(){
-      if(this.state.textBoxEnter){
-          this.setState({textBoxEnter : false});
-          this.handleSubmit();
-      }
-  }
-  
-  isInvalidDescription(potentialDescription){
-      return !/\S/.test(potentialDescription);
   }
   
   render () {
     const done = this.state.done;
-    const handleOpen = () => this.setState((prev) => ({editDialogOpen: true, editTextField: prev.task}))
+    const handleOpen = () => this.setState({editDialogOpen: true});
     const handleClose = () => this.setState({editDialogOpen: false});
-    const handleTextbox = (e) => {
-        let newInputRaw = e.target.value;
-        let newInput = newInputRaw.replace("\n","");
-        let altEnter = !this.isInvalidDescription(newInput) && newInputRaw.includes('\n');
-        this.setState({editTextField: newInput, textBoxEnter: altEnter});
-    }
-    
+    const handleSubmit = (newText:string) => this.setState({task: newText, editDialogOpen: false});
     const toggleCheckbox = () => this.setState((prev) => ({done: !prev.done}))
     
     //TODO: Intergrate this into proper css styling
@@ -100,38 +72,6 @@ class Item extends React.Component<Props,State> {
         flexWrap: "wrap" as "wrap" //Suppresses weird warnings from typescript 
     }
     //NOTE: Try to set trash icon to a danger colour
-    const dialogIsEmpty = this.isInvalidDescription(this.state.editTextField);
-    const dialogCode = <Dialog 
-        open={this.state.editDialogOpen} 
-        onClose={handleClose} 
-        aria-labelledby="form-dialog-title" 
-        fullWidth maxWidth='md'>
-            <DialogTitle id="form-dialog-title">Edit Task</DialogTitle>
-            <DialogContent>
-              <TextField
-                autoFocus
-                margin="dense"
-                id="task-name-field"
-                label="Task Description"
-                defaultValue= {this.state.task}
-                fullWidth 
-                multiline
-                value={this.state.editTextField}
-                rowsMax={7}
-                onChange={handleTextbox}
-                error={dialogIsEmpty}
-                helperText="Task Description cannot be empty"
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose} color="primary">
-                Cancel
-              </Button>
-              <Button onClick={this.handleSubmit} color="primary" disabled={dialogIsEmpty}>
-                Change
-              </Button>
-            </DialogActions>
-          </Dialog>
     return (
       <li key={this.props.id}>
         <Paper style={paperStyle}>
@@ -139,7 +79,9 @@ class Item extends React.Component<Props,State> {
           <div style={textGroupStyle}>
             <div style={texStyle}>{done ? <s>{this.state.task}</s> : this.state.task}</div>
             {!done && <IconButton onClick={handleOpen} style={genericDivStyle}><EditIcon/></IconButton>}
-            {dialogCode}
+            <EditTextDialog 
+              open={this.state.editDialogOpen} defaultInput={this.state.task} 
+              onSubmit={handleSubmit} onClose={handleClose}/>
           </div>
           <Divider style={genericDivStyle} orientation="vertical" flexItem />
           <div style={tagStyle}><TagRender tags={this.props.tags}/></div>
