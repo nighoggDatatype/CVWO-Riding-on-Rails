@@ -1,5 +1,5 @@
 import React from "react";
-import Item, {itemRecordProps, updateFunc,itemDataProps} from "./Item";
+import Item, {itemRecordProps, updateFunc} from "./Item";
 import TagRender from "./TagRender";
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
@@ -9,49 +9,22 @@ import SortIcon from '@material-ui/icons/Sort';
 
 
 interface Props {
+  moveEntriesGenerator: (srcId: number, dstId: number) => () => void,
+  onUpdateTask: (id: number, func: updateFunc) => void,
+  deleteFactory: (id: number) => () => void,
   entries: itemRecordProps[]
 };
 
-class ListBody extends React.Component<Props,Props> {
-  lookupById(id: number){
-    return this.state.entries.findIndex((value) => value.id == id);
-  }
-  moveEntriesFuncGenerator(srcId: number, dstId: number){
-    return () => this.setState(prevState => {
-      let data = prevState.entries;
-      let src = this.lookupById(srcId);
-      let dst = this.lookupById(dstId);
-      let temp = data[src];
-      data[src] = data[dst];
-      data[dst] = temp;
-      return {entries: data};
-    });
-  }
-  updateTask(id: number, func: updateFunc){
-    this.setState(prev => {
-      let entries = prev.entries;
-      let identity = this.lookupById(id);
-      entries[identity] = {id: id, ...func(entries[identity])};
-      return {entries: entries};
-    });
-  }
-  deleteFactory(id: number){
-    return () => {
-      let index = this.lookupById(id);
-      if (index > -1){
-        this.setState(prev =>{
-          prev.entries.splice(index,1);
-          return {entries:prev.entries};
-        })
-      }
-    };
-  }
+interface State {
+  entries: itemRecordProps[]
+}
+
+class ListBody extends React.Component<Props,State> {
   constructor(props) {
     super(props);
     this.state = {
         entries: this.props.entries
     }
-    this.updateTask = this.updateTask.bind(this);
   }
   render () {
     const search = [];
@@ -80,17 +53,17 @@ class ListBody extends React.Component<Props,Props> {
       type ItemProps = Mutable<Item['props']>
 
       let data:ItemProps = {
-        onUpdate: this.updateTask,
-        onDelete: this.deleteFactory(value.id),
+        onUpdate: this.props.onUpdateTask,
+        onDelete: this.props.deleteFactory(value.id),
         ...value
       };
       if (index != 0){
         let prev = array[index-1];
-        data.onMoveUp = this.moveEntriesFuncGenerator(data.id, prev.id);
+        data.onMoveUp = this.props.moveEntriesGenerator(data.id, prev.id);
       }
       if (index < array.length - 1){
         let next = array[index+1];
-        data.onMoveDown = this.moveEntriesFuncGenerator(data.id, next.id);
+        data.onMoveDown = this.props.moveEntriesGenerator(data.id, next.id);
       }
       return <Item {...data}/>
     }

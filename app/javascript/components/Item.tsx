@@ -10,7 +10,7 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import Divider from '@material-ui/core/Divider';
 import EditTextDialog from './EditTextDialog'
 
-export interface itemDataProps {
+interface itemDataProps {
   done: boolean,
   task: string,
   tags: string[],
@@ -21,7 +21,7 @@ export interface itemRecordProps extends itemDataProps{
 export interface updateFunc{
   (prev:itemDataProps): itemDataProps
 }
-interface Props extends itemRecordProps {//TODO: Change the functions as needed, also rename them to follow convension
+interface Props extends itemRecordProps {
   onUpdate: (id: number, func: updateFunc) => void,
   onMoveUp?: () => void,
   onMoveDown?: () => void,
