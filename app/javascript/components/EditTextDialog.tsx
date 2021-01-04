@@ -62,31 +62,31 @@ class EditTextDialog extends React.Component<Props,State> {
         onClose={this.handleClose} 
         aria-labelledby="form-dialog-title" 
         fullWidth maxWidth='md'>
-            <DialogTitle id="form-dialog-title">Edit {this.props.textName}</DialogTitle>
-            <DialogContent>
-              <TextField
-                autoFocus
-                margin="dense"
-                id="task-name-field"
-                label={this.props.textName}
-                fullWidth 
-                multiline
-                value={this.state.editTextField}
-                rowsMax={7}
-                onChange={handleTextbox}
-                error={dialogIsEmpty}
-                helperText={`${this.props.textName} cannot be empty`}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={this.handleSubmit} color="primary">
-                Cancel
-              </Button>
-              <Button onClick={this.handleSubmit} color="primary" disabled={dialogIsEmpty}>
-                Change
-              </Button>
-            </DialogActions>
-          </Dialog>
+        <DialogTitle id="form-dialog-title">Edit {this.props.textName}</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="task-name-field"
+            label={this.props.textName}
+            fullWidth 
+            multiline
+            value={this.state.editTextField}
+            rowsMax={7}
+            onChange={handleTextbox}
+            error={dialogIsEmpty}
+            helperText={`${this.props.textName} cannot be empty`}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.handleSubmit} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={this.handleSubmit} color="primary" disabled={dialogIsEmpty}>
+            Change
+          </Button>
+        </DialogActions>
+      </Dialog>
     );
   }
 }
