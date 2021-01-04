@@ -24,7 +24,7 @@ class ListBody extends React.Component<Props,Props> {
       let temp = data[src];
       data[src] = data[dst];
       data[dst] = temp;
-      return {entries: data};//Note: This definitely breaks. TODO: Seperate id->data and [id,id,id] information
+      return {entries: data};
     });
   }
   updateTask(id: number, func: updateFunc){
@@ -51,6 +51,7 @@ class ListBody extends React.Component<Props,Props> {
     this.state = {
         entries: this.props.entries
     }
+    this.updateTask = this.updateTask.bind(this);
   }
   render () {
     const search = [];
