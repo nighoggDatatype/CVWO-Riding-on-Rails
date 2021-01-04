@@ -64,15 +64,14 @@ class ListBody extends React.Component<Props,Props> {
       //I think its because it thinks I passed it update and delete Func because of "{} as ItemProps"
       //Need to change it later probably if I want to be perfect.
       let data: ItemProps = {} as ItemProps 
-
       data = Object.assign(data, value);
       if (index != 0){
         let prev = array[index-1];
-        data.moveUpFunc = this.moveEntriesFuncGenerator(data.id, prev.id);
+        data.onMoveUp = this.moveEntriesFuncGenerator(data.id, prev.id);
       }
       if (index < array.length - 1){
         let next = array[index+1];
-        data.moveDownFunc = this.moveEntriesFuncGenerator(data.id, next.id);
+        data.onMoveDown = this.moveEntriesFuncGenerator(data.id, next.id);
       }
       return <Item {...data}/>
     }

@@ -7,6 +7,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 
 interface Props {
+  textName:string
   open:boolean
   defaultInput:string
   onSubmit:(text:String)=>void
@@ -61,13 +62,13 @@ class EditTextDialog extends React.Component<Props,State> {
         onClose={this.handleClose} 
         aria-labelledby="form-dialog-title" 
         fullWidth maxWidth='md'>
-            <DialogTitle id="form-dialog-title">Edit Task</DialogTitle>
+            <DialogTitle id="form-dialog-title">Edit {this.props.textName}</DialogTitle>
             <DialogContent>
               <TextField
                 autoFocus
                 margin="dense"
                 id="task-name-field"
-                label="Task Description"
+                label={this.props.textName}
                 defaultValue= {this.props.defaultInput}
                 fullWidth 
                 multiline
@@ -75,7 +76,7 @@ class EditTextDialog extends React.Component<Props,State> {
                 rowsMax={7}
                 onChange={handleTextbox}
                 error={dialogIsEmpty}
-                helperText="Task Description cannot be empty"
+                helperText={`${this.props.textName} cannot be empty`}
               />
             </DialogContent>
             <DialogActions>

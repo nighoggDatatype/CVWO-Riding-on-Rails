@@ -18,10 +18,10 @@ export interface itemRecordProps {
 }
 
 interface Props extends itemRecordProps {//TODO: Change the functions as needed, also rename them to follow convension
-  updateFunc: () => void,
-  moveUpFunc?: () => void,
-  moveDownFunc?: () => void,
-  deleteFunc: () => void,
+  onUpdate: () => void,
+  onMoveUp?: () => void,
+  onMoveDown?: () => void,
+  onDelete: () => void,
 }
 
 interface State {
@@ -80,7 +80,7 @@ class Item extends React.Component<Props,State> {
             <div style={texStyle}>{done ? <s>{this.state.task}</s> : this.state.task}</div>
             {!done && <IconButton onClick={handleOpen} style={genericDivStyle}><EditIcon/></IconButton>}
             <EditTextDialog 
-              open={this.state.editDialogOpen} defaultInput={this.state.task} 
+              open={this.state.editDialogOpen} defaultInput={this.state.task} textName='Task Description'
               onSubmit={handleSubmit} onClose={handleClose}/>
           </div>
           <Divider style={genericDivStyle} orientation="vertical" flexItem />
@@ -88,13 +88,13 @@ class Item extends React.Component<Props,State> {
           <Divider style={genericDivStyle} orientation="vertical" flexItem />
           <IconButton 
             style={startOfRightButtons} size='small'
-            onClick={this.props.moveUpFunc} disabled={!this.props.moveUpFunc}><ArrowUpwardIcon/></IconButton>
+            onClick={this.props.onMoveUp} disabled={!this.props.onMoveUp}><ArrowUpwardIcon/></IconButton>
           <IconButton 
             style={genericDivStyle} size='small' 
-            onClick={this.props.moveDownFunc} disabled={!this.props.moveDownFunc}>
+            onClick={this.props.onMoveDown} disabled={!this.props.onMoveDown}>
             <ArrowDownwardIcon/>
           </IconButton>
-          <IconButton style={genericDivStyle} size='small' onClick={this.props.deleteFunc}><DeleteForeverIcon/></IconButton>
+          <IconButton style={genericDivStyle} size='small' onClick={this.props.onDelete}><DeleteForeverIcon/></IconButton>
         </Paper>
       </li>
     );
