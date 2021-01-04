@@ -69,7 +69,6 @@ class EditTextDialog extends React.Component<Props,State> {
                 margin="dense"
                 id="task-name-field"
                 label={this.props.textName}
-                defaultValue= {this.props.defaultInput}
                 fullWidth 
                 multiline
                 value={this.state.editTextField}

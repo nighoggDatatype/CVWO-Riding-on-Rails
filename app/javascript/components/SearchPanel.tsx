@@ -10,10 +10,10 @@ interface Props {
 }
 
 interface State {
-  tabState:string
+  tabState:number
 }
 
-function TabPanel(props: { [x: string]: any; children: any; value: string; index: string; }) {
+function TabPanel(props: { [x: string]: any; children: any; value: number; index: number; }) {
   const { children, value, index, ...other } = props;
 
   return (
@@ -35,7 +35,7 @@ class SearchPanel extends React.Component<Props,State> {
   constructor(props) {
     super(props);
     this.state = {
-      tabState: '2'
+      tabState: 2
     }
   }
   render () {
@@ -60,7 +60,7 @@ class SearchPanel extends React.Component<Props,State> {
         <Tabs value={this.state.tabState} onChange={handleChange}>
           {testList.map((value,index) => <Tab id={index.toString()} label={"Tab "+ (index+1).toString()}/>)}
         </Tabs>
-        {testList.map((value,index) => <TabPanel value={this.state.tabState} index={index.toString()}><ListBody {...value}/></TabPanel>)}
+        {testList.map((value,index) => <TabPanel value={this.state.tabState} index={index}><ListBody {...value}/></TabPanel>)}
         Garbage: {this.props.garbage}
         Tab: {this.state.tabState}
       </React.Fragment>
