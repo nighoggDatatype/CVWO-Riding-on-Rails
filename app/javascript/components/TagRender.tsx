@@ -7,17 +7,23 @@ import DialogContent from "@material-ui/core/DialogContent";
 import TextField from "@material-ui/core/TextField";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
+import { Search } from "@material-ui/icons";
+
+interface updateFunction {
+  (tag:string[]): string[]
+}
 
 interface Props {
   tags: string[],
   tagCloud?: string[], //TODO: Strip optional later
   onToggleSearch?: (tag:string) => void, //TODO: Strip optional later
-  onChangeTags?: (tag:string[]) => void, //TODO: Strip optional later
+  onChangeTags?: (updater: updateFunction) => void, //TODO: Strip optional later
 };
 
 interface State {
   dialogOpen: boolean,
   searchText: string,
+  searchEnter: boolean,
 }
 
 class TagRender extends React.Component<Props,State> {
@@ -26,21 +32,54 @@ class TagRender extends React.Component<Props,State> {
     this.state = {
       dialogOpen: false,
       searchText: "",
+      searchEnter: false,
     }
   }
+  componentDidUpdate(){
+    if(this.state.searchEnter){
+      this.setState({searchEnter : false});
+      this.handleSubmit();
+    }
+  }
+  
+  searchTags(search:string, pool:string[]){
+    return pool.filter(candidate => candidate.slice(0,search.length)==search);
+  }
   render () {//NOTE: Don't reuse this for tag-cloud management, the interface requirements per tag are deletion, include, exclude, subtag creation, renaming, ect, and its too complex in general
-    const handleDelete = (event) => {console.log(event)};//TODO: Make this work properly
-    //TODO: Figure out what is the actual way to remotely use setState. Maybe that thing that passes events like onDelete?
     let props = this.props;
     const addCloud: string[] = props.tagCloud.filter(x=>props.tags.indexOf(x)<0);
+    const searchResults = this.searchTags(this.state.searchText, addCloud);
+    const emptySearchResult = searchResults.length == 0;
+    const noUniqueResult = searchResults.length != 1;
+
     const handleClose = () => this.setState({dialogOpen: false, searchText: ""});
-    const handleTextbox = (e) => {
+    const handleDeleteFactory = (toDelete: string) =>
+      () => {props.onChangeTags(currentTags => {
+        const index = currentTags.indexOf(toDelete); 
+        if (index > -1){currentTags.splice(index,1);}
+        return currentTags;
+      })};
+    const handleSearch = (e) => {
       let newInputRaw = e.target.value;
       let newInput = newInputRaw.replace("\n","");
       let altEnter = !this.isInvalidDescription(newInput) && newInputRaw.includes('\n');
-      this.setState({editTextField: newInput, textBoxEnter: altEnter});
+      //TODO: When I decided on my tag format, filter for input that is obviously invalid.
+      this.setState({searchText: newInput, searchEnter: altEnter});
     }
-    const emptySearchResult = false; //TODO: Make search filter for me.
+
+    //TODO: Figure out what to do about dialog structure
+    const onSubmitFactory = (submission: string) => () => props.onChangeTags(currentTags =>{
+      for (var i = 0; i < currentTags.length && submission.localeCompare(currentTags[i]) > 0; i++) {}
+      currentTags.splice(i, 0, submission)
+      return currentTags;
+    })
+
+    const onSearchSubmitAttempt = (search:string, pool:string[]) => {
+      const results = this.searchTags(search, pool);
+      if (results.length == 1){
+        onSubmitFactory(results[0])();
+      }
+    }
 
     return (
       <React.Fragment>
@@ -49,7 +88,7 @@ class TagRender extends React.Component<Props,State> {
               size="small"
               label={data}
               onClick={() => this.props.onToggleSearch(data)}
-              onDelete={handleDelete}
+              onDelete={handleDeleteFactory(data)}
               style={{margin:"4px"}}
             />
         )}
@@ -67,23 +106,31 @@ class TagRender extends React.Component<Props,State> {
           fullWidth maxWidth='md'>
           <DialogTitle id="form-dialog-title">Select New Tag</DialogTitle>
           <DialogContent>
+            {addCloud.map((data) => 
+              <Chip
+                size="small"
+                label={data}
+                onClick={onSubmitFactory(data)}
+                style={{margin:"4px"}}
+              />
+            )}
           <TextField
             margin="dense"
             id="search-tag-field"
             label="Search"
             fullWidth
             value={this.state.searchText}
-            onChange={handleTextbox}
+            onChange={handleSearch}
             error={emptySearchResult}
             helperText="Search result is empty"
           />
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleSubmit} color="primary">
+            <Button onClick={handleClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.handleSubmit} color="primary" disabled={dialogIsEmpty}>
-              Change
+            <Button onClick={onSearchSubmitAttempt} color="primary" disabled={noUniqueResult}>
+              Add
             </Button>
           </DialogActions>
         </Dialog>
