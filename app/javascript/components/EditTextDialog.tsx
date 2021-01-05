@@ -46,7 +46,7 @@ class EditTextDialog extends React.Component<Props,State> {
       this.setState({textBoxEnter : false});
       this.handleSubmit();
     }
-}
+  }
 
   render () {
     const handleTextbox = (e) => {
