@@ -79,7 +79,7 @@ class EditTextDialog extends React.Component<Props,State> {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.handleSubmit} color="primary">
+          <Button onClick={this.handleClose} color="primary">
             Cancel
           </Button>
           <Button onClick={this.handleSubmit} color="primary" disabled={dialogIsEmpty}>
