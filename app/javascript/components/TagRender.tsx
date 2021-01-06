@@ -115,7 +115,7 @@ class TagRender extends React.Component<Props,State> {
           fullWidth maxWidth='md'>
           <DialogTitle id="form-dialog-title">Select New Tag</DialogTitle>
           <DialogContent>
-            {this.getAddCloud().map((data) => 
+            {this.searchTags(this.state.searchText).map((data) => 
               <Chip
                 size="small"
                 label={data}
