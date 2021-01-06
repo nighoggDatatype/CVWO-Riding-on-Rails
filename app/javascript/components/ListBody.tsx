@@ -18,17 +18,7 @@ interface Props {
   onUpdateSearch:  (updater: updateTags) => void,
 };
 
-interface State {
-  entries: itemRecordProps[]
-}
-
-class ListBody extends React.Component<Props,State> {
-  constructor(props) {
-    super(props);
-    this.state = {
-        entries: this.props.entries
-    }
-  }
+class ListBody extends React.Component<Props> {
   render () {
     var props = this.props;
     const paperStyle = {
@@ -49,13 +39,16 @@ class ListBody extends React.Component<Props,State> {
       //marginLeft: "auto" //NOTE: For now, stick to only search by tags, only uncomment if we are doing text search
     }
     
-    let togglerHandler = (toToggle: string) => props.onUpdateSearch(togglerGenerator(toToggle));
-    const ItemHTMLBuilder = (value: itemRecordProps, index: number, array: string | any[]) => {
+    const togglerHandler = (toToggle: string) => props.onUpdateSearch(togglerGenerator(toToggle));
+    const filteredList = props.entries.filter((entry) => {
       for(let i = 0; i < props.searchTags.length; i++){
-        if (!value.tags.includes(props.searchTags[i])){
-          return;
+        if (!entry.tags.includes(props.searchTags[i])){
+          return false;
         }
       }
+      return true;
+    })
+    const ItemHTMLBuilder = (value: itemRecordProps, index: number, array: string | any[]) => {
       //From: https://stackoverflow.com/a/50769802
       type Mutable<T> = {//TODO: Move this into its own helper file
         -readonly [P in keyof T]: T[P];
@@ -87,7 +80,7 @@ class ListBody extends React.Component<Props,State> {
           <div style={searchTagsStyle}>
             <TagRender tags={props.searchTags} tagCloud={props.tagCloud} onChangeTags={props.onUpdateSearch}/></div>
         </Paper>
-        <Paper style={resultsStyle}>{this.state.entries.map(ItemHTMLBuilder)}</Paper>
+        <Paper style={resultsStyle}>{filteredList.map(ItemHTMLBuilder)}</Paper>
       </React.Fragment>
     );
   }
