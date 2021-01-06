@@ -35,20 +35,31 @@ class TagRender extends React.Component<Props,State> {
       searchEnter: false,
     }
   }
+  getAddCloud = () => this.props.tagCloud.filter(x=>this.props.tags.indexOf(x)<0);
+  searchTags = (search:string) => 
+    this.getAddCloud().filter(candidate => candidate.slice(0,search.length)==search);
+  
+  onSubmitFactory = (submission: string) => () => this.props.onChangeTags(currentTags =>{
+    for (var i = 0; i < currentTags.length && submission.localeCompare(currentTags[i]) > 0; i++) {}
+    currentTags.splice(i, 0, submission)
+    return currentTags;
+  });
+  onSearchSubmitAttempt = () => {
+    const results = this.searchTags(this.state.searchText);
+    if (results.length == 1){
+      this.onSubmitFactory(results[0])();
+    }
+  };
+
   componentDidUpdate(){
     if(this.state.searchEnter){
       this.setState({searchEnter : false});
-      this.handleSubmit();
+      this.onSearchSubmitAttempt();
     }
-  }
-  
-  searchTags(search:string, pool:string[]){
-    return pool.filter(candidate => candidate.slice(0,search.length)==search);
   }
   render () {//NOTE: Don't reuse this for tag-cloud management, the interface requirements per tag are deletion, include, exclude, subtag creation, renaming, ect, and its too complex in general
     let props = this.props;
-    const addCloud: string[] = props.tagCloud.filter(x=>props.tags.indexOf(x)<0);
-    const searchResults = this.searchTags(this.state.searchText, addCloud);
+    const searchResults = this.searchTags(this.state.searchText);
     const emptySearchResult = searchResults.length == 0;
     const noUniqueResult = searchResults.length != 1;
 
@@ -62,25 +73,11 @@ class TagRender extends React.Component<Props,State> {
     const handleSearch = (e) => {
       let newInputRaw = e.target.value;
       let newInput = newInputRaw.replace("\n","");
-      let altEnter = !this.isInvalidDescription(newInput) && newInputRaw.includes('\n');
+      let haveUniqueResult = this.searchTags(newInput).length == 1;
+      let altEnter = haveUniqueResult && newInputRaw.includes('\n');
       //TODO: When I decided on my tag format, filter for input that is obviously invalid.
       this.setState({searchText: newInput, searchEnter: altEnter});
     }
-
-    //TODO: Figure out what to do about dialog structure
-    const onSubmitFactory = (submission: string) => () => props.onChangeTags(currentTags =>{
-      for (var i = 0; i < currentTags.length && submission.localeCompare(currentTags[i]) > 0; i++) {}
-      currentTags.splice(i, 0, submission)
-      return currentTags;
-    })
-
-    const onSearchSubmitAttempt = (search:string, pool:string[]) => {
-      const results = this.searchTags(search, pool);
-      if (results.length == 1){
-        onSubmitFactory(results[0])();
-      }
-    }
-
     return (
       <React.Fragment>
         {this.props.tags.map((data) => 
@@ -106,11 +103,11 @@ class TagRender extends React.Component<Props,State> {
           fullWidth maxWidth='md'>
           <DialogTitle id="form-dialog-title">Select New Tag</DialogTitle>
           <DialogContent>
-            {addCloud.map((data) => 
+            {this.getAddCloud().map((data) => 
               <Chip
                 size="small"
                 label={data}
-                onClick={onSubmitFactory(data)}
+                onClick={this.onSubmitFactory(data)}
                 style={{margin:"4px"}}
               />
             )}
@@ -129,7 +126,7 @@ class TagRender extends React.Component<Props,State> {
             <Button onClick={handleClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={onSearchSubmitAttempt} color="primary" disabled={noUniqueResult}>
+            <Button onClick={this.onSearchSubmitAttempt} color="primary" disabled={noUniqueResult}>
               Add
             </Button>
           </DialogActions>
