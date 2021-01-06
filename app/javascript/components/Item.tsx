@@ -3,7 +3,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import Paper from '@material-ui/core/Paper';
-import TagRender from "./TagRender";
+import TagRender, {updateTags} from "./TagRender";
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
@@ -21,12 +21,18 @@ export interface itemRecordProps extends itemDataProps{
 export interface updateFunc{
   (prev:itemDataProps): itemDataProps
 }
-interface Props extends itemRecordProps {
+interface ListFunctionProps  {
   onUpdate: (id: number, func: updateFunc) => void,
   onMoveUp?: () => void,
   onMoveDown?: () => void,
   onDelete: () => void,
 }
+interface TagCloudProps {
+  tagCloud: string[], //TODO: Move this to tag render probably
+  onToggleSearch: (tag: string) => void,
+}
+interface Props extends itemRecordProps, ListFunctionProps, TagCloudProps{}
+
 interface State {
   editDialogOpen: boolean,
 }
@@ -49,6 +55,8 @@ class Item extends React.Component<Props,State> {
     const toggleCheckbox = () => props.onUpdate(props.id, prev =>
       ({done: !prev.done, task: prev.task, tags: prev.tags})
     );
+    const handleTags = (updater: updateTags) => 
+      props.onUpdate(props.id, prev => ({done: prev.done, task:prev.task, tags: updater(prev.tags)}));
     
     //TODO: Intergrate this into proper css styling
     const paperStyle = {
@@ -86,7 +94,9 @@ class Item extends React.Component<Props,State> {
               onSubmit={handleSubmit} onClose={handleClose}/>
           </div>
           <Divider style={genericDivStyle} orientation="vertical" flexItem />
-          <div style={tagStyle}><TagRender tags={props.tags}/></div>
+          <div style={tagStyle}>
+            <TagRender tags={props.tags} onChangeTags={handleTags} 
+            onToggleSearch={props.onToggleSearch} tagCloud={props.tagCloud}/></div>
           <Divider style={genericDivStyle} orientation="vertical" flexItem />
           <IconButton 
             style={startOfRightButtons} size='small'

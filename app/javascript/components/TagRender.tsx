@@ -9,15 +9,27 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import { Search } from "@material-ui/icons";
 
-interface updateFunction {
+export interface updateTags {
   (tag:string[]): string[]
+}
+
+export function togglerGenerator(toToggle: string){
+  return (searchTags: string[]) => {
+    let index = searchTags.indexOf(toToggle); 
+    if (index > -1){searchTags.splice(index,1);}
+    else {
+      for (var i = 0; i < searchTags.length && toToggle.localeCompare(searchTags[i]) > 0; i++) {}
+      searchTags.splice(i, 0, toToggle)
+    }
+    return searchTags;
+  }
 }
 
 interface Props {
   tags: string[],
-  tagCloud?: string[], //TODO: Strip optional later
-  onToggleSearch?: (tag:string) => void, //TODO: Strip optional later
-  onChangeTags?: (updater: updateFunction) => void, //TODO: Strip optional later
+  tagCloud: string[],
+  onToggleSearch?: (tag:string) => void,
+  onChangeTags: (updater: updateTags) => void,
 };
 
 interface State {
