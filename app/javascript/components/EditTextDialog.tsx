@@ -50,7 +50,7 @@ class EditTextDialog extends React.Component<Props,State> {
 
   render () {
     const handleTextbox = (e) => {
-        let newInputRaw = e.target.value;
+        let newInputRaw:string = e.target.value;
         let newInput = newInputRaw.replace("\n","");
         let altEnter = !this.isInvalidDescription(newInput) && newInputRaw.includes('\n');
         this.setState({editTextField: newInput, textBoxEnter: altEnter});
