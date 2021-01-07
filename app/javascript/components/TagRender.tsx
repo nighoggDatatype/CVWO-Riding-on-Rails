@@ -53,12 +53,13 @@ class TagRender extends React.Component<Props,State> {
   
   onSubmitFactory = (submission: string) => () => this.props.onChangeTags(currentTags =>{
     for (var i = 0; i < currentTags.length && submission.localeCompare(currentTags[i]) > 0; i++) {}
-    currentTags.splice(i, 0, submission)
+    currentTags.splice(i, 0, submission);
+    this.setState({dialogOpen: false, searchText: ""});
     return currentTags;
   });
   onSearchSubmitAttempt = () => {
     const results = this.searchTags(this.state.searchText);
-    if (results.length == 1){
+    if (results.length > 0){
       this.onSubmitFactory(results[0])();
     }
   };
@@ -73,7 +74,6 @@ class TagRender extends React.Component<Props,State> {
     let props = this.props;
     const searchResults = this.searchTags(this.state.searchText);
     const emptySearchResult = searchResults.length == 0;
-    const noUniqueResult = searchResults.length != 1;
 
     const handleClose = () => this.setState({dialogOpen: false, searchText: ""});
     const handleDeleteFactory = (toDelete: string) =>
@@ -82,11 +82,11 @@ class TagRender extends React.Component<Props,State> {
         if (index > -1){currentTags.splice(index,1);}
         return currentTags;
       })};
-    const handleSearch = (e) => {
-      let newInputRaw = e.target.value;
+    const handleSearch = (e: { target: { value: string; }; }) => {
+      let newInputRaw:string = e.target.value;
       let newInput = newInputRaw.replace("\n","");
-      let haveUniqueResult = this.searchTags(newInput).length == 1;
-      let altEnter = haveUniqueResult && newInputRaw.includes('\n');
+      let haveAnyResults = this.searchTags(newInput).length > 0;
+      let altEnter = haveAnyResults && newInputRaw.includes('\n');
       //TODO: When I decided on my tag format, filter for input that is obviously invalid.
       this.setState({searchText: newInput, searchEnter: altEnter});
     }
@@ -115,12 +115,13 @@ class TagRender extends React.Component<Props,State> {
           fullWidth maxWidth='md'>
           <DialogTitle id="form-dialog-title">Select New Tag</DialogTitle>
           <DialogContent>
-            {this.searchTags(this.state.searchText).map((data) => 
+            {this.searchTags(this.state.searchText).map((data,index) => 
               <Chip
                 size="small"
                 label={data}
                 onClick={this.onSubmitFactory(data)}
                 style={{margin:"4px"}}
+                variant={ index==0 ? 'default' : 'outlined'}
               />
             )}
           <TextField
@@ -128,6 +129,8 @@ class TagRender extends React.Component<Props,State> {
             id="search-tag-field"
             label="Search"
             fullWidth
+            multiline
+            rowsMax='1'
             value={this.state.searchText}
             onChange={handleSearch}
             error={emptySearchResult}
@@ -138,7 +141,7 @@ class TagRender extends React.Component<Props,State> {
             <Button onClick={handleClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.onSearchSubmitAttempt} color="primary" disabled={noUniqueResult}>
+            <Button onClick={this.onSearchSubmitAttempt} color="primary" disabled={emptySearchResult}>
               Add
             </Button>
           </DialogActions>
