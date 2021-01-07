@@ -129,6 +129,7 @@ class TagRender extends React.Component<Props,State> {
             id="search-tag-field"
             label="Search"
             fullWidth
+            autoFocus
             multiline
             rowsMax='1'
             value={this.state.searchText}
