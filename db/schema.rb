@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_08_161036) do
+ActiveRecord::Schema.define(version: 2021_01_08_171637) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,7 +37,9 @@ ActiveRecord::Schema.define(version: 2021_01_08_161036) do
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["user_id", "name"], name: "index_tags_on_user_id_and_name", unique: true
+    t.bigint "tags_id"
+    t.index ["tags_id", "name"], name: "index_tags_on_tags_id_and_name", unique: true
+    t.index ["tags_id"], name: "index_tags_on_tags_id"
     t.index ["user_id"], name: "index_tags_on_user_id"
   end
 
@@ -47,5 +49,6 @@ ActiveRecord::Schema.define(version: 2021_01_08_161036) do
   end
 
   add_foreign_key "items", "users"
+  add_foreign_key "tags", "tags", column: "tags_id"
   add_foreign_key "tags", "users"
 end
