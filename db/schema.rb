@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_07_131026) do
+ActiveRecord::Schema.define(version: 2021_01_08_161036) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,6 +20,16 @@ ActiveRecord::Schema.define(version: 2021_01_07_131026) do
     t.text "task"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
+    t.integer "list_order"
+    t.index ["user_id", "list_order"], name: "index_items_on_user_id_and_list_order", unique: true
+    t.index ["user_id"], name: "index_items_on_user_id"
+  end
+
+  create_table "items_tags", id: false, force: :cascade do |t|
+    t.bigint "item_id", null: false
+    t.bigint "tag_id", null: false
+    t.index ["tag_id", "item_id"], name: "index_items_tags_on_tag_id_and_item_id", unique: true
   end
 
   create_table "tags", force: :cascade do |t|
@@ -36,5 +46,6 @@ ActiveRecord::Schema.define(version: 2021_01_07_131026) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "items", "users"
   add_foreign_key "tags", "users"
 end
