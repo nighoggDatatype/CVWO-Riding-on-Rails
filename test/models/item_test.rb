@@ -39,7 +39,7 @@ class ItemTest < ActiveSupport::TestCase
     item = Item.new
     item.user_id = user_id
     item.done = false
-    item.list_order = 0 #Go around auto assignment to force testing of item validation
+    item.valid? #Perform generation of list_order
     #Test nil task is bad
     assert_raise(Exception) {item.save(validate: false)} #Database validation
     assert_not item.save, "Model validation failed" #Model validation
@@ -53,7 +53,8 @@ class ItemTest < ActiveSupport::TestCase
     item.user_id = nil
     assert_raise(Exception) {item.save(validate: false)} #Database validation
     assert_not item.save, "Model validation failed" #Model validation
-
-    flunk "Need to do auto assign first"
+    #Test that assignment works
+    item.user_id = user_id
+    assert item.save
   end
 end
