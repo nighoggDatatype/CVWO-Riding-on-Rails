@@ -11,11 +11,11 @@ class Tag < ApplicationRecord
   #TODO: Test the two functions below soon
   def parent_tag_is_one_level_lower
     if parent_tag.present? && tag_level - parent_tag.tag_level != 1
-      errors.add(:tag_level, "is not one level higher than parent tag")
+      errors.add(:tag_level, " is not one level higher than parent tag")
   
   def parent_tag_from_same_user
     if parent_tag.present? && user_id != parent_tag.user_id
-      errors.add
+      errors.add(:user_id, " is not the same as the parent tag")
   #TODO: Add constraint on parent_tags being from the same user and that infinite loops don't occur.
   #      The functions, once added properly, should be sufficent to guarantee correctness 
   
