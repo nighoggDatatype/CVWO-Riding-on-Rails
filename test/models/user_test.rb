@@ -7,6 +7,13 @@ class UserTest < ActiveSupport::TestCase #TODO: Run the test cases
   end
 
   test "unique username" do
-    assert false
+    userA = User.new
+    userA.username = "A"
+    userA.save
+    userB = User.new
+    userB.username = "A"
+    assert_not userB.save
+    userB.username = "B"
+    assert userB.save
   end
 end
