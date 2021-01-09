@@ -33,6 +33,16 @@ class ItemTest < ActiveSupport::TestCase
     assert_equal 3, item.list_order, "Auto Increment Occurring anyways"
     assert item.save #Database validation
 
+    #Testing whether assignment is indepedent between users
+    user_id = users('two').id
+    item = Item.new
+    item.user_id = user_id
+    item.done = false
+    item.task = "Example Task"
+    assert item.valid? #Model validation
+    assert_equal 0, item.list_order, "Default Assignment for Second user Not Working"
+    assert item.save #Database validation
+
   end
   test "Items cannot have null fields" do
     user_id = users('one').id
@@ -40,21 +50,29 @@ class ItemTest < ActiveSupport::TestCase
     item.user_id = user_id
     item.done = false
     item.valid? #Perform generation of list_order
+
     #Test nil task is bad
     assert_raise(Exception) {item.save(validate: false)} #Database validation
     assert_not item.save, "Model validation failed" #Model validation
+
     #Test nil done is bad
     item.task = "Example Task"
     item.done = nil
     assert_raise(Exception) {item.save(validate: false)} #Database validation
     assert_not item.save, "Model validation failed" #Model validation
+
     #Test nil user_id is bad
     item.done = true
     item.user_id = nil
     assert_raise(Exception) {item.save(validate: false)} #Database validation
     assert_not item.save, "Model validation failed" #Model validation
+
     #Test that assignment works
     item.user_id = user_id
     assert item.save
+  end
+
+  test "List order cannot clash per user" do
+    flunk "TBA"
   end
 end
