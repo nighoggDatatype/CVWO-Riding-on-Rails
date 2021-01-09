@@ -8,6 +8,7 @@ class Item < ApplicationRecord
   before_validation :assign_list_order, on: :create
   #TODO: Add clean up function to trigger when there are alot of gaps,
   #      say max_order_num/row_count >= 1.5 for any user after create
+  #      Also, see about making negative numbers invalid 
   private
     def assign_list_order
       if list_order == nil
