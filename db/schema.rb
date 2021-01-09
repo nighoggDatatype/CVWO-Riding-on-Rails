@@ -10,18 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_09_155143) do
+ActiveRecord::Schema.define(version: 2021_01_09_174151) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "items", force: :cascade do |t|
-    t.boolean "done"
-    t.text "task"
+    t.boolean "done", null: false
+    t.text "task", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
-    t.integer "list_order"
+    t.integer "list_order", null: false
     t.index ["user_id", "list_order"], name: "index_items_on_user_id_and_list_order", unique: true
     t.index ["user_id"], name: "index_items_on_user_id"
   end
