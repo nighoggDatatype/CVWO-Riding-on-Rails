@@ -4,5 +4,7 @@ class Item_Tag < ApplicationRecord
 
   def item_and_tag_have_same_user
     if item.user_id != tag.user_id
-        errors.add()#TODO: Add correct error
+      errors.add()#TODO: Add correct error
+    end
+  end
 end

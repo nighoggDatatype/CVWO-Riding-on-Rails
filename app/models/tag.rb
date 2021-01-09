@@ -22,11 +22,5 @@ class Tag < ApplicationRecord
   end
   #TODO: Add constraint on parent_tags being from the same user and that infinite loops don't occur.
   #      The functions, once added properly, should be sufficent to guarantee correctness 
-  
-  #      Also, while I'm at it, for the Item-Tag model, which we need to add, we need to verify that they come
-  #      from the same user. 
-  #      Also, despite first impressions, I should not allow Item-Tag trees to reflect the fact that parent tags
-  #      technically belong to whatever their child tags are on, the Item-Tag reflects what the user added, not
-  #      what tag search an item should show up on. The latter behavour should be client side.
 end
 
