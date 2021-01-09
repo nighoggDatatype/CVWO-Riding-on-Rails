@@ -1,9 +1,12 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  done: false
-  task: MyText
-
-two:
-  done: false
-  task: MyText
+# TODO: Uncomment this and have it work later
+# one:
+#   done: false
+#   task: MyText
+#   user: one
+# 
+# two:
+#   done: false
+#   task: MyText
+#   user: two
