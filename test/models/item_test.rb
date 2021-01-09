@@ -78,15 +78,15 @@ class ItemTest < ActiveSupport::TestCase
     item.user_id = user_id
     item.done = false
     item.task = "Example Thing"
-    item.order_id = 0
+    item.list_order = 0
     assert_raise(Exception) {item.save(validate: false)} #Database validation
     assert_not item.save, "Model validation failed" #Model validation
-    item.order_id = 1
+    item.list_order = 1
     assert_raise(Exception) {item.save(validate: false)} #Database validation
     assert_not item.save, "Model validation failed" #Model validation
 
     #Test it works normally
-    item.order_id = 2
+    item.list_order = 2
     assert item.save
   end
 end
