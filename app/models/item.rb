@@ -1,10 +1,12 @@
 class Item < ApplicationRecord
   belongs_to :user
-  validates :done, :task, :list_order, presence: true
+  validates :task, :list_order, presence: true
+  validates :done, inclusion: [true, false]
+  validates :done, exclusion: [nil] 
   before_validation :assign_list_order, on: :create
   private
     def assign_list_order
-      if list_order != nil
+      if list_order == nil
         user_list = Item.where(user_id: user_id)
         if user_list.count() > 0
             self.list_order = user_list.maximum(:list_order) + 1

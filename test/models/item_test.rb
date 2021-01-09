@@ -9,10 +9,9 @@ class ItemTest < ActiveSupport::TestCase
     item.done = false
     item.task = "Example Task"
     assert_raise(Exception) {item.save(validate: false)} #Database validation
-    #assert item.valid? #Model validation
-    #assert_equal 0, item.list_order, "Default Assignment Not Working"
-    assert !item.done
-    assert item.save! #Database validation
+    assert item.valid? #Model validation
+    assert_equal 0, item.list_order, "Default Assignment Not Working"
+    assert item.save #Database validation
 
     #New item, testing Auto Increment
     item = Item.new
