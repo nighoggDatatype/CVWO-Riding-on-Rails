@@ -4,3 +4,5 @@ one:
   username: "Test User 1"
 two: 
   username: "Test User 2"
+three: 
+  username: "Test User 3"
