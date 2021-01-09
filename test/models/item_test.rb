@@ -72,7 +72,21 @@ class ItemTest < ActiveSupport::TestCase
     assert item.save
   end
 
-  test "List order cannot clash per user" do
-    flunk "TBA"
+  test "List order is unique per user" do
+    user_id = users('three').id
+    item = Item.new
+    item.user_id = user_id
+    item.done = false
+    item.task = "Example Thing"
+    item.order_id = 0
+    assert_raise(Exception) {item.save(validate: false)} #Database validation
+    assert_not item.save, "Model validation failed" #Model validation
+    item.order_id = 1
+    assert_raise(Exception) {item.save(validate: false)} #Database validation
+    assert_not item.save, "Model validation failed" #Model validation
+
+    #Test it works normally
+    item.order_id = 2
+    assert item.save
   end
 end

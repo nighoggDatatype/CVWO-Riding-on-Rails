@@ -1,6 +1,5 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-# TODO: Uncomment this and have it work later
 one:
   done: false
   task: MyText
