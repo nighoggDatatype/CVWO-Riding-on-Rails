@@ -3,6 +3,8 @@ class Item < ApplicationRecord
   validates :task, :list_order, presence: true
   validates :done, inclusion: [true, false]
   validates :done, exclusion: [nil] 
+  validates :list_order, uniqueness: { scope: :user_id,
+    message: "should be a unique list order id for any particular user" }
   before_validation :assign_list_order, on: :create
   private
     def assign_list_order
