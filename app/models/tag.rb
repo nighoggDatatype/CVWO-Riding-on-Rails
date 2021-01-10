@@ -4,6 +4,8 @@ class Tag < ApplicationRecord
   belongs_to :parent_tag, :class_name => "Tag" #TODO: make sure this works
   has_many  :child_tags, :class_name => "Tag", dependent: :destroy #For cascade
   validates_associated :parent_tag
+  validates :name, uniqueness: { scope: [:tags_id, :user_id],
+    message: "Cannot have collision in the same namespace" }
 
   #TODO: Test this one below to see if it works or breaks. Also, see about checking this on the schema level as well
   validates :tag_level, inclusion: {in: [0], message: "Tag level %{value} is not for a base tag"},
