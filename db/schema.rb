@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_09_174151) do
+ActiveRecord::Schema.define(version: 2021_01_10_083742) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,11 +34,11 @@ ActiveRecord::Schema.define(version: 2021_01_09_174151) do
 
   create_table "tags", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.string "name"
+    t.string "name", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "tags_id"
-    t.integer "tag_level"
+    t.integer "tag_level", null: false
     t.index ["tags_id", "name"], name: "index_tags_on_tags_id_and_name", unique: true
     t.index ["tags_id"], name: "index_tags_on_tags_id"
     t.index ["user_id"], name: "index_tags_on_user_id"

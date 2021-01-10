@@ -1,5 +1,6 @@
 class Tag < ApplicationRecord
   belongs_to :user
+  validates :name, :tag_level, presence: true
   belongs_to :parent_tag, :class_name => "Tag" #TODO: make sure this works
   has_many  :child_tags, :class_name => "Tag", dependent: :destroy #For cascade
   validates_associated :parent_tag
