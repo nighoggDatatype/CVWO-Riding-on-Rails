@@ -1,9 +1,9 @@
 class Tag < ApplicationRecord
   belongs_to :user
   validates :name, :tag_level, presence: true
-  belongs_to :parent_tag, :class_name => "Tag" #TODO: make sure this works
-  has_many  :child_tags, :class_name => "Tag", dependent: :destroy #For cascade
-  validates_associated :parent_tag
+  belongs_to :parent_tag, :optional => true, :class_name => "Tag" #TODO: Double check everything to see what needs :optional
+  has_many  :child_tags, :class_name => "Tag", dependent: :destroy #For cascade, TODO: make sure this works
+  validates_associated :parent_tag, unless: -> {parent_tag.blank?}
   validates :name, uniqueness: { scope: [:tags_id, :user_id],
     message: "Cannot have collision in the same namespace" }
 
@@ -26,6 +26,8 @@ class Tag < ApplicationRecord
   #TODO: Add constraint on parent_tags being from the same user and that infinite loops don't occur.
   #      The functions, once added properly, should be sufficent to guarantee correctness 
   #TODO: Also add constraint on tag_level >= 0, both here and in schema
+
+  before_validation :assign_tag_level, on: :create 
   private
   def assign_tag_level
     if tag_level == nil
