@@ -72,6 +72,10 @@ class ItemTest < ActiveSupport::TestCase
     assert item.save
   end
 
+  test "All and Only good task text is accepted" do
+    flunk "TBC"
+  end
+
   test "List order is unique per user" do
     user_id = users('three').id
     item = Item.new

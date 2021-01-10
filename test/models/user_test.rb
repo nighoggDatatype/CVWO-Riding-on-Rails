@@ -7,7 +7,7 @@ class UserTest < ActiveSupport::TestCase
     assert_not user.save, "Saved a user without generating a username" #Testing validation
   end
 
-  test "unique username" do
+  test "unique username" do 
     userA = User.new
     userA.username = "A"
     userA.save
@@ -17,5 +17,8 @@ class UserTest < ActiveSupport::TestCase
     assert_not userB.save, "Saved a user without a unique username" #Testing validation
     userB.username = "B"
     assert userB.save, "Unable to save a user that has a unique username"
+  end
+  test "Good username" do
+    flunk "Not yet done testing"
   end
 end
