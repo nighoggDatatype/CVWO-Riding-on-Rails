@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class UserTest < ActiveSupport::TestCase #TODO: Run the test cases
+class UserTest < ActiveSupport::TestCase
   test "must have username" do
     user = User.new
     assert_raise(Exception) {user.save(validate: false)} #Testing Database constraints
