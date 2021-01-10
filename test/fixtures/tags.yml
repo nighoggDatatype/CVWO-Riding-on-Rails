@@ -1,12 +1,18 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-# TODO: Fix errors one at a time
-# one:
-#   user: one
-#   name: MyString
-#   tag_level: 0
-# 
-# two:
-#   user: two
-#   name: MyString
-#   tag_level: 0
+one:
+  user: three
+  name: "Dab Time" #TODO: Check whether the quotes come along or not
+  tag_level: 0
+
+two:
+  user: three
+  name: Latin
+  tag_level: 0
+
+three:
+  user: three
+  name: Cringe
+  tag_level: 0
+  tag_id: one
+  

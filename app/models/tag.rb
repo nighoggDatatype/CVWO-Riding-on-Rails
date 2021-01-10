@@ -25,5 +25,16 @@ class Tag < ApplicationRecord
   end
   #TODO: Add constraint on parent_tags being from the same user and that infinite loops don't occur.
   #      The functions, once added properly, should be sufficent to guarantee correctness 
+  #TODO: Also add constraint on tag_level >= 0, both here and in schema
+  private
+  def assign_tag_level
+    if tag_level == nil
+      if parent_tag == nil
+          self.tag_level = 0
+      else
+          self.tag_level = 1 + parent_tag.tag_level
+      end
+    end
+  end
 end
 
