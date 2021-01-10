@@ -11,7 +11,7 @@ class ItemTest < ActiveSupport::TestCase
     assert_raise(Exception) {item.save(validate: false)} #Database validation
     assert item.valid? #Model validation
     assert_equal 0, item.list_order, "Default Assignment Not Working"
-    assert item.save #Database validation
+    assert item.save! #Database validation
 
     #New item, testing Auto Increment
     item = Item.new
@@ -20,7 +20,7 @@ class ItemTest < ActiveSupport::TestCase
     item.task = "Example Thing"
     assert item.valid? #Model validation
     assert_equal 1, item.list_order, "Auto Increment Not Working"
-    assert item.save #Database validation
+    assert item.save! #Database validation
 
     #Testing overriding auto assignment
     item = Item.new
@@ -31,7 +31,7 @@ class ItemTest < ActiveSupport::TestCase
     assert item.valid? #Model validation
     assert_equal 0, Item.where(user_id: user_id).where(list_order: 2).count, "Test setup invalid"
     assert_equal 3, item.list_order, "Auto Increment Occurring anyways"
-    assert item.save #Database validation
+    assert item.save! #Database validation
 
     #Testing whether assignment is indepedent between users
     user_id = users('two').id
@@ -41,7 +41,7 @@ class ItemTest < ActiveSupport::TestCase
     item.task = "Example Task"
     assert item.valid? #Model validation
     assert_equal 0, item.list_order, "Default Assignment for Second user Not Working"
-    assert item.save #Database validation
+    assert item.save! #Database validation
 
   end
   test "Items cannot have null fields" do
@@ -69,7 +69,7 @@ class ItemTest < ActiveSupport::TestCase
 
     #Test that assignment works
     item.user_id = user_id
-    assert item.save
+    assert item.save!
   end
 
   test "All and Only good task text is accepted" do
@@ -91,6 +91,6 @@ class ItemTest < ActiveSupport::TestCase
 
     #Test it works normally
     item.list_order = 2
-    assert item.save
+    assert item.save!
   end
 end

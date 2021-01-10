@@ -27,7 +27,7 @@ class TagTest < ActiveSupport::TestCase
 
     #Test that assignment works
     tag.name = "Dab Dab Dab"
-    assert tag.save! #TODO: Decide whether to use save or save!, see what exactly is the difference between them
+    assert tag.save!
     flunk "Not finished converting from item to tag"
     flunk "Waiting for Tag Level testing"
   end

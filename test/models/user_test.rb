@@ -16,7 +16,7 @@ class UserTest < ActiveSupport::TestCase
     assert_raise(Exception) {userB.save(validate: false)} #Testing Database constraints
     assert_not userB.save, "Saved a user without a unique username" #Testing validation
     userB.username = "B"
-    assert userB.save, "Unable to save a user that has a unique username"
+    assert userB.save!, "Unable to save a user that has a unique username"
   end
   test "Good username" do
     flunk "Not yet done testing"
