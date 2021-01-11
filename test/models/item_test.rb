@@ -9,7 +9,7 @@ class ItemTest < ActiveSupport::TestCase
     item.done = false
     item.task = "Example Task"
     assert_raise(Exception) {item.save(validate: false)} #Database validation
-    assert item.valid? #Model validation
+    item.valid? #Run before_validation scripts
     assert_equal 0, item.list_order, "Default Assignment Not Working"
     assert item.save! #Database validation
 
@@ -18,7 +18,7 @@ class ItemTest < ActiveSupport::TestCase
     item.user = user
     item.done = false
     item.task = "Example Thing"
-    assert item.valid? #Model validation
+    item.valid? #Run before_validation scripts
     assert_equal 1, item.list_order, "Auto Increment Not Working"
     assert item.save! #Database validation
 
@@ -28,7 +28,7 @@ class ItemTest < ActiveSupport::TestCase
     item.done = false
     item.task = "Example Thing"
     item.list_order = 3
-    assert item.valid? #Model validation
+    item.valid? #Run before_validation scripts
     assert_equal 0, Item.where(user_id: user.id).where(list_order: 2).count, "Test setup invalid"
     assert_equal 3, item.list_order, "Auto Increment Occurring anyways"
     assert item.save! #Database validation
@@ -39,7 +39,7 @@ class ItemTest < ActiveSupport::TestCase
     item.user = user
     item.done = false
     item.task = "Example Task"
-    assert item.valid? #Model validation
+    item.valid? #Run before_validation scripts
     assert_equal 0, item.list_order, "Default Assignment for Second user Not Working"
     assert item.save! #Database validation
 

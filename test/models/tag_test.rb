@@ -42,7 +42,7 @@ class TagTest < ActiveSupport::TestCase
     tag.name = "PlaceHolder"
     tag.parent_tag = created_tag
     assert_raise(Exception) {item.save(validate: false)} #Database validation
-    assert tag.valid?
+    tag.valid? #Not checking here, tag.save! will provide better error logging
     assert_equal 1, tag.tag_level, "Assignment from created base doesn't work"
     assert tag.save!, "Saving Doesn't work fron level one"
   end
