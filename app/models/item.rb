@@ -11,7 +11,7 @@ class Item < ApplicationRecord
   #      Also, see about making negative numbers invalid 
   private
     def assign_list_order
-      if list_order == nil
+      if list_order.blank?
         user_list = Item.where(user_id: user_id)
         if user_list.count() > 0
             self.list_order = user_list.maximum(:list_order) + 1
