@@ -11,10 +11,10 @@ class TagTest < ActiveSupport::TestCase
     tag.user = user
     tag.name = "PlaceHolder"
     assert_raise(Exception) {item.save(validate: false)} #Database validation
-    tag.valid? #Not checking here, tag.save! will provide better error logging #TODO: Propoagite this to the other test code
+    tag.valid? #Not checking here, tag.save! will provide better error logging
     assert_equal 0, tag.tag_level, "Base assignment doesn't work"
     assert tag.save!, "Saving Doesn't work for base case"
-    created_tag = tag #TODO: Do this pattern of directly providing foreign objects for all test code
+    created_tag = tag
 
     #Testing 1 to 2
     tag = Tag.new
