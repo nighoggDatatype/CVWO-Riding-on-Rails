@@ -2,13 +2,13 @@ require 'test_helper'
 
 class TagTest < ActiveSupport::TestCase
   test "Test Generation of Tag Levels" do
-    user_id = users('three').id
+    user = users('three')
     tag_base = tags('one')
     tag_level_one = tags('three')
 
     #Testing Base Case
     tag = Tag.new
-    tag.user_id = user_id
+    tag.user = user
     tag.name = "PlaceHolder"
     assert_raise(Exception) {item.save(validate: false)} #Database validation
     tag.valid? #Not checking here, tag.save! will provide better error logging #TODO: Propoagite this to the other test code
@@ -18,7 +18,7 @@ class TagTest < ActiveSupport::TestCase
 
     #Testing 1 to 2
     tag = Tag.new
-    tag.user_id = user_id
+    tag.user = user
     tag.name = "PlaceHolder"
     tag.parent_tag = tag_level_one
     assert_raise(Exception) {item.save(validate: false)} #Database validation
@@ -28,7 +28,7 @@ class TagTest < ActiveSupport::TestCase
 
     #Testing from base
     tag = Tag.new
-    tag.user_id = user_id
+    tag.user = user
     tag.name = "PlaceHolder"
     tag.parent_tag = tag_base
     assert_raise(Exception) {item.save(validate: false)} #Database validation
@@ -38,7 +38,7 @@ class TagTest < ActiveSupport::TestCase
 
     #Testing from created tag
     tag = Tag.new
-    tag.user_id = user_id
+    tag.user = user
     tag.name = "PlaceHolder"
     tag.parent_tag = created_tag
     assert_raise(Exception) {item.save(validate: false)} #Database validation
@@ -48,7 +48,7 @@ class TagTest < ActiveSupport::TestCase
   end
 
   test "Tags cannot have Null User or Name" do
-    user_id = users('one').id
+    user = users('one')
     tag = Tag.new
     tag.tag_level = 0 #TODO: Remove this at a later date
     tag.valid? #OLD: Perform generation of list_order. TODO: Maybe see about doing the same with level
@@ -62,8 +62,8 @@ class TagTest < ActiveSupport::TestCase
     assert_raise(Exception) {tag.save(validate: false)} #Database validation
     assert_not tag.save, "Model validation failed" #Model validation
 
-    #Test nil user_id is bad
-    tag.user_id = user_id
+    #Test nil user is bad
+    tag.user = user
     tag.name = nil
     assert_raise(Exception) {tag.save(validate: false)} #Database validation
     assert_not tag.save, "Model validation failed" #Model validation

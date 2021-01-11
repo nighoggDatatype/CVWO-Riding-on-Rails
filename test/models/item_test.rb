@@ -2,10 +2,10 @@ require 'test_helper'
 
 class ItemTest < ActiveSupport::TestCase
   test "Items correctly auto assign" do 
-    user_id = users('one').id
+    user = users('one')
     #Testing Default Assignment
     item = Item.new
-    item.user_id = user_id
+    item.user = user
     item.done = false
     item.task = "Example Task"
     assert_raise(Exception) {item.save(validate: false)} #Database validation
@@ -15,7 +15,7 @@ class ItemTest < ActiveSupport::TestCase
 
     #New item, testing Auto Increment
     item = Item.new
-    item.user_id = user_id
+    item.user = user
     item.done = false
     item.task = "Example Thing"
     assert item.valid? #Model validation
@@ -24,19 +24,19 @@ class ItemTest < ActiveSupport::TestCase
 
     #Testing overriding auto assignment
     item = Item.new
-    item.user_id = user_id
+    item.user = user
     item.done = false
     item.task = "Example Thing"
     item.list_order = 3
     assert item.valid? #Model validation
-    assert_equal 0, Item.where(user_id: user_id).where(list_order: 2).count, "Test setup invalid"
+    assert_equal 0, Item.where(user_id: user.id).where(list_order: 2).count, "Test setup invalid"
     assert_equal 3, item.list_order, "Auto Increment Occurring anyways"
     assert item.save! #Database validation
 
     #Testing whether assignment is indepedent between users
-    user_id = users('two').id
+    user = users('two')
     item = Item.new
-    item.user_id = user_id
+    item.user = user
     item.done = false
     item.task = "Example Task"
     assert item.valid? #Model validation
@@ -45,9 +45,9 @@ class ItemTest < ActiveSupport::TestCase
 
   end
   test "Items cannot have null fields" do
-    user_id = users('one').id
+    user = users('one')
     item = Item.new
-    item.user_id = user_id
+    item.user = user
     item.done = false
     item.valid? #Perform generation of list_order
 
@@ -61,14 +61,14 @@ class ItemTest < ActiveSupport::TestCase
     assert_raise(Exception) {item.save(validate: false)} #Database validation
     assert_not item.save, "Model validation failed" #Model validation
 
-    #Test nil user_id is bad
+    #Test nil user is bad
     item.done = true
-    item.user_id = nil
+    item.user = nil
     assert_raise(Exception) {item.save(validate: false)} #Database validation
     assert_not item.save, "Model validation failed" #Model validation
 
     #Test that assignment works
-    item.user_id = user_id
+    item.user = user
     assert item.save!
   end
 
@@ -77,9 +77,9 @@ class ItemTest < ActiveSupport::TestCase
   end
 
   test "List order is unique per user" do
-    user_id = users('three').id
+    user = users('three')
     item = Item.new
-    item.user_id = user_id
+    item.user = user
     item.done = false
     item.task = "Example Thing"
     item.list_order = 0
