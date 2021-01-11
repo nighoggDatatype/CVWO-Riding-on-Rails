@@ -8,11 +8,11 @@ class Tag < ApplicationRecord
   validates :name, uniqueness: { scope: [:tags_id, :user_id],
     message: "Cannot have collision in the same namespace" }
 
-  #TODO: Test this one below to see if it works or breaks. Also, see about checking this on the schema level as well
-  validates :tag_level, inclusion: {in: [0], message: "Tag level %{value} is not for a base tag"},
+  #General tag_level restriction #TODO: Test All below
+  validates :tag_level, numericality: {equal_to: 0},
       if: -> { parent_tag.blank? }
-
-  #TODO: Test the two functions below soon
+  validates :tag_level, numericality: {greater_than_or_equal_to: 0} 
+  validate :parent_tag_is_one_level_lower, :parent_tag_from_same_user
   def parent_tag_is_one_level_lower
     if parent_tag.present? && tag_level - parent_tag.tag_level != 1
       errors.add(:tag_level, "Parent tag must be exactly one level lower")
@@ -24,9 +24,6 @@ class Tag < ApplicationRecord
       errors.add(:user_id, "parent tag does not have matching user")
     end
   end
-  #TODO: Add constraint on parent_tags being from the same user and that infinite loops don't occur.
-  #      The functions, once added properly, should be sufficent to guarantee correctness 
-  #TODO: Also add constraint on tag_level >= 0, both here and in schema
 
   before_validation :assign_tag_level, on: :create 
   private

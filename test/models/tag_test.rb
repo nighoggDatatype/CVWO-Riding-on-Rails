@@ -75,6 +75,38 @@ class TagTest < ActiveSupport::TestCase
     #Test that assignment works
     assert tag.save!
   end
+
+  test "Test parent tag tag_level and user restrictions" do
+    tag = Tag.new
+    #Test base tag must have level 0
+    tag.user = users('one')
+    tag.name = "Dab Dab Dab"
+    tag.tag_level = 2
+    assert_not tag.save
+
+    #Test parent tag must have same parent
+    parent = tags('three')
+    tag.parent_tag = parent
+    assert_not tag.save
+
+    #Test tag_level must be non-negative
+    #NOTE: Cannot test, either recursive validation, or base tag != 0 will mask this.
+
+    #Test tag_level must be exactly one greater than parent
+    tag.user = users('three')
+    tag.parent_tag = parent
+    tag.tag_level = 3
+    assert_not tag.save
+    tag.tag_level = 1
+    assert_not tag.save
+    tag.tag_level = 0
+    assert_not tag.save
+
+    #Test valid case
+    tag.tag_level = 2
+    assert tag.save
+  end
+ 
   test "Acceptable Tag Names" do
     flunk "Still need to decide on good character sets and preprocessing"
   end
