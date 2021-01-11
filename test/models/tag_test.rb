@@ -47,11 +47,10 @@ class TagTest < ActiveSupport::TestCase
     assert tag.save!, "Saving Doesn't work fron level one"
   end
 
-  test "Tags cannot have Null User or Name" do
+  test "Tags cannot have Null User, Name, or Level" do
     user = users('one')
     tag = Tag.new
-    tag.tag_level = 0 #TODO: Remove this at a later date
-    tag.valid? #OLD: Perform generation of list_order. TODO: Maybe see about doing the same with level
+    tag.valid?
 
     #Test nil name and user is bad
     assert_raise(Exception) {tag.save(validate: false)} #Database validation
@@ -62,19 +61,21 @@ class TagTest < ActiveSupport::TestCase
     assert_raise(Exception) {tag.save(validate: false)} #Database validation
     assert_not tag.save, "Model validation failed" #Model validation
 
-    #Test nil user is bad
+    #Test nil name is bad
     tag.user = user
     tag.name = nil
     assert_raise(Exception) {tag.save(validate: false)} #Database validation
     assert_not tag.save, "Model validation failed" #Model validation
 
-    #Test that assignment works
+    #Test nil tag level works
     tag.name = "Dab Dab Dab"
+    tag.tag_level = nil
+    assert_raise(Exception) {tag.save(validate: false)} #Database validation
+
+    #Test that assignment works
     assert tag.save!
-    flunk "Not finished converting from item to tag"
-    flunk "Waiting for Tag Level testing"
   end
-  test "Acceptable Usernames" do
+  test "Acceptable Tag Names" do
     flunk "Still need to decide on good character sets and preprocessing"
   end
 end
