@@ -7,6 +7,9 @@ class Tag < ApplicationRecord
   validates_associated :parent_tag, unless: -> {parent_tag.blank?}
   validates :name, uniqueness: { scope: [:tags_id, :user_id],
     message: "Cannot have collision in the same namespace" }
+  
+  #TODO: Test below, check whether this will have weird interactions with the item relationship upon del(user)
+  has_many :item_tag, dependent: :destroy 
 
   #General tag_level restriction #TODO: Test All below
   validates :tag_level, numericality: {equal_to: 0},
