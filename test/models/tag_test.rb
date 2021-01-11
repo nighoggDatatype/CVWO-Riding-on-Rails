@@ -3,26 +3,26 @@ require 'test_helper'
 class TagTest < ActiveSupport::TestCase
   test "Test Generation of Tag Levels" do
     user_id = users('three').id
-    tag_base_id = tags('one').id
-    tag_level_one_id = tags('three').id
+    tag_base = tags('one')
+    tag_level_one = tags('three')
 
     #Testing Base Case
     tag = Tag.new
     tag.user_id = user_id
     tag.name = "PlaceHolder"
     assert_raise(Exception) {item.save(validate: false)} #Database validation
-    assert tag.valid?
+    tag.valid? #Not checking here, tag.save! will provide better error logging #TODO: Propoagite this to the other test code
     assert_equal 0, tag.tag_level, "Base assignment doesn't work"
     assert tag.save!, "Saving Doesn't work for base case"
-    tag_created_id = tag.id
+    created_tag = tag #TODO: Do this pattern of directly providing foreign objects for all test code
 
     #Testing 1 to 2
     tag = Tag.new
     tag.user_id = user_id
     tag.name = "PlaceHolder"
-    tag.tags_id = tag_level_one_id
+    tag.parent_tag = tag_level_one
     assert_raise(Exception) {item.save(validate: false)} #Database validation
-    assert tag.valid?
+    tag.valid? #Not checking here, tag.save! will provide better error logging
     assert_equal 2, tag.tag_level, "Assignment from one doesn't work"
     assert tag.save!, "Saving Doesn't work fron level one"
 
@@ -30,9 +30,9 @@ class TagTest < ActiveSupport::TestCase
     tag = Tag.new
     tag.user_id = user_id
     tag.name = "PlaceHolder"
-    tag.tags_id = tag_base_id
+    tag.parent_tag = tag_base
     assert_raise(Exception) {item.save(validate: false)} #Database validation
-    assert tag.valid?
+    tag.valid? #Not checking here, tag.save! will provide better error logging
     assert_equal 1, tag.tag_level, "Assignment from base doesn't work"
     assert tag.save!, "Saving Doesn't work fron level one"
 
@@ -40,12 +40,13 @@ class TagTest < ActiveSupport::TestCase
     tag = Tag.new
     tag.user_id = user_id
     tag.name = "PlaceHolder"
-    tag.tags_id = tag_created_id
+    tag.parent_tag = created_tag
     assert_raise(Exception) {item.save(validate: false)} #Database validation
     assert tag.valid?
     assert_equal 1, tag.tag_level, "Assignment from created base doesn't work"
     assert tag.save!, "Saving Doesn't work fron level one"
   end
+
   test "Tags cannot have Null User or Name" do
     user_id = users('one').id
     tag = Tag.new

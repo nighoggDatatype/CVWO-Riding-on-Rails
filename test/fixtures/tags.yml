@@ -1,6 +1,7 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
+  id: 1 #Forced fix, cause we can't seem to auto assign id's properly
   user: three
   name: "Dab Time" #TODO: Check whether the quotes come along or not
   tag_level: 0
@@ -14,5 +15,5 @@ three:
   user: three
   name: Cringe
   tag_level: 1
-  tags_id: one
+  tags_id: 1
   

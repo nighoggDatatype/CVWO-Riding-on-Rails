@@ -1,7 +1,8 @@
 class Tag < ApplicationRecord
   belongs_to :user
   validates :name, :tag_level, presence: true
-  belongs_to :parent_tag, :optional => true, :class_name => "Tag" #TODO: Double check everything to see what needs :optional
+  belongs_to :parent_tag, :optional => true, #TODO: Double check everything to see what needs :optional
+    :class_name => "Tag", foreign_key: "tags_id"
   has_many  :child_tags, :class_name => "Tag", dependent: :destroy #For cascade, TODO: make sure this works
   validates_associated :parent_tag, unless: -> {parent_tag.blank?}
   validates :name, uniqueness: { scope: [:tags_id, :user_id],
@@ -9,7 +10,7 @@ class Tag < ApplicationRecord
 
   #TODO: Test this one below to see if it works or breaks. Also, see about checking this on the schema level as well
   validates :tag_level, inclusion: {in: [0], message: "Tag level %{value} is not for a base tag"},
-      unless: -> { parent_tag.blank? }
+      if: -> { parent_tag.blank? }
 
   #TODO: Test the two functions below soon
   def parent_tag_is_one_level_lower
@@ -30,8 +31,8 @@ class Tag < ApplicationRecord
   before_validation :assign_tag_level, on: :create 
   private
   def assign_tag_level
-    if tag_level == nil
-      if parent_tag == nil
+    if tag_level.blank?
+      if parent_tag.blank?
           self.tag_level = 0
       else
           self.tag_level = 1 + parent_tag.tag_level
