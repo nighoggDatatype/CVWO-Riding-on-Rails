@@ -116,7 +116,7 @@ class TagTest < ActiveSupport::TestCase
     assert_not tag.valid?
     tag.name = "><\"\""
     assert tag.valid?
-    tag.name = "   ~~~ Grand Opening ~~~   "
+    tag.name = " - ~~~ Grand Opening ~~~ - "
     assert tag.valid?
     tag.name = "      "
     assert_not tag.valid?
