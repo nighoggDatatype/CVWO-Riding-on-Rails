@@ -7,11 +7,12 @@ class Tag < ApplicationRecord
   validates_associated :parent_tag, unless: -> {parent_tag.blank?}
   validates :name, uniqueness: { scope: [:tags_id, :user_id],
     message: "Cannot have collision in the same namespace" }
+  validates :name, format: {with: /\A[\w \.~?!@#$%^&*()\/\\{}"'<>,\.`]+\Z/}
+  validates :name, format: {without: /\A\s+\Z/}
   
   #TODO: Test below, check whether this will have weird interactions with the item relationship upon del(user)
   has_many :item_tag, dependent: :destroy 
 
-  #General tag_level restriction #TODO: Test All below
   validates :tag_level, numericality: {equal_to: 0},
       if: -> { parent_tag.blank? }
   validates :tag_level, numericality: {greater_than_or_equal_to: 0} 

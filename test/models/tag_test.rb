@@ -108,6 +108,21 @@ class TagTest < ActiveSupport::TestCase
   end
  
   test "Acceptable Tag Names" do
-    flunk "Still need to decide on good character sets and preprocessing"
+    tag = Tag.new
+    tag.user = users('one')
+    tag.name = ":"
+    assert_not tag.valid?
+    tag.name = ":Normal tag"
+    assert_not tag.valid?
+    tag.name = "><\"\""
+    assert tag.valid?
+    tag.name = "   ~~~ Grand Opening ~~~   "
+    assert tag.valid?
+    tag.name = "      "
+    assert_not tag.valid?
+    tag.name = "\t"
+    assert_not tag.valid?
+    tag.name = "`~1234567890()*7%64##2{''"
+    assert tag.valid?
   end
 end
