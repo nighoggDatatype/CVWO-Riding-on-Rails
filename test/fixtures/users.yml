@@ -1,8 +1,8 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one: 
-  username: "Test User 1"
+  username: "TestUser01"
 two: 
-  username: "Test User 2"
+  username: "TestUser02"
 three: 
-  username: "Test User 3"
+  username: "TestUser03"
