@@ -19,6 +19,8 @@ class UserTest < ActiveSupport::TestCase
     assert userB.save!, "Unable to save a user that has a unique username"
   end
   test "Good username" do
+    userA = User.new
+    userA.username = "A"
     flunk "Not yet done testing"
   end
 end
