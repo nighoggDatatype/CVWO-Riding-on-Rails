@@ -18,6 +18,7 @@ class UserTest < ActiveSupport::TestCase
     userB.username = "Banananana"
     assert userB.save!, "Unable to save a user that has a unique username"
   end
+  
   test "Good username length and Format" do
     user = User.new
 

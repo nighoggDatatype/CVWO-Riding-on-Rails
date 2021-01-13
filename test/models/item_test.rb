@@ -44,6 +44,7 @@ class ItemTest < ActiveSupport::TestCase
     assert item.save! #Database validation
 
   end
+  
   test "Items cannot have null fields" do
     user = users('one')
     item = Item.new
