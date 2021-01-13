@@ -46,7 +46,13 @@ class UserTest < ActiveSupport::TestCase
     assert user.valid?
   end
   
-  test "Cascade Delete" do
+  test "Cascade Delete Model" do
+    
+    flunk "TBC"
+  end
+
+  test "Cascade Delete Schema" do
+    
     flunk "TBC"
   end
 end

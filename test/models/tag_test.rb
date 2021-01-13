@@ -154,7 +154,13 @@ class TagTest < ActiveSupport::TestCase
     assert tag.save!
   end
 
-  test "Cascade Delete" do
+  test "Cascade Delete Model" do
+    
+    flunk "TBC"
+  end
+
+  test "Cascade Delete Schema" do
+    
     flunk "TBC"
   end
 
