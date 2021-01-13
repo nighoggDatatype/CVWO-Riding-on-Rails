@@ -3,7 +3,7 @@ class ItemTag < ApplicationRecord
   belongs_to :item
   belongs_to :tag
   validates :tag_id, uniqueness: { scope: [:item_id],
-    message: "Cannot assign the same tag to an item more than once" } #TODO: Test this and schema
+    message: "Cannot assign the same tag to an item more than once" }
   validate :item_and_tag_have_same_user
   def item_and_tag_have_same_user
     if item.user != tag.user
