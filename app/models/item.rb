@@ -9,9 +9,9 @@ class Item < ApplicationRecord
   has_many :items_tags, :class_name => 'ItemTag', dependent: :destroy
   has_many :tags, through: :items_tags, :source => :tag
   before_validation :assign_list_order, on: :create
+  validates :list_order, numericality: { greater_than_or_equal_to: 0 } #TODO: Test this
   #TODO: Add clean up function to trigger when there are alot of gaps,
   #      say max_order_num/row_count >= 1.5 for any user after create
-  #      Also, see about making negative numbers invalid 
   private
     def assign_list_order
       if list_order.blank?
