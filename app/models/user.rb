@@ -1,6 +1,6 @@
 class User < ApplicationRecord
-    has_many :items, dependent: :destroy  #TODO: Check if :item needs to be :items
-    has_many :tags, dependent: :destroy   #TODO: Ditto as above, also check if cascade works later
+    has_many :items, dependent: :destroy
+    has_many :tags, dependent: :destroy
     validates :username, presence: true
     validates :username, uniqueness: true
     validates :username, format: {with: /\A\w+\Z/} #Expected format: CamelCase

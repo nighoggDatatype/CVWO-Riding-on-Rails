@@ -18,7 +18,7 @@ class UserTest < ActiveSupport::TestCase
     userB.username = "Banananana"
     assert userB.save!, "Unable to save a user that has a unique username"
   end
-  
+
   test "Good username length and Format" do
     user = User.new
 
@@ -48,12 +48,34 @@ class UserTest < ActiveSupport::TestCase
   end
   
   test "Cascade Delete Model" do
-    
-    flunk "TBC"
+    user = users("three")
+    user_id = user.id
+
+    assert_equal 4, ItemTag.count
+    assert_equal 2, Item.count
+    assert_equal 5, Tag.count
+    assert_equal 4, Tag.where(user_id: user_id).count
+
+    user.destroy
+    assert_equal 0, ItemTag.count
+    assert_equal 0, Item.count
+    assert_equal 1, Tag.count
+    assert_equal 0, Tag.where(user_id: user_id).count
   end
 
   test "Cascade Delete Schema" do
-    
-    flunk "TBC"
+    user = users("three")
+    user_id = user.id
+
+    assert_equal 4, ItemTag.count
+    assert_equal 2, Item.count
+    assert_equal 5, Tag.count
+    assert_equal 4, Tag.where(user_id: user_id).count
+
+    user.delete
+    assert_equal 0, ItemTag.count
+    assert_equal 0, Item.count
+    assert_equal 1, Tag.count
+    assert_equal 0, Tag.where(user_id: user_id).count
   end
 end

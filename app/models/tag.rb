@@ -13,7 +13,6 @@ class Tag < ApplicationRecord
   validates :name, format: {with: /\A[\w \.\-~?!@#$%^&*()\/\\{}"'<>,\.`]+\Z/}
   validates :name, format: {without: /\A\s+\Z/}
   
-  #TODO: Test below, check whether this will have weird interactions with the item relationship upon del(user)
   has_many :item_tag, dependent: :destroy 
 
   validates :tag_level, numericality: {equal_to: 0},
