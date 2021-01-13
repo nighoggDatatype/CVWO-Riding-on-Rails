@@ -1,12 +1,12 @@
 class Tag < ApplicationRecord
   belongs_to :user
   has_many :items_tags, :class_name => 'ItemTag', dependent: :destroy
-  has_many :items, through: :items_tags, :source => :item #TODO: Test this, explictly in a test case
+  has_many :items, through: :items_tags, :source => :item
   validates :name, :tag_level, presence: true
   belongs_to :parent_tag, :optional => true, #TODO: Double check everything to see what needs :optional
     :class_name => "Tag", foreign_key: "tags_id"
   has_many  :child_tags, :class_name => "Tag",
-    foreign_key: "tags_id", dependent: :destroy #For cascade, TODO: make sure this works
+    foreign_key: "tags_id", dependent: :destroy #For cascade
   validates_associated :parent_tag, unless: -> {parent_tag.blank?}
   validates :name, uniqueness: { scope: [:tags_id, :user_id],
     message: "Cannot have collision in the same namespace" }
