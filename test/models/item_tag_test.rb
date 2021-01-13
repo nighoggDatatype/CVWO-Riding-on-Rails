@@ -19,7 +19,7 @@ class ItemTagTest < ActiveSupport::TestCase
 
     #Checking null hypothesis
     relation.item_id = item.id
-    assert relation.save
+    assert relation.save!
   end
   test "Relationships must be unique" do
     user = users("three")
@@ -38,6 +38,6 @@ class ItemTagTest < ActiveSupport::TestCase
     #Checking null hypothesis
     item = items("one")
     item.tags << tag
-    assert item.save
+    assert item.save!
   end
 end
