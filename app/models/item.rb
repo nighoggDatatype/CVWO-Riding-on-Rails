@@ -1,6 +1,7 @@
 class Item < ApplicationRecord
   belongs_to :user
   validates :task, :list_order, presence: true
+  validates :task, format: {without: /\n/}
   validates :done, inclusion: [true, false]
   validates :done, exclusion: [nil] 
   validates :list_order, uniqueness: { scope: :user_id,

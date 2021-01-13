@@ -73,7 +73,16 @@ class ItemTest < ActiveSupport::TestCase
   end
 
   test "Task description has no newlines" do
-    flunk "TBC"
+    user = users('one')
+    item = Item.new
+    item.user = user
+    item.done = false
+    item.task = "Example\n Task\n"
+    assert_not item.save
+    item.task = "Example Task\n"
+    assert_not item.save
+    item.task = "Example Task"
+    assert item.save!
   end
 
   test "List order is unique per user" do
