@@ -5,11 +5,11 @@ one:
   task: MyText
   user: three
   list_order: 0
-  tags: two, three
+  #tags: two, three
 
 two:
   done: false
   task: MyText
   user: three
   list_order: 1
-  tags: filler, three
+  #tags: filler, three

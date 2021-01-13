@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+# itemOne-A:
+#   item_id: one
+#   tag_id: two
+# 
+# itemOne-B:
+#   item_id: one
+#   tag_id: three
+# 
+# itemTwo-A:
+#   item_id: two
+#   tag_id: filler
+# 
+# itemTwo-B:
+#   item_id: two
+#   tag_id: three
