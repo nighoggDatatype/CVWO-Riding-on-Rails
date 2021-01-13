@@ -155,13 +155,39 @@ class TagTest < ActiveSupport::TestCase
   end
 
   test "Cascade Delete Model" do
-    
-    flunk "TBC"
+    tag = tags("one")
+    derivedTag = tags("three")
+    assert_equal tag, derivedTag.parent_tag
+
+    tag_id = tag.id
+    derivedTag_id = derivedTag.id
+
+    assert_equal 4, ItemTag.count
+    assert_equal 2, ItemTag.where(tag_id: derivedTag_id).count
+    assert_equal 1, Tag.where(id: derivedTag_id).count
+
+    tag.destroy
+    assert_equal 2, ItemTag.count
+    assert_equal 0, ItemTag.where(tag_id: derivedTag_id).count
+    assert_equal 0, Tag.where(id: derivedTag_id).count
   end
 
   test "Cascade Delete Schema" do
-    
-    flunk "TBC"
+    tag = tags("one")
+    derivedTag = tags("three")
+    assert_equal tag, derivedTag.parent_tag
+
+    tag_id = tag.id
+    derivedTag_id = derivedTag.id
+
+    assert_equal 4, ItemTag.count
+    assert_equal 2, ItemTag.where(tag_id: derivedTag_id).count
+    assert_equal 1, Tag.where(id: derivedTag_id).count
+
+    tag.delete
+    assert_equal 2, ItemTag.count
+    assert_equal 0, ItemTag.where(tag_id: derivedTag_id).count
+    assert_equal 0, Tag.where(id: derivedTag_id).count
   end
 
   test "Accessing Tagged items" do
