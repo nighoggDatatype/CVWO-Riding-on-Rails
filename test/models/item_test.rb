@@ -72,7 +72,7 @@ class ItemTest < ActiveSupport::TestCase
     assert item.save!
   end
 
-  test "All and Only good task text is accepted" do
+  test "Task description has no newlines" do
     flunk "TBC"
   end
 
@@ -108,5 +108,13 @@ class ItemTest < ActiveSupport::TestCase
     #Testing Good Assignment
     item.user_id = user.id
     assert item.save! #Database validation
+  end
+
+  test "Cascade Delete" do
+    flunk "TBC"
+  end
+
+  test "Automatic Consolidation of List Order" do
+    flunk "TBC"
   end
 end

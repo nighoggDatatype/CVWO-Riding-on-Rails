@@ -45,4 +45,8 @@ class UserTest < ActiveSupport::TestCase
     user.username = "uSERnAME234"
     assert user.valid?
   end
+  
+  test "Cascade Delete" do
+    flunk "TBC"
+  end
 end

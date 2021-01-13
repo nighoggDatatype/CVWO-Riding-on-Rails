@@ -153,4 +153,8 @@ class TagTest < ActiveSupport::TestCase
     tag.tags_id = parent.id
     assert tag.save!
   end
+
+  test "Cascade Delete" do
+    flunk "TBC"
+  end
 end

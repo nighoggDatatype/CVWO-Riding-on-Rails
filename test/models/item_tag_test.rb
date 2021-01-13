@@ -40,4 +40,7 @@ class ItemTagTest < ActiveSupport::TestCase
     item.tags << tag
     assert item.save!
   end
+  test "Item and Tags must have same User" do
+    flunk "TBC"
+  end
 end
