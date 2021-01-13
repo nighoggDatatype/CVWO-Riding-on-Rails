@@ -191,6 +191,17 @@ class TagTest < ActiveSupport::TestCase
   end
 
   test "Accessing Tagged items" do
-    flunk "TBC"
+    tag = tags("three")
+    assert_equal 2, tag.items.count
+    assert tag.items.exists? items("two").id
+    assert tag.items.exists? items("one").id
+
+    tag = tags("one")
+    assert_equal 0, tag.items.count
+    
+    tag = tags("filler")
+    assert_equal 1, tag.items.count
+    assert tag.items.exists? items("two").id
+    assert_not tag.items.exists? items("one").id
   end
 end
