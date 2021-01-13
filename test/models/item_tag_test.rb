@@ -41,6 +41,12 @@ class ItemTagTest < ActiveSupport::TestCase
     assert item.save!
   end
   test "Item and Tags must have same User" do
-    flunk "TBC"
+    item = items("one")
+    tag = tags("mismatch")
+    relation = ItemTag.new
+    relation.item = item
+    relation.tag = tag
+    assert_not relation.save
+    assert_raise(Exception) {item.tags << tag}
   end
 end
