@@ -125,4 +125,8 @@ class TagTest < ActiveSupport::TestCase
     tag.name = "`~1234567890()*7%64##2{''"
     assert tag.valid?
   end
+
+  test "Foreign Key Restrictions in Schema" do
+    flunk "TBC"
+  end
 end

@@ -93,4 +93,8 @@ class ItemTest < ActiveSupport::TestCase
     item.list_order = 2
     assert item.save!
   end
+
+  test "Foreign Key Restrictions in Schema" do
+    flunk "TBC"
+  end
 end
