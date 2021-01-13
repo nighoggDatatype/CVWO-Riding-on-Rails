@@ -132,8 +132,15 @@ class ItemTest < ActiveSupport::TestCase
   end
 
   test "Cascade Delete Schema" do
-    
-    flunk "TBC"
+    item = items("two")
+    item_id = item.id
+
+    assert_equal 4, ItemTag.count
+    assert_equal 2, ItemTag.where(item_id: item_id).count
+
+    item.delete
+    assert_equal 2, ItemTag.count
+    assert_equal 0, ItemTag.where(item_id: item_id).count
   end
 
   test "Automatic Consolidation of List Order" do

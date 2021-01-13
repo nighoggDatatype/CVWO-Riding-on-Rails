@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_13_181528) do
+ActiveRecord::Schema.define(version: 2021_01_13_182251) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,9 +51,9 @@ ActiveRecord::Schema.define(version: 2021_01_13_181528) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
-  add_foreign_key "items", "users"
-  add_foreign_key "items_tags", "items"
-  add_foreign_key "items_tags", "tags"
-  add_foreign_key "tags", "tags", column: "tags_id"
-  add_foreign_key "tags", "users"
+  add_foreign_key "items", "users", on_delete: :cascade
+  add_foreign_key "items_tags", "items", on_delete: :cascade
+  add_foreign_key "items_tags", "tags", on_delete: :cascade
+  add_foreign_key "tags", "tags", column: "tags_id", on_delete: :cascade
+  add_foreign_key "tags", "users", on_delete: :cascade
 end

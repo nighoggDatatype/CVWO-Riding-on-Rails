@@ -5,5 +5,4 @@ class User < ApplicationRecord
     validates :username, uniqueness: true
     validates :username, format: {with: /\A\w+\Z/} #Expected format: CamelCase
     validates :username, length: { minimum: 10 } #Note: Only care about minimum to prevent wardialing
-    #TODO: Mirror cascading delete to schema
 end
