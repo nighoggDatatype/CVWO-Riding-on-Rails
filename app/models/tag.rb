@@ -4,7 +4,8 @@ class Tag < ApplicationRecord
   validates :name, :tag_level, presence: true
   belongs_to :parent_tag, :optional => true, #TODO: Double check everything to see what needs :optional
     :class_name => "Tag", foreign_key: "tags_id"
-  has_many  :child_tags, :class_name => "Tag", dependent: :destroy #For cascade, TODO: make sure this works
+  has_many  :child_tags, :class_name => "Tag",
+    foreign_key: "tags_id", dependent: :destroy #For cascade, TODO: make sure this works
   validates_associated :parent_tag, unless: -> {parent_tag.blank?}
   validates :name, uniqueness: { scope: [:tags_id, :user_id],
     message: "Cannot have collision in the same namespace" }
