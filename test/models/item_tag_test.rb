@@ -6,7 +6,9 @@ class ItemTagTest < ActiveSupport::TestCase
   end
   test "Relationships must be unique" do
     user = users("three")
-    relationship = ItemTag.new
+    item = items("one")
+    tag = tags("filler")
+    item.tags << tag
     flunk "TBC"
   end
 end
