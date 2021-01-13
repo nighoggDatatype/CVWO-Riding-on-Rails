@@ -21,6 +21,7 @@ class ItemTagTest < ActiveSupport::TestCase
     relation.item_id = item.id
     assert relation.save!
   end
+
   test "Relationships must be unique" do
     user = users("three")
     tag = tags("filler")
@@ -40,6 +41,7 @@ class ItemTagTest < ActiveSupport::TestCase
     item.tags << tag
     assert item.save!
   end
+  
   test "Item and Tags must have same User" do
     item = items("one")
     tag = tags("mismatch")
