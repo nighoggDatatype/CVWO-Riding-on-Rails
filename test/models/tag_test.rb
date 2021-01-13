@@ -157,4 +157,8 @@ class TagTest < ActiveSupport::TestCase
   test "Cascade Delete" do
     flunk "TBC"
   end
+
+  test "Accessing Tagged items" do
+    flunk "TBC"
+  end
 end
