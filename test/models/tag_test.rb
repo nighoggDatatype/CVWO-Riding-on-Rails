@@ -127,6 +127,30 @@ class TagTest < ActiveSupport::TestCase
   end
 
   test "Foreign Key Restrictions in Schema" do
-    flunk "TBC"
+    user = users('one')
+    tag = Tag.new
+    tag.name = "Generic Tag"
+
+    #Checking user validation
+    tag.tag_level = 0
+    tag.user_id = 888
+    assert_raise(Exception) {tag.save(validate: false)}
+
+    #Checking good user validation
+    tag.user_id = user.id
+    assert tag.save!
+    parent = tag
+
+    #Checking tag validation
+    tag = Tag.new
+    tag.name = "Derived"
+    tag.user_id = user.id
+    tag.tag_level = 1
+    tag.tags_id = 888
+    assert_raise(Exception) {tag.save(validate: false)}
+
+    #Checking good tag validation
+    tag.tags_id = parent.id
+    assert tag.save!
   end
 end

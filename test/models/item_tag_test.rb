@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class ItemTagTest < ActiveSupport::TestCase
-  test "Foreign Key Restrictions in Schema" do #TODO: See about doing this for all instances of foriegn keys in schema
+  test "Foreign Key Restrictions in Schema" do
     user = users("three")
     item = items("one")
     tag = tags("filler")

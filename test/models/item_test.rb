@@ -95,6 +95,18 @@ class ItemTest < ActiveSupport::TestCase
   end
 
   test "Foreign Key Restrictions in Schema" do
-    flunk "TBC"
+    user = users('one')
+    item = Item.new
+    item.done = false
+    item.task = "Example Task"
+    item.valid?
+
+    #Testing Bad Assignment
+    item.user_id = 888
+    assert_raise(Exception) {item.save(validate: false)} #Database validation
+
+    #Testing Good Assignment
+    item.user_id = user.id
+    assert item.save! #Database validation
   end
 end
