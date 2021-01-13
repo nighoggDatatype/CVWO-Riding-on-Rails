@@ -120,8 +120,15 @@ class ItemTest < ActiveSupport::TestCase
   end
 
   test "Cascade Delete Model" do
-    
-    flunk "TBC"
+    item = items("two")
+    item_id = item.id
+
+    assert_equal 4, ItemTag.count
+    assert_equal 2, ItemTag.where(item_id: item_id).count
+
+    item.destroy
+    assert_equal 2, ItemTag.count
+    assert_equal 0, ItemTag.where(item_id: item_id).count
   end
 
   test "Cascade Delete Schema" do
