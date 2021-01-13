@@ -1,6 +1,6 @@
 class Tag < ApplicationRecord
   belongs_to :user
-  has_and_belongs_to_many :items #TODO: Test this
+  has_many :items, through: :item_tags #TODO: Test this
   validates :name, :tag_level, presence: true
   belongs_to :parent_tag, :optional => true, #TODO: Double check everything to see what needs :optional
     :class_name => "Tag", foreign_key: "tags_id"

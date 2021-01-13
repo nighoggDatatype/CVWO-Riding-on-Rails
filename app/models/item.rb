@@ -6,7 +6,7 @@ class Item < ApplicationRecord
   validates :list_order, uniqueness: { scope: :user_id,
     message: "should be a unique list order id for any particular user" }
   has_many :item_tag, dependent: :destroy #TODO: Test this
-  has_and_belongs_to_many :tags #TODO: Test this
+  has_many :tags, through: :item_tags #TODO: Test this
   before_validation :assign_list_order, on: :create
   #TODO: Add clean up function to trigger when there are alot of gaps,
   #      say max_order_num/row_count >= 1.5 for any user after create
