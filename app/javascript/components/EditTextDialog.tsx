@@ -46,11 +46,11 @@ class EditTextDialog extends React.Component<Props,State> {
       this.setState({textBoxEnter : false});
       this.handleSubmit();
     }
-}
+  }
 
   render () {
     const handleTextbox = (e) => {
-        let newInputRaw = e.target.value;
+        let newInputRaw:string = e.target.value;
         let newInput = newInputRaw.replace("\n","");
         let altEnter = !this.isInvalidDescription(newInput) && newInputRaw.includes('\n');
         this.setState({editTextField: newInput, textBoxEnter: altEnter});
@@ -79,7 +79,7 @@ class EditTextDialog extends React.Component<Props,State> {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.handleSubmit} color="primary">
+          <Button onClick={this.handleClose} color="primary">
             Cancel
           </Button>
           <Button onClick={this.handleSubmit} color="primary" disabled={dialogIsEmpty}>

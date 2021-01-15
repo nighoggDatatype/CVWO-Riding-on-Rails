@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  done: false
+  task: MyText
+  user: three
+  list_order: 0
+  tags: two, three
+
+two:
+  done: false
+  task: MyText
+  user: three
+  list_order: 1
+  tags: filler, three

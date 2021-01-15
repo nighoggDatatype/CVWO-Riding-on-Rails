@@ -1,0 +1,28 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  id: 1 #Forced fix, cause we can't seem to auto assign id's properly
+  user: three
+  name: "Dab Time" #TODO: Check whether the quotes come along or not
+  tag_level: 0
+
+two:
+  user: three
+  name: Latin
+  tag_level: 0
+
+three:
+  user: three
+  name: Cringe
+  tag_level: 1
+  tags_id: 1
+
+filler:
+  user: three
+  name: filler
+  tag_level: 0
+
+mismatch:
+  user: one
+  name: Badness
+  tag_level: 0
