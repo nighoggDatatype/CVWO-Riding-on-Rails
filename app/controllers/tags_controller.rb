@@ -13,6 +13,7 @@ class TagsController < ApplicationController
 
   # GET /tags/1.json
   def show
+    #TODO: Filter by user, or throw error
   end
 
   # POST /tags.json
