@@ -8,7 +8,7 @@ class TagsController < ApplicationController
 
   # GET /tags.json
   def index
-    @tags = Tag.all
+    @tags = Tag.all #TODO: Filter by user
   end
 
   # GET /tags/1.json
@@ -21,10 +21,8 @@ class TagsController < ApplicationController
 
     respond_to do |format|
       if @tag.save
-        format.html { redirect_to @tag, notice: 'Tag was successfully created.' }
         format.json { render :show, status: :created, location: @tag }
       else
-        format.html { render :new }
         format.json { render json: @tag.errors, status: :unprocessable_entity }
       end
     end
@@ -34,10 +32,8 @@ class TagsController < ApplicationController
   def update
     respond_to do |format|
       if @tag.update(tag_params)
-        format.html { redirect_to @tag, notice: 'Tag was successfully updated.' }
         format.json { render :show, status: :ok, location: @tag }
       else
-        format.html { render :edit }
         format.json { render json: @tag.errors, status: :unprocessable_entity }
       end
     end
@@ -46,8 +42,7 @@ class TagsController < ApplicationController
   # DELETE /tags/1.json
   def destroy
     @tag.destroy
-    respond_to do |format|
-      format.html { redirect_to tags_url, notice: 'Tag was successfully destroyed.' }
+    respond_to do |format| #TODo: see if tag destroy can ever fail
       format.json { head :no_content }
     end
   end
@@ -61,5 +56,9 @@ class TagsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def tag_params
       params.fetch(:tag, {})
+    end
+
+    def user_has_tag?
+      #TOOD: Check tag's stored user_id against user_id
     end
 end

@@ -1,2 +1,2 @@
-json.extract! tag, :id, :created_at, :updated_at
+json.extract! tag, :id, :name, :tags_id #TODO: Figure out about how to handle nil tags_id
 json.url tag_url(tag, format: :json)
