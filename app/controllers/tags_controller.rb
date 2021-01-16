@@ -19,7 +19,7 @@ class TagsController < ApplicationController
     respond_to do |format|
       if @tag.save
         format.json { render :show, status: :created, location: user_tag_url(@tag.user_id, @tag) }
-      else
+      else #TODO: test this code path
         format.json { render json: @tag.errors, status: :unprocessable_entity }
       end
     end
@@ -30,7 +30,7 @@ class TagsController < ApplicationController
     respond_to do |format|
       if @tag.update(tag_params)
         format.json { render :show, status: :ok, location: user_tag_url(@tag.user_id, @tag) }
-      else
+      else #TODO: Test this code path
         format.json { render json: @tag.errors, status: :unprocessable_entity }
       end
     end
@@ -38,16 +38,19 @@ class TagsController < ApplicationController
 
   # DELETE /tags/1.json
   def destroy
-    @tag.destroy
-    respond_to do |format| #TODO: see if tag destroy can ever fail
-      format.json { head :no_content }
+    respond_to do |format|
+      if @tag.destroy
+        format.json { head :no_content }
+      else #TODO: Check if there is some way of triggering this for testing
+        format.json { render json: @tag.errors, status: :unprocessable_entity }
+      end
     end
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user_and_verify
-      @user = User.find(params[:user_id])
+      @user = User.find_by(id: params[:user_id])
       if @user.blank?
         head :forbidden
       end
