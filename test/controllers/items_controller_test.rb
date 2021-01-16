@@ -19,7 +19,7 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
     get user_items_url(@user)
     assert_response :success
     assert_equal 2, json_response.length
-    assert_equal 0, json_response[0]["list_order"]
+    assert_equal "Kill_kill_kill", json_response[0]["task"]
   end
     
   test "should create item" do
@@ -31,7 +31,7 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal "Hello World", json_response["task"]
     assert_not json_response["done"]
-    assert_equal 2, json_response["tags"]
+    assert_equal 2, json_response["tags"].length
     flunk "TODO: Check contents of tags"
 
     updated_tag = Tag.find(json_response["id"])
