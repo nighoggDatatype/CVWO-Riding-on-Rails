@@ -80,8 +80,8 @@ class ItemsController < ApplicationController
         source_forbid = (!@source.blank?) && (@user != @source.user)
         destination_forbid = (!@destination.blank?) && (@user != @destination.user)
         if source_forbid || destination_forbid
-          head: forbidden
-        if @source.blank? || @destination.blank?
+          head :forbidden
+        elsif @source.blank? || @destination.blank?
           not_found
         end
       else
