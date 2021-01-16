@@ -32,6 +32,7 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Hello World", json_response["task"]
     assert_not json_response["done"]
     assert_equal 2, json_response["tags"].length
+    assert json_response["tags"].includes? {id: 1, name: "Dab Time", tags_id: nil}
     flunk "TODO: Check contents of tags"
 
     updated_tag = Tag.find(json_response["id"])
@@ -41,14 +42,12 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not create tag for non-existant user" do
-    flunk "Not adjusted"
-    post user_tags_url(@bad_user_id), params: { tag: {name: "Tutorial"} }
+    post user_items_url(@bad_user_id), params: { item: {done: false, task: "Hello World", tags: [@tag_one.id, @tag_two.id]} }
     assert_response :forbidden
   end
 
   test "should not create bad tag" do
-    flunk "Not adjusted"
-    post user_tags_url(@user), params: { tag: {name: "Dab Time"} }
+    post user_items_url(@user), params: { item: {done: false, tags: [@tag_one.id, @tag_two.id]} }
     assert_response :unprocessable_entity
   end
   
