@@ -32,13 +32,24 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Hello World", json_response["task"]
     assert_not json_response["done"]
     assert_equal 2, json_response["tags"].length
-    assert json_response["tags"].includes? {id: 1, name: "Dab Time", tags_id: nil}
-    flunk "TODO: Check contents of tags"
+    tag_data_one = {}
+    tag_data_two = {}
+    if json_response["tags"][0]["id"] == @tag_one.id
+      tag_data_one = json_response["tags"][0]
+      tag_data_two = json_response["tags"][1]
+    else
+      tag_data_one = json_response["tags"][1]
+      tag_data_two = json_response["tags"][0]
+    end
+    assert_equal @tag_one.id, tag_data_one["id"]
+    assert_equal @tag_two.id, tag_data_two["id"]
+    assert_equal @tag_one.name, tag_data_one["name"]
+    assert_equal @tag_two.name, tag_data_two["name"]
 
-    updated_tag = Tag.find(json_response["id"])
-    assert_equal @user, updated_tag.user
-    assert_equal json_response["task"], updated_tag.task
-    flunk "TODO: Figure out how to check contents of task"
+    updated_item = Item.find(json_response["id"])
+    assert_equal @user, updated_item.user
+    assert_equal json_response["task"], updated_item.task
+    assert_equal 2, ItemTag.where(item_id: json_response["id"]).where(tag: [@tag_one, @tag_two]).count
   end
 
   test "should not create tag for non-existant user" do
