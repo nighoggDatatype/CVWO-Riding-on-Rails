@@ -94,8 +94,11 @@ class ItemsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def item_params
-      params.fetch(:item, {}).permit(:done, :task, :tags)
-      #TODO: Figure out whether tag assignments work
+      filtered = params.fetch(:item, {}).permit(:done, :task, tags: [])
+      if !filtered[:tags].nil?
+        filtered[:tags] = filtered[:tags].map {|tag_id| Tag.find(tag_id)}
+      end #TODO: Check the code path where tags: is undefined
+      return filtered
     end
     
     def swap_params
