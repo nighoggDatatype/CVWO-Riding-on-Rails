@@ -69,8 +69,7 @@ class TagsControllerTest < ActionDispatch::IntegrationTest
 
   test "should not show non-existant tag" do
     get user_tag_url(@user, @bad_id)
-    assert_response :forbidden #TODO: Figure out the correct response
-    flunk "TBC"
+    assert_response :not_found
   end
 
   test "should update tag" do
@@ -97,8 +96,7 @@ class TagsControllerTest < ActionDispatch::IntegrationTest
   test "should not update non-existant tag" do
     assert_nil Tag.find_by id: @bad_id
     patch user_tag_url(@user, 1234), params: { tag: {name: "EEEEEEEEEE"} }
-    assert_response :unprocessable_entity #TODO: Figure out the correct response
-    flunk "TBC"
+    assert_response :not_found
   end
   
   test "should destroy tag" do
@@ -112,7 +110,6 @@ class TagsControllerTest < ActionDispatch::IntegrationTest
   test "should not destroy non-existant tag" do
     delete user_tag_url(@user, @bad_id)
     
-    assert_response :ok #TODO: Figure out the correct response code testing
-    flunk "TBC, need to check content"
+    assert_response :not_found
   end
 end

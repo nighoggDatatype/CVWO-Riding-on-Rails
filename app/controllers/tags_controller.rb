@@ -58,10 +58,8 @@ class TagsController < ApplicationController
     end
 
     def set_tag_and_verify
-      @tag = Tag.find_by(id: params[:id])
-      if @tag.blank?
-        #TODO: 404 logic here
-      elsif  @user != @tag.user
+      @tag = Tag.find(params[:id])
+      if @user != @tag.user
         head :forbidden
       end
     end
