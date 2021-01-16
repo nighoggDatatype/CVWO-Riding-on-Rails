@@ -23,28 +23,38 @@ class TagsControllerTest < ActionDispatch::IntegrationTest
     
   test "should create tag" do
     assert_difference('Tag.count') do
-      post user_tags_url(@user), params: { tag: {user_id: @user.id, name: "Tutorial"} }
+      post user_tags_url(@user), params: { tag: {name: "Tutorial"} }
     end
   
     assert_response :created
+
+    assert_nil json_response["tags_id"]
+    assert_equal "Tutorial", json_response["name"]
+
     updated_tag = Tag.find(json_response["id"])
-    flunk "TBC, need to check content"
+    assert_equal @user, updated_tag.user
+    assert_equal json_response["name"], updated_tag.name
   end
 
-  test "should not create tag for bad user" do
-    post user_tags_url(@bad_user_id), params: { tag: {user_id: @bad_user_id, name: "Tutorial"} }
+  test "should not create tag for non-existant user" do
+    post user_tags_url(@bad_user_id), params: { tag: {name: "Tutorial"} }
     assert_response :forbidden
   end
 
   test "should not create bad tag" do
-    post user_tags_url(@user), params: { tag: {user_id: @user.id, name: "Dab Time"} }
+    post user_tags_url(@user), params: { tag: {name: "Dab Time"} }
     assert_response :unprocessable_entity
   end
   
   test "should show tag" do
     get user_tag_url(@user, @tag)
     assert_response :success
-    flunk "TBC, need to check content"
+    assert_nil json_response["tags_id"]
+    assert_equal "Dab Time", json_response["name"]
+
+    updated_tag = Tag.find(json_response["id"])
+    assert_equal "Dab Time", updated_tag.name
+    assert_equal @user.id, updated_tag.user_id
   end
 
   test "should not show tag to bad user" do
@@ -64,7 +74,7 @@ class TagsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update tag" do
-    patch user_tag_url(@user, @tag), params: { tag: {user_id: @user.id, name: "Tutorial"} }
+    patch user_tag_url(@user, @tag), params: { tag: {name: "Tutorial"} }
     assert_response :ok
     assert_nil json_response["tags_id"]
     assert_equal "Tutorial", json_response["name"]
@@ -75,18 +85,18 @@ class TagsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not update tag for bad user" do
-    patch user_tag_url(@badUser, @tag), params: { tag: {user_id: @user.id, name: "Tutorial"} }
+    patch user_tag_url(@badUser, @tag), params: { tag: {name: "Tutorial"} }
     assert_response :forbidden
   end
 
   test "should not update tag with bad data" do
-    patch user_tag_url(@user, @tag), params: { tag: {user_id: @user.id, name: "Latin"} }
+    patch user_tag_url(@user, @tag), params: { tag: {name: "Latin"} }
     assert_response :unprocessable_entity
   end
 
   test "should not update non-existant tag" do
     assert_nil Tag.find_by id: @bad_id
-    patch user_tag_url(@user, 1234), params: { tag: {user_id: @user.id, name: "EEEEEEEEEE"} }
+    patch user_tag_url(@user, 1234), params: { tag: {name: "EEEEEEEEEE"} }
     assert_response :unprocessable_entity #TODO: Figure out the correct response
     flunk "TBC"
   end
