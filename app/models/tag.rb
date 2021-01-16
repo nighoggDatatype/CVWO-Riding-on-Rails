@@ -3,7 +3,7 @@ class Tag < ApplicationRecord
   has_many :items_tags, :class_name => 'ItemTag', dependent: :destroy
   has_many :items, through: :items_tags, :source => :item
   validates :name, :tag_level, presence: true
-  belongs_to :parent_tag, :optional => true
+  belongs_to :parent_tag, :optional => true,
     :class_name => "Tag", foreign_key: "tags_id"
   has_many  :child_tags, :class_name => "Tag",
     foreign_key: "tags_id", dependent: :destroy #For cascade
