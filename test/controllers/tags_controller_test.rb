@@ -21,12 +21,12 @@ class TagsControllerTest < ActionDispatch::IntegrationTest
     
   test "should create tag" do
     assert_difference('Tag.count') do
-      post user_tags_url(@user), params: { tag: {name: "Tutorial"}, tags_id: @tag.id}
+      post user_tags_url(@user), params: { tag: {name: "Tutorial", tags_id: @tag.id}}
     end
   
     assert_response :created
 
-    assert_equal @tag.id json_response["tags_id"]
+    assert_equal @tag.id, json_response["tags_id"]
     assert_equal "Tutorial", json_response["name"]
 
     updated_tag = Tag.find(json_response["id"])

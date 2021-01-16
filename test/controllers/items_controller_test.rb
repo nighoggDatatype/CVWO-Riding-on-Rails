@@ -31,7 +31,7 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal "Hello World", json_response["task"]
     assert_not json_response["done"]
-    assert_equal 2 json_response["tags"]
+    assert_equal 2, json_response["tags"]
     flunk "TODO: Check contents of tags"
 
     updated_tag = Tag.find(json_response["id"])
@@ -140,7 +140,7 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
   
   test "should destroy tag" do
     assert_difference('Item.count', -1) do
-      assert_difference('ItemTag.count', -2)
+      assert_difference('ItemTag.count', -2) do
         delete user_item_url(@user, @item)
       end
     end
