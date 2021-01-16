@@ -7,7 +7,7 @@ class ItemsController < ApplicationController
 
   # GET /items.json
   def index
-    @items = Item.where(user: @user)
+    @items = Item.where(user: @user).order(:list_order)
   end
 
   # GET /items/1.json
