@@ -1,40 +1,46 @@
 require 'test_helper'
 
 class TagsControllerTest < ActionDispatch::IntegrationTest
-  # TODO: Go through this and make it good for pure json retrivial
+  # TODO: Verify content retrived
   
   setup do
+    @user = users(:three)
     @tag = tags(:one)
   end
   
   test "should get index" do
-    get user_tags_url
+    get user_tags_url(@user)
     assert_response :success
   end
     
   test "should create tag" do
     assert_difference('Tag.count') do
-      post user_tags_url, params: { tag: {  } }
+      post user_tags_url(@user), params: { tag: {user_id: @user.id, name: "Tutorial"} }
     end
   
-    assert_redirected_to tag_url(Tag.last)
+    assert_response :created
+    flunk "TBC, need to check content"
   end
   
   test "should show tag" do
-    get user_tag_url(@tag)
+    get user_tag_url(@user, @tag)
     assert_response :success
+    flunk "TBC, need to check content"
+    flunk "TBC, need to check for failure"
   end
 
   test "should update tag" do
-    patch user_tag_url(@tag), params: { tag: {  } }
-    assert_redirected_to user_tag_url(@tag)
+    patch user_tag_url(@user, @tag), params: { tag: {user_id: @user.id, name: "Tutorial"} }
+    assert_redirected_to user_tag_url(@user, @tag)
+    flunk "TBC, need to check content"
   end
   
   test "should destroy tag" do
-    assert_difference('Tag.count', -1) do
-      delete tag_url(@tag)
+    assert_difference('Tag.count', -2) do
+      delete user_tag_url(@user, @tag)
     end
   
-    assert_redirected_to tags_url
+    assert_redirected_to user_tags_url(@user) #TODO: Figure out the correct response code testing
+    flunk "TBC, need to check content"
   end
 end

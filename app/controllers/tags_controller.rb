@@ -1,19 +1,15 @@
 class TagsController < ApplicationController
-  before_action :set_tag, only: [:show, :update, :destroy]
-  #TODO: Figure what "before_action" does, and how to make everything json only
-  #TODO: Figure out the general structure of this file.
-  #TODO: Figure out how jbuilder works
+  before_action :set_user_and_verify
+  before_action :set_tag_and_verify, only: [:show, :update, :destroy]
   #TODO: Figure out mass updates
-  #TODO: Figure out how to test this
 
   # GET /tags.json
   def index
-    @tags = Tag.all #TODO: Filter by user
+    @tags = Book.where(user: @user)
   end
 
   # GET /tags/1.json
   def show
-    #TODO: Filter by user, or throw error
   end
 
   # POST /tags.json
@@ -22,7 +18,7 @@ class TagsController < ApplicationController
 
     respond_to do |format|
       if @tag.save
-        format.json { render :show, status: :created, location: @tag }
+        format.json { render :show, status: :created, location: user_tag_url(@tag.user_id, @tag) }
       else
         format.json { render json: @tag.errors, status: :unprocessable_entity }
       end
@@ -33,7 +29,7 @@ class TagsController < ApplicationController
   def update
     respond_to do |format|
       if @tag.update(tag_params)
-        format.json { render :show, status: :ok, location: @tag }
+        format.json { render :show, status: :ok, location: user_tag_url(@tag.user_id, @tag) }
       else
         format.json { render json: @tag.errors, status: :unprocessable_entity }
       end
@@ -43,23 +39,29 @@ class TagsController < ApplicationController
   # DELETE /tags/1.json
   def destroy
     @tag.destroy
-    respond_to do |format| #TODo: see if tag destroy can ever fail
+    respond_to do |format| #TODO: see if tag destroy can ever fail
       format.json { head :no_content }
     end
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_tag
+    def set_user_and_verify
+      @user = User.find(params[:user_id])
+      if @user.blank?
+        head: :forbidden
+      end
+    end
+
+    def set_tag_and_verify
       @tag = Tag.find(params[:id])
+      if @user != @tag.user
+        head: :forbidden
+      end
     end
 
     # Only allow a list of trusted parameters through.
     def tag_params
-      params.fetch(:tag, {})
-    end
-
-    def user_has_tag?
-      #TOOD: Check tag's stored user_id against user_id
+      params.fetch(:tag, {}).permit(:user_id, :tags_id, :name)
     end
 end
