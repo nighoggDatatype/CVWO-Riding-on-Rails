@@ -11,6 +11,8 @@ class TagsControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
     get user_tags_url(@user)
     assert_response :success
+    assert_equal 4, json_response.length
+    assert_equal "Cringe", json_response[2]["name"]
   end
     
   test "should create tag" do
@@ -31,8 +33,13 @@ class TagsControllerTest < ActionDispatch::IntegrationTest
 
   test "should update tag" do
     patch user_tag_url(@user, @tag), params: { tag: {user_id: @user.id, name: "Tutorial"} }
-    assert_redirected_to user_tag_url(@user, @tag)
-    flunk "TBC, need to check content"
+    assert_response :ok
+    assert_equal nil, json_response["tags_id"]
+    assert_equal "Tutorial", json_response["name"]
+
+    created_tag = Tag.find(json_response["id"])
+    assert_equal "Tutorial", created_tag.name
+    assert_equal @user.id, created_tag.user_id
   end
   
   test "should destroy tag" do
