@@ -5,7 +5,7 @@ class TagsController < ApplicationController
 
   # GET /tags.json
   def index
-    @tags = Book.where(user: @user)
+    @tags = Tag.where(user: @user)
   end
 
   # GET /tags/1.json
@@ -49,14 +49,14 @@ class TagsController < ApplicationController
     def set_user_and_verify
       @user = User.find(params[:user_id])
       if @user.blank?
-        head: :forbidden
+        head :forbidden
       end
     end
 
     def set_tag_and_verify
       @tag = Tag.find(params[:id])
       if @user != @tag.user
-        head: :forbidden
+        head :forbidden
       end
     end
 
