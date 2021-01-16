@@ -102,7 +102,7 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
-  test "should update tag" do
+  test "should update item" do
     flunk "Not adjusted"
     patch user_tag_url(@user, @tag), params: { tag: {name: "Tutorial"} }
     assert_response :ok
@@ -114,26 +114,26 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
     assert_equal @user.id, updated_tag.user_id
   end
 
-  test "should not update tag for bad user" do
+  test "should not update item for bad user" do
     flunk "Not adjusted"
     patch user_tag_url(@badUser, @tag), params: { tag: {name: "Tutorial"} }
     assert_response :forbidden
   end
 
-  test "should not update tag with bad data" do
+  test "should not update item with bad data" do
     flunk "Not adjusted"
     patch user_tag_url(@user, @tag), params: { tag: {name: "Latin"} }
     assert_response :unprocessable_entity
   end
 
-  test "should not update non-existant tag" do
+  test "should not update non-existant item" do
     flunk "Not adjusted"
     assert_nil Tag.find_by id: @bad_id
     patch user_tag_url(@user, 1234), params: { tag: {name: "EEEEEEEEEE"} }
     assert_response :not_found
   end
 
-  test "should swap tags" do
+  test "should swap items" do
     flunk "Not adjusted"
     patch user_tag_url(@user, @tag), params: { tag: {name: "Tutorial"} }
     assert_response :ok
@@ -145,20 +145,20 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
     assert_equal @user.id, updated_tag.user_id
   end
 
-  test "should not swap tag for bad user" do
+  test "should not swap item for bad user" do
     flunk "Not adjusted"
     patch user_tag_url(@badUser, @tag), params: { tag: {name: "Tutorial"} }
     assert_response :forbidden
   end
 
-  test "should not swap non-existant tag" do
+  test "should not swap non-existant item" do
     flunk "Not adjusted"
     assert_nil Tag.find_by id: @bad_id
     patch user_tag_url(@user, 1234), params: { tag: {name: "EEEEEEEEEE"} }
     assert_response :not_found
   end
   
-  test "should destroy tag" do
+  test "should destroy item" do
     assert_difference('Item.count', -1) do
       assert_difference('ItemTag.count', -2) do
         delete user_item_url(@user, @item)
@@ -168,7 +168,7 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
     assert_response :no_content
   end
 
-  test "should not destroy non-existant tag" do
+  test "should not destroy non-existant item" do
     delete user_item_url(@user, @bad_id)
     
     assert_response :not_found
