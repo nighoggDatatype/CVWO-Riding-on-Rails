@@ -30,25 +30,27 @@ class ItemsController < ApplicationController
 
   # PATCH/PUT /items/1.json
   def update
-    success = nil
     if swap_not_item? 
       ActiveRecord::Base.transaction do
         temp = @destination.list_order
         @destination.list_order = @source.list_order
         @source.list_order = temp
       end
-      success = true 
+      respond_to do |format|
+        @items = Item.where id: [@source.id, @destination.id]
+        format.json { render :index, status: :ok }
+      end
     else
-      success = @item.update(item_params)
-    end
-
-    respond_to do |format|
-      if success
-        format.json { render :show, status: :ok, location: user_item_url(@item.user_id, @item) }
-      else
-        format.json { render json: @item.errors, status: :unprocessable_entity }
+      respond_to do |format|
+        if @item.update(item_params)
+          format.json { render :show, status: :ok, location: user_item_url(@item.user_id, @item) }
+        else
+          format.json { render json: @item.errors, status: :unprocessable_entity }
+        end
       end
     end
+
+    
   end
 
   # DELETE /items/1.json
@@ -93,6 +95,7 @@ class ItemsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def item_params
       params.fetch(:item, {}).permit(:done, :task, :tags)
+      #TODO: Figure out whether tag assignments work
     end
     
     def swap_params
