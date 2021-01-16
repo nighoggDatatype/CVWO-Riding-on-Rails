@@ -20,7 +20,7 @@ class TagsController < ApplicationController
     respond_to do |format|
       if @tag.save
         format.json { render :show, status: :created, location: user_tag_url(@tag.user_id, @tag) }
-      else #TODO: test this code path
+      else
         format.json { render json: @tag.errors, status: :unprocessable_entity }
       end
     end
@@ -31,7 +31,7 @@ class TagsController < ApplicationController
     respond_to do |format|
       if @tag.update(tag_params)
         format.json { render :show, status: :ok, location: user_tag_url(@tag.user_id, @tag) }
-      else #TODO: Test this code path
+      else
         format.json { render json: @tag.errors, status: :unprocessable_entity }
       end
     end
@@ -58,8 +58,10 @@ class TagsController < ApplicationController
     end
 
     def set_tag_and_verify
-      @tag = Tag.find(params[:id])
-      if @user != @tag.user
+      @tag = Tag.find_by(id: params[:id])
+      if @tag.blank?
+        #TODO: 404 logic here
+      elsif  @user != @tag.user
         head :forbidden
       end
     end
