@@ -103,15 +103,17 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update item" do
-    flunk "Not adjusted"
-    patch user_tag_url(@user, @tag), params: { tag: {name: "Tutorial"} }
+    patch user_item_url(@user, @item), params: { item: {tags: []} }
     assert_response :ok
-    assert_nil json_response["tags_id"]
-    assert_equal "Tutorial", json_response["name"]
 
-    updated_tag = Tag.find(json_response["id"])
-    assert_equal "Tutorial", updated_tag.name
-    assert_equal @user.id, updated_tag.user_id
+    assert_equal "Kill_kill_kill", json_response["task"]
+    assert_equal @item.done, json_response["done"]
+    assert_equal 0, json_response["tags"].length
+
+    updated_item = Tag.find(json_response["id"])
+    assert_equal "Kill_kill_kill", updated_item.name
+    assert_equal @user.id, updated_item.user_id
+    assert_equal 0, ItemTag.where(item_id: json_response["id"]).count
   end
 
   test "should not update item for bad user" do
