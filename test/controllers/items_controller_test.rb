@@ -14,6 +14,8 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
     assert_nil Item.find_by id: @bad_id
     @bad_user_id = 1234
     assert_nil User.find_by id: @bad_user_id
+    @bad_tag_id = 1234
+    assert_nil Tag.find_by id: @bad_tag_id
   end
   
   test "should get index" do
@@ -25,7 +27,7 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
     
   test "should create item" do
     assert_difference('Item.count') do #TODO: Check this works later
-      post user_items_url(@user), params: { item: {done: false, task: "Hello World", tags: [@tag_one.id, @tag_two.id]} }
+      post user_items_url(@user), params: { item: {done: false, task: "Hello World", tag_ids: [@tag_one.id, @tag_two.id]} }
     end
   
     assert_response :created
@@ -54,12 +56,12 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not create item for non-existant user" do
-    post user_items_url(@bad_user_id), params: { item: {done: false, task: "Hello World", tags: [@tag_one.id, @tag_two.id]} }
+    post user_items_url(@bad_user_id), params: { item: {done: false, task: "Hello World", tag_ids: [@tag_one.id, @tag_two.id]} }
     assert_response :forbidden
   end
 
   test "should not create bad item" do
-    post user_items_url(@user), params: { item: {done: false, tags: [@tag_one.id, @tag_two.id]} }
+    post user_items_url(@user), params: { item: {done: false, tag_ids: [@tag_one.id, @tag_two.id]} }
     assert_response :unprocessable_entity
   end
   
@@ -103,7 +105,7 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update item" do
-    patch user_item_url(@user, @item), params: { item: {tags: []} }
+    patch user_item_url(@user, @item), params: { item: {tag_ids: []} }
     assert_response :ok
 
     assert_equal "Kill_kill_kill", json_response["task"]
@@ -117,14 +119,17 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not update item for bad user" do
-    flunk "Not adjusted"
-    patch user_tag_url(@badUser, @tag), params: { tag: {name: "Tutorial"} }
+    patch user_item_url(@badUser, @item), params: { item: {tag_ids: []} }
     assert_response :forbidden
   end
 
+  test "should not update item with bad tag" do
+    patch user_item_url(@user, @item), params: { item: {tag_ids: [@bad_tag_id]} }
+    assert_response :not_found
+  end
+
   test "should not update item with bad data" do
-    flunk "Not adjusted"
-    patch user_tag_url(@user, @tag), params: { tag: {name: "Latin"} }
+    patch user_item_url(@user, @item), params: { item: {tag_ids: [tags("mismatch").id]} }
     assert_response :unprocessable_entity
   end
 
