@@ -8,6 +8,7 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
     @badUser = users(:one)
     @tag_one = tags(:one)
     @tag_two = tags(:two)
+    @tag_three = tags(:three)
 
     @bad_id = 1234
     assert_nil Item.find_by id: @bad_id
@@ -52,43 +53,52 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 2, ItemTag.where(item_id: json_response["id"]).where(tag: [@tag_one, @tag_two]).count
   end
 
-  test "should not create tag for non-existant user" do
+  test "should not create item for non-existant user" do
     post user_items_url(@bad_user_id), params: { item: {done: false, task: "Hello World", tags: [@tag_one.id, @tag_two.id]} }
     assert_response :forbidden
   end
 
-  test "should not create bad tag" do
+  test "should not create bad item" do
     post user_items_url(@user), params: { item: {done: false, tags: [@tag_one.id, @tag_two.id]} }
     assert_response :unprocessable_entity
   end
   
-  test "should show tag" do
-    flunk "Not adjusted"
-    get user_tag_url(@user, @tag)
+  test "should show item" do
+    get user_item_url(@user, @item)
     assert_response :success
-    assert_nil json_response["tags_id"]
-    assert_equal "Dab Time", json_response["name"]
 
-    updated_tag = Tag.find(json_response["id"])
-    assert_equal "Dab Time", updated_tag.name
-    assert_equal @user.id, updated_tag.user_id
+    assert_equal "Kill_kill_kill", json_response["task"]
+    assert_equal @item.done, json_response["done"]
+    assert_equal 2, json_response["tags"].length
+    tag_data_two = {}
+    tag_data_three = {}
+    if json_response["tags"][0]["id"] == @tag_two.id
+      tag_data_two = json_response["tags"][0]
+      tag_data_three = json_response["tags"][1]
+    else
+      tag_data_two = json_response["tags"][1]
+      tag_data_three = json_response["tags"][0]
+    end
+    assert_equal @tag_two.id, tag_data_two["id"]
+    assert_equal @tag_three.id, tag_data_three["id"]
+    assert_equal @tag_two.name, tag_data_two["name"]
+    assert_equal @tag_three.name, tag_data_three["name"]
+    assert_nil tag_data_two["tags_id"]
+    assert_equal @tag_one.id, tag_data_three["tags_id"]
   end
 
-  test "should not show tag to bad user" do
-    flunk "Not adjusted"
-    get user_tag_url(@badUser, @tag)
+  test "should not show item to bad user" do
+    get user_item_url(@badUser, @item)
     assert_response :forbidden
   end
 
-  test "should not show tag to non-existant user" do
-    flunk "Not adjusted"
-    get user_tag_url(@bad_user_id, @tag)
+  test "should not show item to non-existant user" do
+    get user_item_url(@bad_user_id, @item)
     assert_response :forbidden 
   end
 
-  test "should not show non-existant tag" do
-    flunk "Not adjusted"
-    get user_tag_url(@user, @bad_id)
+  test "should not show non-existant item" do
+    get user_item_url(@user, @bad_id)
     assert_response :not_found
   end
 
