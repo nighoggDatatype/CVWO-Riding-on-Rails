@@ -110,8 +110,8 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
     assert_equal @item.done, json_response["done"]
     assert_equal 0, json_response["tags"].length
 
-    updated_item = Tag.find(json_response["id"])
-    assert_equal "Kill_kill_kill", updated_item.name
+    updated_item = Item.find(json_response["id"])
+    assert_equal "Kill_kill_kill", updated_item.task
     assert_equal @user.id, updated_item.user_id
     assert_equal 0, ItemTag.where(item_id: json_response["id"]).count
   end

@@ -16,8 +16,9 @@ class ItemsController < ApplicationController
 
   # POST /items.json
   def create
-    @item = Item.new(item_params)
+    @item = Item.new(item_params.permit(:done, :task))
     @item.user = @user
+    @item.tag_ids = item_params[:tags]
 
     respond_to do |format|
       if @item.save
@@ -30,7 +31,7 @@ class ItemsController < ApplicationController
 
   # PATCH/PUT /items/1.json
   def update
-    if swap_not_item? 
+    if swap_not_item
       ActiveRecord::Base.transaction do
         temp = @destination.list_order
         @destination.list_order = @source.list_order
@@ -42,7 +43,8 @@ class ItemsController < ApplicationController
       end
     else
       respond_to do |format|
-        if @item.update(item_params)
+        @item.tag_ids= item_params[:tags]
+        if @item.update!(item_params.permit(:done, :task)) #Something happens here, that causes it to 404
           format.json { render :show, status: :ok, location: user_item_url(@item.user_id, @item) }
         else
           format.json { render json: @item.errors, status: :unprocessable_entity }
@@ -95,8 +97,8 @@ class ItemsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def item_params
       filtered = params.fetch(:item, {}).permit(:done, :task, tags: [])
-      if !filtered[:tags].nil?
-        filtered[:tags] = filtered[:tags].map {|tag_id| Tag.find(tag_id)}
+      if filtered[:tags].blank?
+        filtered[:tags] = nil
       end #TODO: Check the code path where tags: is undefined
       return filtered
     end
