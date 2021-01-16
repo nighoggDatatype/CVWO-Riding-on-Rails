@@ -1,8 +1,6 @@
 require 'test_helper'
 
 class TagsControllerTest < ActionDispatch::IntegrationTest
-  # TODO: Verify content retrived
-  
   setup do
     @user = users(:three)
     @tag = tags(:one)
