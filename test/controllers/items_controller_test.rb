@@ -63,6 +63,12 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
   test "should not create bad item" do
     post user_items_url(@user), params: { item: {done: false, tag_ids: [@tag_one.id, @tag_two.id]} }
     assert_response :unprocessable_entity
+    
+    post user_items_url(@user), params: { item: {done: false, tag_ids: [@bad_tag_id]} }
+    assert_response :not_found
+    
+    patch user_item_url(@user, @item), params: { item: {tag_ids: [tags("mismatch").id]} }
+    assert_response :unprocessable_entity
   end
   
   test "should show item" do
