@@ -92,8 +92,7 @@ class TagsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not update non-existant tag" do
-    assert_nil Tag.find_by id: @bad_id
-    patch user_tag_url(@user, 1234), params: { tag: {name: "EEEEEEEEEE"} }
+    patch user_tag_url(@user, @bad_id), params: { tag: {name: "EEEEEEEEEE"} }
     assert_response :not_found
   end
   
