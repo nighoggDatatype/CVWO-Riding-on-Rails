@@ -100,7 +100,7 @@ class TabTest < ActiveSupport::TestCase
     user = users('one')
     tab = Tab.new 
     tab.user = user
-    tab.valid? #TODO: Fix potential bug in items, by doing this temp user for assignment
+    tab.valid?
     tab.user = nil
 
     #Testing Bad Assignment

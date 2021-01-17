@@ -108,7 +108,9 @@ class ItemTest < ActiveSupport::TestCase
     user = users('one')
     item = Item.new
     item.done = false
+    item.user = user
     item.task = "Example Task"
+    item.user = nil
     item.valid?
 
     #Testing Bad Assignment
