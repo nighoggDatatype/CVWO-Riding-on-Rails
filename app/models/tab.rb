@@ -14,7 +14,7 @@ class Tab < ApplicationRecord
   private
     def assign_tab_order
       if tab_order.blank?
-        user_list = Item.where(user_id: user_id)
+        user_list = Tab.where(user_id: user_id)
         if user_list.count() > 0
             self.tab_order = user_list.maximum(:tab_order) + 1
         else
@@ -27,7 +27,7 @@ class Tab < ApplicationRecord
         if name.blank?
           name_candiate = "New_Tab"
           i = 0
-          while Item.where(user_id: user_id).where(name: name_candiate).count > 0 do
+          while Tab.where(user_id: user_id).where(name: name_candiate).count > 0 do
             i += 1
             name_candiate = "New_Tab_#{i}"
           end

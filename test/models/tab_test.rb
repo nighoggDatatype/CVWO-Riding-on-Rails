@@ -9,7 +9,7 @@ class TabTest < ActiveSupport::TestCase
     assert_raise(Exception) {tab.save(validate: false)} #Database validation
     tab.valid? #Run before_validation scripts
     assert_equal 0, tab.tab_order, "Default Assignment Not Working"
-    assert_equal "New Tab", tab.name, "Default Assignment Not Working"
+    assert_equal "New_Tab", tab.name, "Default Assignment Not Working"
     assert tab.save! #Database validation
 
     #New tab, testing Auto Increment
@@ -17,7 +17,7 @@ class TabTest < ActiveSupport::TestCase
     tab.user = user
     tab.valid? #Run before_validation scripts
     assert_equal 1, tab.tab_order, "Auto Increment Not Working"
-    assert_equal "New Tab_1", tab.name, "Default Assignment Not Working"
+    assert_equal "New_Tab_1", tab.name, "Default Assignment Not Working"
     assert tab.save! #Database validation
 
     #Testing overriding auto assignment
@@ -83,6 +83,7 @@ class TabTest < ActiveSupport::TestCase
     user = users('three')
     tab = Tab.new
     tab.user = user
+    tab.name = "Example_Tab"
     tab.tab_order = 0
     assert_raise(Exception) {tab.save(validate: false)} #Database validation
     assert_not tab.save, "Model validation failed" #Model validation
