@@ -15,3 +15,8 @@ two:
   user: three
   tab_order: 1
   tags: filler, three
+
+three:
+  name: "Bad_Tab"
+  user: four
+  tab_order: 0

@@ -51,13 +51,17 @@ class UserTest < ActiveSupport::TestCase
     user = users("three")
     user_id = user.id
 
+    assert_equal 4, TabTag.count
     assert_equal 4, ItemTag.count
+    assert_equal 3, Tab.count
     assert_equal 3, Item.count
     assert_equal 5, Tag.count
     assert_equal 4, Tag.where(user_id: user_id).count
 
     user.destroy
+    assert_equal 0, TabTag.count
     assert_equal 0, ItemTag.count
+    assert_equal 1, Tab.count
     assert_equal 1, Item.count
     assert_equal 1, Tag.count
     assert_equal 0, Tag.where(user_id: user_id).count
@@ -69,7 +73,7 @@ class UserTest < ActiveSupport::TestCase
 
     assert_equal 4, TabTag.count
     assert_equal 4, ItemTag.count
-    assert_equal 2, Tab.count
+    assert_equal 3, Tab.count
     assert_equal 3, Item.count
     assert_equal 5, Tag.count
     assert_equal 4, Tag.where(user_id: user_id).count
@@ -77,7 +81,7 @@ class UserTest < ActiveSupport::TestCase
     user.delete
     assert_equal 0, TabTag.count
     assert_equal 0, ItemTag.count
-    assert_equal 0, Tab.count
+    assert_equal 1, Tab.count
     assert_equal 1, Item.count
     assert_equal 1, Tag.count
     assert_equal 0, Tag.where(user_id: user_id).count
