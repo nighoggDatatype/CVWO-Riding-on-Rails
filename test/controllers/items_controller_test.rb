@@ -167,18 +167,20 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not swap item for bad user" do
-    flunk "Not adjusted"
     item_3 = items(:three)
-    patch user_item_url(@user, @item), params: { swap: {dst_id:item_3.id }, is_swap: true}
-    patch user_tag_url(@badUser, @tag), params: { tag: {name: "Tutorial"} }
+    #Making sure that bad user due to item_3 overrides non-existant item from @bad_id
+    patch user_item_url(@user, @bad_id), params: { swap: {target: item_3.id }, is_swap: true}
     assert_response :forbidden
   end
 
   test "should not swap non-existant item" do
-    flunk "Not adjusted"
-    assert_nil Tag.find_by id: @bad_id
-    patch user_tag_url(@user, 1234), params: { tag: {name: "EEEEEEEEEE"} }
+    patch user_item_url(@user, @item), params: { swap: {target: @bad_id }, is_swap: true}
     assert_response :not_found
+  end
+
+  test "should not swap same item" do
+    patch user_item_url(@user, @item), params: { swap: {target: @item.id }, is_swap: true}
+    assert_response :unprocessable_entity
   end
   
   test "should destroy item" do
