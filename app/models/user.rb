@@ -4,5 +4,8 @@ class User < ApplicationRecord
     validates :username, presence: true
     validates :username, uniqueness: true
     validates :username, format: {with: /\A\w+\Z/} #Expected format: CamelCase
-    validates :username, length: { minimum: 10 } #Note: Only care about minimum to prevent wardialing
+    validates :username, length: { minimum: 10 }, unless: -> {username == "default"}
+    def self.default
+        User.find_by(username: "default")
+    end
 end
