@@ -79,8 +79,8 @@ class ItemsController < ApplicationController
 
     def set_item_and_verify
       if swap_not_item
-        @source      = Item.find_by id: swap_params["src_id"]
-        @destination = Item.find_by id: swap_params["dst_id"]
+        @source      = Item.find_by id: params[:id]
+        @destination = Item.find_by id: swap_params["target"]
         source_forbid = (!@source.blank?) && (@user != @source.user)
         destination_forbid = (!@destination.blank?) && (@user != @destination.user)
         if source_forbid || destination_forbid
@@ -106,7 +106,7 @@ class ItemsController < ApplicationController
     end
     
     def swap_params
-      params.fetch(:swap, {}).permit(:src_id, :dst_id)
+      params.fetch(:swap, {}).permit(:target)
     end
 
     def swap_not_item #TODO: See if I can add question mark as postfix

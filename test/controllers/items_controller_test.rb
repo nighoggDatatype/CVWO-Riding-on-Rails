@@ -148,7 +148,7 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
   test "should swap items" do
     src_loc = @item.list_order
     dst_loc = @item_2.list_order
-    patch user_item_url(@user, @item), params: { swap: {src_id: @item.id, dst_id:@item_2.id }, is_swap: true}
+    patch user_item_url(@user, @item), params: { swap: {target: @item_2.id }, is_swap: true}
     assert_response :ok
 
     assert_equal 2, json_response.length
