@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   resources :user, only: [:show, :create, :update, :destroy], constraints: { format: 'json' }, :defaults => { :format => 'json' } do
     resources :tags , only: [:index, :show, :create, :update, :destroy]
     resources :items, only: [:index, :show, :create, :update, :destroy]
+    resources :tabs , only: [:index, :show, :create, :update, :destroy]
   end
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
