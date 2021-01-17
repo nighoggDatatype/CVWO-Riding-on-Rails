@@ -5,6 +5,7 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @user = users(:three)
     @item = items(:one)
+    @item_2 = items(:two)
     @badUser = users(:one)
     @tag_one = tags(:one)
     @tag_two = tags(:two)
@@ -145,15 +146,24 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should swap items" do
-    flunk "Not adjusted"
-    patch user_tag_url(@user, @tag), params: { tag: {name: "Tutorial"} }
+    src_loc = @item.list_order
+    dst_loc = @item_2.list_order
+    patch user_item_url(@user, @item), params: { swap: {src_id: @item.id, dst_id:@item_2.id }, is_swap: true}
     assert_response :ok
-    assert_nil json_response["tags_id"]
-    assert_equal "Tutorial", json_response["name"]
 
-    updated_tag = Tag.find(json_response["id"])
-    assert_equal "Tutorial", updated_tag.name
-    assert_equal @user.id, updated_tag.user_id
+    assert_equal 2, json_response.length
+    #Asserting specific ordering cause swap
+    assert_equal @item.id, json_response[1]["id"]
+    assert_equal @item_2.id, json_response[0]["id"]
+    assert_equal @item.task, json_response[1]["task"]
+    assert_equal @item_2.task, json_response[0]["task"]
+
+    updated_item_one = Item.find(@item.id)
+    updated_item_two = Item.find(@item_2.id)
+    assert_equal @user, updated_item_one.user
+    assert_equal @user, updated_item_two.user
+    assert_equal src_loc, updated_item_two.list_order
+    assert_equal dst_loc, updated_item_one.list_order
   end
 
   test "should not swap item for bad user" do

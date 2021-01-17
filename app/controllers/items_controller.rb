@@ -31,13 +31,17 @@ class ItemsController < ApplicationController
   # PATCH/PUT /items/1.json
   def update
     if swap_not_item
-      ActiveRecord::Base.transaction do
+      Item.transaction do
         temp = @destination.list_order
         @destination.list_order = @source.list_order
+        @source.list_order = -1 #Note: list order must allow negative 1 as the lowest number.
+        @source.save!
+        @destination.save!
         @source.list_order = temp
+        @source.save!
       end
       respond_to do |format|
-        @items = Item.where id: [@source.id, @destination.id]
+        @items = Item.where(id: [@source.id, @destination.id]).order(:list_order)
         format.json { render :index, status: :ok }
       end
     else
