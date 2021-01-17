@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class ItemsControllerTest < ActionDispatch::IntegrationTest
-  #TODO: Set up for items
   setup do
     @user = users(:three)
     @item = items(:one)

@@ -1,6 +1,4 @@
 class TabsController < ApplicationController
-  #TODO: Test this
-  #TODO: Get appropriate jbuilder files
   before_action :set_user_and_verify
   before_action :set_tab_and_verify, only: [:show, :update, :destroy]
   #TODO: Figure out mass updates
