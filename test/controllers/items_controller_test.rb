@@ -168,6 +168,8 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
 
   test "should not swap item for bad user" do
     flunk "Not adjusted"
+    item_3 = items(:three)
+    patch user_item_url(@user, @item), params: { swap: {dst_id:item_3.id }, is_swap: true}
     patch user_tag_url(@badUser, @tag), params: { tag: {name: "Tutorial"} }
     assert_response :forbidden
   end

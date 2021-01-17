@@ -13,3 +13,9 @@ two:
   user: three
   list_order: 1
   tags: filler, three
+
+three:
+  done: false
+  task: "Do Not Pass Go"
+  user: one
+  list_order: 0
