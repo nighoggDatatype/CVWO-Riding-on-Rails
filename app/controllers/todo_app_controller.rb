@@ -1,13 +1,13 @@
 class TodoAppController < ApplicationController
   def index
     if app_params.blank?
-      @user = User.default #TODO: Figure out why User.default.blank? is true
+      @user = User.default
     else
       @user = User.find_by(username: app_params)
     end
 
     if @user.blank?
-      head :forbidden #Note for debuggin later, this trips for some reason.
+      head :forbidden
     else
       @items = Item.where(user: @user).order(:list_order)
       @tags = Tag.where(user: @user).order(:name)
