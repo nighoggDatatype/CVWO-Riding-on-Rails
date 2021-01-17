@@ -23,7 +23,7 @@ class Tab < ApplicationRecord
       end
     end
 
-    def assign_tab_name #TODO: In need of testing
+    def assign_tab_name
         if name.blank?
           name_candiate = "New_Tab"
           i = 0
