@@ -122,6 +122,7 @@ class TagCloud extends React.Component<Props, State> {
           menuFocus: "", 
           seedTag: isBaseTag ? "" : prev.menuFocus + ":",
           originalName: "",
+          searchText: "New Tag",
         };
       });
     //Dialog Interaction
