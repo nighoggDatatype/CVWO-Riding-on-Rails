@@ -1,0 +1,22 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+# This model initially had no columns defined. If you add columns to the
+# model remove the '{}' from the fixture names and add the columns immediately
+# below each fixture, per the syntax in the comments below
+#
+one:
+  name: "Tab_1"
+  user: three
+  tab_order: 0
+  tags: two, three
+
+two:
+  name: "Tab_2"
+  user: three
+  tab_order: 1
+  tags: filler, three
+
+three:
+  name: "Bad_Tab"
+  user: four
+  tab_order: 0
