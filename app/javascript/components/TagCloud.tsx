@@ -16,7 +16,7 @@ import Button from "@material-ui/core/Button"
 interface Props {
   tagCloud: string[],
   tagSelection: string[],
-  //onUpdate: (newTags: {parent:string,tag:string}[], changedTags:{before:string, after:string}[], deletedTags:string[]) => void,
+  onUpdate: (newTags: {parent:string,tag:string}[], changedTags:{before:string, after:string}[], deletedTags:string[]) => void,
 }
 
 interface State {
@@ -27,10 +27,9 @@ interface State {
   dialogOpen: boolean,
   searchText: string,
   searchEnter: boolean,
-  //Specific to Tag Creation
-  parentDomain: string,
-  //Specific to Tag Rename
-  originalTag: string,
+  //State for Creation/Rename
+  seedTag: string,
+  originalName: string,
 }
 
 class TagCloud extends React.Component<Props, State> {
@@ -42,13 +41,18 @@ class TagCloud extends React.Component<Props, State> {
       dialogOpen: false,
       searchText: "",
       searchEnter: false,
-      parentDomain: "",
-      originalTag: "",
+      seedTag: "",
+      originalName: "",
     }
   }
   render () {
     const props = this.props;
     const state = this.state;
+    //Helper functions
+    const parentDomain = (tag:string) => tag.substring(0, tag.lastIndexOf("/") + 1);
+    const tagName = (tag:string) => tag.substring(tag.lastIndexOf("/") + 1, tag.length);
+    const getDomainSiblings = (parentTagDomain:string) => 
+      props.tagCloud.filter((candidate) => parentDomain(candidate) == parentTagDomain)
     //Style
     const colourfulChipStyle = (data:string) => {
       return {
@@ -65,20 +69,42 @@ class TagCloud extends React.Component<Props, State> {
       this.setState({anchor: null, menuFocus: ""});
     };
     const handleDelete = () => {
-      handleCloseMenu(); //TODO: Change this
+      props.onUpdate([],[],[state.menuFocus])
+      handleCloseMenu();
     }
-    const handleRename = () => {
-      handleCloseMenu(); //TODO: Change this
-    }
-    const handleCreate = (isBaseTag:boolean) => () => {
-      handleCloseMenu(); //TODO: Change this
-    }
+    const handleRename = () => 
+      this.setState((prev) => {
+        return {
+          dialogOpen: true,
+          anchor: null, 
+          menuFocus: "", 
+          seedTag: parentDomain(prev.menuFocus),
+          originalName: tagName(prev.menuFocus),
+          searchText:   tagName(prev.menuFocus),
+        };
+      });
+    
+    const handleCreate = (isBaseTag:boolean) => () => 
+      this.setState((prev) => {
+        return {
+          dialogOpen: true,
+          anchor: null, 
+          menuFocus: "", 
+          seedTag: isBaseTag ? "" : prev.menuFocus + ":",
+          originalName: "",
+        };
+      });
     //Dialog Helpers
-    const finalTag = state.parentDomain + state.searchText;
+    const finalTag = state.seedTag + state.searchText;
     const clash = props.tagCloud.includes(finalTag);
     //Dialog Interaction
     const handleCloseDialog = () => 
-      this.setState({dialogOpen: false, searchText: "", parentDomain: "",});
+      this.setState({
+        dialogOpen: false, 
+        searchText: "", 
+        seedTag: "",
+        originalName: "",
+      });
     const handleSearch = () => {}//TODO: Fix this
     return (
       <Paper>
@@ -117,7 +143,7 @@ class TagCloud extends React.Component<Props, State> {
           fullWidth maxWidth='md'>
           <DialogTitle id="form-dialog-title">Select New Tag</DialogTitle>
           <DialogContent>
-            {this.searchTags(state.searchText).map((data) => {
+            {getDomainSiblings(state.seedTag).map((data) => {
                 return (
                   <Chip
                     size= { clash ? 'medium' : "small"}
@@ -145,7 +171,7 @@ class TagCloud extends React.Component<Props, State> {
             <Button onClick={handleCloseDialog} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.onSearchSubmitAttempt} color="primary" disabled={clash}>
+            <Button onClick={handleCloseDialog} color="primary" disabled={clash}>
               Add
             </Button>
           </DialogActions>
