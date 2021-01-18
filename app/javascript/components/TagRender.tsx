@@ -7,6 +7,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import TextField from "@material-ui/core/TextField";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
+import StringToColour from "./StringToColour";
 import { Search } from "@material-ui/icons";
 
 export interface updateTags {
@@ -90,6 +91,13 @@ class TagRender extends React.Component<Props,State> {
       //TODO: When I decided on my tag format, filter for input that is obviously invalid.
       this.setState({searchText: newInput, searchEnter: altEnter});
     }
+    const colourfulChipStyle = (data:string) => {
+      return {
+        margin: "4px",
+        backgroundColor: StringToColour(data, false),
+        color: StringToColour(data, true)
+      }
+    }
     return (
       <React.Fragment>
         {this.props.tags.map((data) => 
@@ -98,13 +106,17 @@ class TagRender extends React.Component<Props,State> {
               label={data}
               onClick={() => this.props.onToggleSearch(data)}
               onDelete={handleDeleteFactory(data)}
-              style={{margin:"4px"}}
+              style={{
+                margin: "4px",
+                backgroundColor: StringToColour(data, false),
+                color: StringToColour(data, true)
+              }}
             />
         )}
         <Chip 
           variant="outlined" 
           size="small" 
-          style={{margin:"4px"}} 
+          style={{margin:"4px"}}
           icon={<AddIcon />} 
           onClick={() => this.setState({dialogOpen: true})}
         />
@@ -117,10 +129,11 @@ class TagRender extends React.Component<Props,State> {
           <DialogContent>
             {this.searchTags(this.state.searchText).map((data,index) => 
               <Chip
-                size="small"
+                size= { index==0 ? 'medium' : "small"}
+                icon= { index==0 ? <AddIcon style={{color: StringToColour(data, true)}}/> : null} 
                 label={data}
                 onClick={this.onSubmitFactory(data)}
-                style={{margin:"4px"}}
+                style={colourfulChipStyle(data)}
                 variant={ index==0 ? 'default' : 'outlined'}
               />
             )}

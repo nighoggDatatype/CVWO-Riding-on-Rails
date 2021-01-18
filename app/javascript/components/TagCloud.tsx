@@ -6,6 +6,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
+import StringToColour from "./StringToColour";
 import { makeStyles } from '@material-ui/core/styles';
 
 interface Props {
@@ -55,7 +56,6 @@ class TagCloud extends React.Component<Props, State> {
         >
           <MenuItem onClick={handleClose}>Rename</MenuItem>
           <MenuItem onClick={handleClose}>Create Sub-tag</MenuItem>
-          <MenuItem onClick={handleClose}>Change Colour</MenuItem>
           <MenuItem onClick={handleClose}>Exclude from Search</MenuItem>
         </Menu>
       </Paper>
