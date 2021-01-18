@@ -156,7 +156,7 @@ class TagCloud extends React.Component<Props, State> {
           <TextField
             margin="dense"
             id="search-tag-field"
-            label="Search"
+            label={state.seedTag.length > 0 ? "Tag Domain: " + state.seedTag : "Base Tag:"}
             fullWidth
             autoFocus
             multiline
@@ -164,7 +164,10 @@ class TagCloud extends React.Component<Props, State> {
             value={state.searchText}
             onChange={handleSearch}
             error={clash}
-            helperText="Search result is empty"
+            helperText={
+              state.originalName.length > 0 && state.originalName == state.searchText
+                ? "Need To Rename Tag"
+                : "Collision with existing tag"}
           />
           </DialogContent>
           <DialogActions>
