@@ -50,7 +50,7 @@ class TagCloud extends React.Component<Props, State> {
   //Dialog Helpers
   finalTag = (searchText:string) => this.state.seedTag + searchText;
   clash = (searchText:string) =>  this.props.tagCloud.includes(this.finalTag(searchText));
-  validTag = (searchText)  => false; //TODO: Fix this
+  validTag = (searchText)  => /^[\w \.\-~?!@#$%^&*()\/\\{}"'<>,.`]+$/.test(searchText) && !/^\s+$/.test(searchText);
 
   //Dialog Closer
   handleCloseDialog = () => 
