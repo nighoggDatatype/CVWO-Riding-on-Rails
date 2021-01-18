@@ -51,7 +51,6 @@ class TagCloud extends React.Component<Props, State> {
   finalTag = (searchText:string) => this.state.seedTag + searchText;
   clash = (searchText:string) =>  this.props.tagCloud.includes(this.finalTag(searchText));
   validTag = (searchText)  => false; //TODO: Fix this
-  canSubmit = (searchText) => this.validTag(searchText) && !this.clash(searchText)
 
   //Dialog Closer
   handleCloseDialog = () => 
@@ -66,7 +65,7 @@ class TagCloud extends React.Component<Props, State> {
   onSearchSubmitAttempt(){
     const state = this.state;
     const props = this.props;
-    if( !this.canSubmit(state.searchText) ){
+    if( !this.clash(state.searchText) ){
       return;
     }
     if( state.originalName.length > 0 ) {//Rename
@@ -83,7 +82,7 @@ class TagCloud extends React.Component<Props, State> {
     const parentDomain = (tag:string) => tag.substring(0, tag.lastIndexOf("/") + 1);
     const tagName = (tag:string) => tag.substring(tag.lastIndexOf("/") + 1, tag.length);
     const getDomainSiblings = (parentTagDomain:string) => 
-      props.tagCloud.filter((candidate) => parentDomain(candidate) == parentTagDomain)
+      props.tagCloud.filter((candidate) => parentDomain(candidate) == parentTagDomain);
     //Style
     const colourfulChipStyle = (data:string) => {
       return {
@@ -135,9 +134,14 @@ class TagCloud extends React.Component<Props, State> {
       });
     const handleSearch = (e: { target: { value: string; }; }) => {
       let newInputRaw:string = e.target.value;
-      let newInput = newInputRaw.replace("\n","");
-      let altEnter = newInputRaw.includes('\n') && this.canSubmit(newInput);
-      this.setState({searchText: newInput, searchEnter: altEnter});
+      this.setState((prev) =>{
+        if ( !this.validTag(newInputRaw) ){
+          newInputRaw = prev.searchText;
+        }
+        let newInput = newInputRaw.replace("\n","");
+        let altEnter = newInputRaw.includes('\n') && this.clash(newInput);
+        return {searchText: newInput, searchEnter: altEnter};
+      });
     }
     return (
       <Paper>
@@ -196,10 +200,10 @@ class TagCloud extends React.Component<Props, State> {
             rowsMax='1'
             value={state.searchText}
             onChange={handleSearch}
-            error={this.canSubmit(state.searchText)}
+            error={this.clash(state.searchText)}
             helperText={
               state.originalName.length > 0 && state.originalName == state.searchText
-                ? "Need To Rename Tag" //TODO: Need to fix this
+                ? "Need To Rename Tag"
                 : "Collision with existing tag"}
           />
           </DialogContent>
@@ -207,7 +211,7 @@ class TagCloud extends React.Component<Props, State> {
             <Button onClick={handleCloseDialog} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.onSearchSubmitAttempt} color="primary" disabled={this.canSubmit(state.searchText)}>
+            <Button onClick={this.onSearchSubmitAttempt} color="primary" disabled={this.clash(state.searchText)}>
               Add
             </Button>
           </DialogActions>
