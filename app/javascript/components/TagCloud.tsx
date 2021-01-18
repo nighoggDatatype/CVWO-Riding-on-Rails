@@ -207,7 +207,7 @@ class TagCloud extends React.Component<Props, State> {
             <Button onClick={handleCloseDialog} color="primary">
               Cancel
             </Button>
-            <Button onClick={handleCloseDialog} color="primary" disabled={this.canSubmit(state.searchText)}>
+            <Button onClick={this.onSearchSubmitAttempt} color="primary" disabled={this.canSubmit(state.searchText)}>
               Add
             </Button>
           </DialogActions>
