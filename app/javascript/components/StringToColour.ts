@@ -13,12 +13,23 @@ function colourTransformOne(hash:number){
         colour += ('00' + value.toString(16)).substr(-2);
     }
     return colour;
-}
-//Attribution: https://stackoverflow.com/a/16348977
+}//Attribution: https://stackoverflow.com/a/16348977
+//Note, the UI doesn't quite handle dark colors correctly.
+//Swapped out and kept here for potential future modification
 
+function colourTransformTwo(hash:number){
+    var colours = 
+        ["#F0A3FF", "#0075DC", "#B0623B", "#2BCE48", "#FFCC99", 
+         "#AAAAAA", "#94FFB5", "#C20088", "#FFA405", "#FF0010", 
+         "#5EF1F2", "#E0FF66", "#FF5005", "#FFFF00", "#84C757"]
+    //From https://en.wikipedia.org/wiki/Help:Distinguishable_colors
+    //Modified with custom colours and removal of dark colours
+    var len = colours.length;
+    return colours[((hash%len)+len)%len]; //Fancy modulo function to ensure negative numbers mod len is positive.
+}
 
 function StringToBackgroundColour(str: string) {
-    return colourTransformOne(hashFunction(str));
+    return colourTransformTwo(hashFunction(str));
 }
 
 
