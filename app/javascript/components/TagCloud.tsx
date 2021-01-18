@@ -16,7 +16,9 @@ import Button from "@material-ui/core/Button"
 interface Props {
   tagCloud: string[],
   tagSelection: string[],
-  onUpdate: (newTags: {parent:string,tag:string}[], changedTags:{before:string, after:string}[], deletedTags:string[]) => void,
+  onCreate: (parentTag:string, newName:string) => void,
+  onUpdate: (oldFullTagName:string, newLastName:string) => void,
+  onDestroy: (deleteTarget:string) => void,
 }
 
 interface State {
@@ -45,6 +47,35 @@ class TagCloud extends React.Component<Props, State> {
       originalName: "",
     }
   }
+  //Dialog Helpers
+  finalTag = (searchText:string) => this.state.seedTag + searchText;
+  clash = (searchText:string) =>  this.props.tagCloud.includes(this.finalTag(searchText));
+  validTag = (searchText)  => false; //TODO: Fix this
+  canSubmit = (searchText) => this.validTag(searchText) && !this.clash(searchText)
+
+  //Dialog Closer
+  handleCloseDialog = () => 
+    this.setState({
+      dialogOpen: false, 
+      searchText: "", 
+      seedTag: "",
+      originalName: "",
+  });
+  
+  //Dialog submission
+  onSearchSubmitAttempt(){
+    const state = this.state;
+    const props = this.props;
+    if( !this.canSubmit(state.searchText) ){
+      return;
+    }
+    if( state.originalName.length > 0 ) {//Rename
+      props.onUpdate(state.seedTag + state.originalName, state.searchText);
+    }else{//Create
+      props.onCreate(state.seedTag, state.originalName);
+    }
+    this.handleCloseDialog()
+  }
   render () {
     const props = this.props;
     const state = this.state;
@@ -69,7 +100,7 @@ class TagCloud extends React.Component<Props, State> {
       this.setState({anchor: null, menuFocus: ""});
     };
     const handleDelete = () => {
-      props.onUpdate([],[],[state.menuFocus])
+      props.onDestroy(state.menuFocus);
       handleCloseMenu();
     }
     const handleRename = () => 
@@ -94,9 +125,6 @@ class TagCloud extends React.Component<Props, State> {
           originalName: "",
         };
       });
-    //Dialog Helpers
-    const finalTag = state.seedTag + state.searchText;
-    const clash = props.tagCloud.includes(finalTag);
     //Dialog Interaction
     const handleCloseDialog = () => 
       this.setState({
@@ -105,7 +133,12 @@ class TagCloud extends React.Component<Props, State> {
         seedTag: "",
         originalName: "",
       });
-    const handleSearch = () => {}//TODO: Fix this
+    const handleSearch = (e: { target: { value: string; }; }) => {
+      let newInputRaw:string = e.target.value;
+      let newInput = newInputRaw.replace("\n","");
+      let altEnter = newInputRaw.includes('\n') && this.canSubmit(newInput);
+      this.setState({searchText: newInput, searchEnter: altEnter});
+    }
     return (
       <Paper>
         {props.tagCloud.map((data) => {
@@ -146,10 +179,10 @@ class TagCloud extends React.Component<Props, State> {
             {getDomainSiblings(state.seedTag).map((data) => {
                 return (
                   <Chip
-                    size= { clash ? 'medium' : "small"}
+                    size= { this.finalTag(state.searchText) == data ? 'medium' : "small"}
                     label={data}
                     style={colourfulChipStyle(data)}
-                    variant={ clash ? 'default' : 'outlined'}
+                    variant={ this.finalTag(state.searchText) == data ? 'default' : 'outlined'}
                   />);
               }
             )}
@@ -163,10 +196,10 @@ class TagCloud extends React.Component<Props, State> {
             rowsMax='1'
             value={state.searchText}
             onChange={handleSearch}
-            error={clash}
+            error={this.canSubmit(state.searchText)}
             helperText={
               state.originalName.length > 0 && state.originalName == state.searchText
-                ? "Need To Rename Tag"
+                ? "Need To Rename Tag" //TODO: Need to fix this
                 : "Collision with existing tag"}
           />
           </DialogContent>
@@ -174,7 +207,7 @@ class TagCloud extends React.Component<Props, State> {
             <Button onClick={handleCloseDialog} color="primary">
               Cancel
             </Button>
-            <Button onClick={handleCloseDialog} color="primary" disabled={clash}>
+            <Button onClick={handleCloseDialog} color="primary" disabled={this.canSubmit(state.searchText)}>
               Add
             </Button>
           </DialogActions>
