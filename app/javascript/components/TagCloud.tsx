@@ -1,13 +1,10 @@
 import React from "react"
 import Paper from "@material-ui/core/Paper";
-import IconButton from '@material-ui/core/IconButton';
-import Button from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
+import Chip from '@material-ui/core/Chip';
 import StringToColour from "./StringToColour";
-import { makeStyles } from '@material-ui/core/styles';
 
 interface Props {
   tagCloud: string[],//TODO: If need be, see about making this the raw tags.
@@ -38,15 +35,20 @@ class TagCloud extends React.Component<Props, State> {
     };
     return (
       <Paper>
-        {this.props.tagCloud.map((data) => 
-            <ButtonGroup
-              size="small" 
-              variant={this.props.tagSelection.includes(data) ? "contained" : "text"}
-            >
-              <Button>{data}</Button>
-              <IconButton onClick={handleClickFactory(data)}><MoreVertIcon/></IconButton>
-            </ButtonGroup>
-          )}
+        {this.props.tagCloud.map((data) => {
+          return (
+              <Chip
+                label={data}
+                onDelete={handleClickFactory(data)}
+                style={{
+                  margin: "4px",
+                  backgroundColor: StringToColour(data, false),
+                  color: StringToColour(data, true)
+                }}
+                deleteIcon ={<MoreVertIcon/>}
+              />
+          );
+          })}
         <Menu
           id="simple-menu"
           anchorEl={this.state.anchor}
@@ -56,7 +58,7 @@ class TagCloud extends React.Component<Props, State> {
         >
           <MenuItem onClick={handleClose}>Rename</MenuItem>
           <MenuItem onClick={handleClose}>Create Sub-tag</MenuItem>
-          <MenuItem onClick={handleClose}>Exclude from Search</MenuItem>
+          <MenuItem onClick={handleClose}>Delete</MenuItem>
         </Menu>
       </Paper>
     );
