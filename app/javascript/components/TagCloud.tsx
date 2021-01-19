@@ -64,7 +64,7 @@ class TagCloud extends React.Component<Props, State> {
   });
   
   //Dialog submission
-  onSearchSubmitAttempt(){
+  onSubmitAttempt(){
     const state = this.state;
     const props = this.props;
     if( this.invalid(state.searchText) ){
@@ -80,7 +80,7 @@ class TagCloud extends React.Component<Props, State> {
   componentDidUpdate(){
     if(this.state.searchEnter){
       this.setState({searchEnter : false});
-      this.onSearchSubmitAttempt();
+      this.onSubmitAttempt();
     }
   }
   render () {
@@ -211,7 +211,7 @@ class TagCloud extends React.Component<Props, State> {
             <Button onClick={this.handleCloseDialog} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.onSearchSubmitAttempt} color="primary" disabled={this.invalid(state.searchText)}>
+            <Button onClick={this.onSubmitAttempt} color="primary" disabled={this.invalid(state.searchText)}>
               Add
             </Button>
           </DialogActions>
