@@ -77,6 +77,12 @@ class TagCloud extends React.Component<Props, State> {
     }
     this.handleCloseDialog();
   }
+  componentDidUpdate(){
+    if(this.state.searchEnter){
+      this.setState({searchEnter : false});
+      this.onSearchSubmitAttempt();
+    }
+  }
   render () {
     const props = this.props;
     const state = this.state;
