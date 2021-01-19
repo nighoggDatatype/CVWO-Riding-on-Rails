@@ -16,7 +16,7 @@ import Button from "@material-ui/core/Button"
 interface Props {
   tagCloud: string[],
   tagSelection: string[],
-  onCreate: (parentTag:string, newName:string) => void,
+  onCreate: (parentDomain:string, newName:string) => void,
   onUpdate: (oldFullTagName:string, newLastName:string) => void,
   onDestroy: (deleteTarget:string) => void,
 }
