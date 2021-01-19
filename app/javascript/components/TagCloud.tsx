@@ -178,7 +178,11 @@ class TagCloud extends React.Component<Props, State> {
           onClose={this.handleCloseDialog} 
           aria-labelledby="form-dialog-title" 
           fullWidth maxWidth='md'>
-          <DialogTitle id="form-dialog-title">Select New Tag</DialogTitle>
+          <DialogTitle id="form-dialog-title">{
+            (state.originalName.length > 0 ? "Rename " : "Create New ") +
+            (state.seedTag.length > 0 ? "Sub-" : "Base ")
+            + "Tag"
+          }</DialogTitle>
           <DialogContent>
             {getDomainSiblings(state.seedTag).map((data) => {
                 return (
