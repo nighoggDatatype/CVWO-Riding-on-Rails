@@ -12,6 +12,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import TextField from "@material-ui/core/TextField";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button"
+import ErrorIcon from '@material-ui/icons/Error';
 
 interface Props {
   tagCloud: string[],
@@ -185,13 +186,15 @@ class TagCloud extends React.Component<Props, State> {
           }</DialogTitle>
           <DialogContent>
             {getDomainSiblings(state.seedTag).map((data) => {
-                return (
-                  <Chip
-                    size= { this.finalTag(state.searchText) == data ? 'medium' : "small"}
-                    label={data}
-                    style={colourfulChipStyle(data)}
-                    variant={ this.finalTag(state.searchText) == data ? 'default' : 'outlined'}
-                  />);
+              const collision = this.finalTag(state.searchText) == data;
+              return (
+                <Chip
+                  size= { collision ? 'medium' : "small"}
+                  label={data}
+                  icon={ collision ? <ErrorIcon style={{color: StringToColour(data, true)}}/>: undefined}
+                  style={colourfulChipStyle(data)}
+                  variant={ collision ? 'default' : 'outlined'}
+                />);
               }
             )}
           <TextField
