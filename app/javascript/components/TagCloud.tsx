@@ -127,14 +127,6 @@ class TagCloud extends React.Component<Props, State> {
           searchText: "New Tag",
         };
       });
-    //Dialog Interaction
-    const handleCloseDialog = () => 
-      this.setState({
-        dialogOpen: false, 
-        searchText: "", 
-        seedTag: "",
-        originalName: "",
-      });
     const handleSearch = (e: { target: { value: string; }; }) => {
       let newInputRaw:string = e.target.value;
       this.setState((prev) =>{
@@ -177,7 +169,7 @@ class TagCloud extends React.Component<Props, State> {
         </Menu>
         <Dialog 
           open={state.dialogOpen} 
-          onClose={handleCloseDialog} 
+          onClose={this.handleCloseDialog} 
           aria-labelledby="form-dialog-title" 
           fullWidth maxWidth='md'>
           <DialogTitle id="form-dialog-title">Select New Tag</DialogTitle>
@@ -210,7 +202,7 @@ class TagCloud extends React.Component<Props, State> {
           />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseDialog} color="primary">
+            <Button onClick={this.handleCloseDialog} color="primary">
               Cancel
             </Button>
             <Button onClick={this.onSearchSubmitAttempt} color="primary" disabled={this.invalid(state.searchText)}>
