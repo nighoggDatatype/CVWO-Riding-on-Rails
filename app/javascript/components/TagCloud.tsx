@@ -87,8 +87,8 @@ class TagCloud extends React.Component<Props, State> {
     const props = this.props;
     const state = this.state;
     //Helper functions
-    const parentDomain = (tag:string) => tag.substring(0, tag.lastIndexOf("/") + 1);
-    const tagName = (tag:string) => tag.substring(tag.lastIndexOf("/") + 1, tag.length);
+    const parentDomain = (tag:string) => tag.substring(0, tag.lastIndexOf(":") + 1);
+    const tagName = (tag:string) => tag.substring(tag.lastIndexOf(":") + 1, tag.length);
     const getDomainSiblings = (parentTagDomain:string) => 
       props.tagCloud.filter((candidate) => parentDomain(candidate) == parentTagDomain);
     //Style
