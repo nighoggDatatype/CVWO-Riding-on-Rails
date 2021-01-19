@@ -73,7 +73,7 @@ class TagCloud extends React.Component<Props, State> {
     if( state.originalName.length > 0 ) {//Rename
       props.onUpdate(state.seedTag + state.originalName, state.searchText);
     }else{//Create
-      props.onCreate(state.seedTag, state.originalName);
+      props.onCreate(state.seedTag, state.searchText);
     }
     this.handleCloseDialog();
   }
