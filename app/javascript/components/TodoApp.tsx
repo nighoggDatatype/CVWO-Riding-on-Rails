@@ -19,11 +19,13 @@ class TodoApp extends React.Component<Props,State> {
     let built: Map<number,string> = new Map<number,string>();
     while (built.size < dataStruct.size){
       dataStruct.forEach((value, id) => {
-        if (value.parentId === undefined){
+        if (value.parentId !== undefined){
           let parentTag = built.get(value.parentId);
           if (parentTag !== undefined){
             built.set(id, parentTag + ":" + value.name);
           }
+        } else {
+          built.set(id, value.name);
         }
       });
     }
