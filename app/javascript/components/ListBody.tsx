@@ -2,10 +2,12 @@ import React from "react";
 import Item, {itemRecordProps, updateFunc} from "./Item";
 import TagRender, {updateTags, togglerGenerator} from "./TagRender";
 import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
 import SearchIcon from '@material-ui/icons/Search';
 import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
 import SortIcon from '@material-ui/icons/Sort';
+import AddIcon from '@material-ui/icons/Add';
 
 
 interface Props {
@@ -80,7 +82,15 @@ class ListBody extends React.Component<Props> {
           <div style={searchTagsStyle}>
             <TagRender tags={props.searchTags} tagCloud={props.tagCloud} onChangeTags={props.onUpdateSearch}/></div>
         </Paper>
-        <Paper style={resultsStyle}>{filteredList.map(ItemHTMLBuilder)}</Paper>
+        <Paper style={resultsStyle}>
+          {filteredList.map(ItemHTMLBuilder)}
+          <div style={{margin: "4px", display:"flex", alignItems:"safe center"}}>
+            <Button variant="contained" color="primary" 
+              size="large" startIcon={<AddIcon />} fullWidth>
+              Add New Item
+            </Button>
+          </div>
+        </Paper>
       </React.Fragment>
     );
   }
