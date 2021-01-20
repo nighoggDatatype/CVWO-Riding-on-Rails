@@ -111,17 +111,19 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update item" do
-    patch user_item_url(@user, @item), params: { item: {tag_ids: []} }
+    patch user_item_url(@user, @item), params: { item: {tag_ids: [@tag_two.id]} }
     assert_response :ok
 
     assert_equal "Kill_kill_kill", json_response["task"]
     assert_equal @item.done, json_response["done"]
-    assert_equal 0, json_response["tags"].length
+    assert_equal 1, json_response["tags"].length
+    assert_equal @tag_two.id, json_response["tags"][0]["id"]
 
     updated_item = Item.find(json_response["id"])
     assert_equal "Kill_kill_kill", updated_item.task
     assert_equal @user.id, updated_item.user_id
-    assert_equal 0, ItemTag.where(item_id: json_response["id"]).count
+    assert_equal 1, ItemTag.where(item_id: json_response["id"]).count
+    assert_equal @tag_two.id, ItemTag.find_by(item_id: json_response["id"]).tag_id
   end
 
   test "should not update item for bad user" do
