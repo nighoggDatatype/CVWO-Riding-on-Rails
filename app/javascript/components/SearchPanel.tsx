@@ -36,35 +36,31 @@ interface State {
 }
 
 class SearchPanel extends React.Component<Props,State> {
-  lookupById(tabId: number){
-    return (id: number) => this.state.itemData.findIndex((value) => value.id == id);
+  lookup(id: number){
+    return this.state.itemData.findIndex((value) => value.id == id);
   }
-  moveEntriesFuncGenerator(tabId:number){
-    let lookup = this.lookupById(tabId);
-    return (srcId: number, dstId: number) => () => this.setState(prevState => {
+  moveEntriesFuncGenerator(srcId: number, dstId: number){
+    return () => this.setState(prevState => {
       let data = prevState.itemData;
-      let src = lookup(srcId);
-      let dst = lookup(dstId);
+      let src = this.lookup(srcId);
+      let dst = this.lookup(dstId);
       let temp = data[src];
       data[src] = data[dst];
       data[dst] = temp;
       return {itemData: data};
     });
   }
-  updateTaskFactory(tabId: number){
-    let lookup = this.lookupById(tabId);
-    return (id: number, func: updateFunc) => 
+  updateTask(id: number, func: updateFunc){
       this.setState(prev => {
         let entries = prev.itemData;
-        let identity = lookup(id);
+        let identity = this.lookup(id);
         entries[identity] = {id: id, ...func(entries[identity])};
         return {itemData: entries};
       });
   }
-  deleteFactory(tabId: number){
-    let lookup = this.lookupById(tabId);
-    return (id: number) => () => {
-      let index = lookup(id);
+  deleteFactory(id: number){
+    return () => {
+      let index = this.lookup(id);
       if (index > -1){
         this.setState(prev =>{
           prev.itemData.splice(index,1);
@@ -96,6 +92,9 @@ class SearchPanel extends React.Component<Props,State> {
       tabCloud: tagCloud,
       tabState: 2,
     }
+    this.moveEntriesFuncGenerator = this.moveEntriesFuncGenerator.bind(this);
+    this.updateTask = this.updateTask.bind(this);
+    this.deleteFactory = this.deleteFactory.bind(this);
   }
   render () {
     const handleChange = (_event, newValue) => {
@@ -118,15 +117,13 @@ class SearchPanel extends React.Component<Props,State> {
           <TabPanel value={this.state.tabState} index={index}>
             <ListBody 
               entries={this.state.itemData} 
-              moveEntriesGenerator={this.moveEntriesFuncGenerator(index)}
-              onUpdateTask={this.updateTaskFactory(index)}
-              deleteFactory={this.deleteFactory(index)}
+              moveEntriesGenerator={this.moveEntriesFuncGenerator}
+              onUpdateTask={this.updateTask}
+              deleteFactory={this.deleteFactory}
               tagCloud={this.state.tabCloud}
               searchTags={value}
               onUpdateSearch={handleSearch}/>
           </TabPanel>)}
-        Garbage: {this.props.garbage}
-        Tab: {this.state.tabState}
       </React.Fragment>
     );
   }
