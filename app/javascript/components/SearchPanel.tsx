@@ -29,44 +29,40 @@ interface Props {
 }
 
 interface State {
-  itemData: itemRecordProps[]
+  itemDataMap: Map<number,itemDataProps>
+  itemOrder: number[]
   searchData: string[][]
   tabCloud: string[]
   tabState:number
 }
 
 class SearchPanel extends React.Component<Props,State> {
-  lookup(id: number){
-    return this.state.itemData.findIndex((value) => value.id == id);
-  }
   moveEntriesFuncGenerator(srcId: number, dstId: number){
     return () => this.setState(prevState => {
-      let data = prevState.itemData;
-      let src = this.lookup(srcId);
-      let dst = this.lookup(dstId);
-      let temp = data[src];
-      data[src] = data[dst];
-      data[dst] = temp;
-      return {itemData: data};
+      let order = prevState.itemOrder;
+      let srcIndex = order.indexOf(srcId)
+      let dstIndex = order.indexOf(dstId);
+      order[srcIndex] = dstId;
+      order[dstIndex] = srcId;
+      return {itemOrder: order};
     });
   }
   updateTask(id: number, func: updateFunc){
       this.setState(prev => {
-        let entries = prev.itemData;
-        let identity = this.lookup(id);
-        entries[identity] = {id: id, ...func(entries[identity])};
-        return {itemData: entries};
+        let entries = prev.itemDataMap;
+        entries.set(id, func(entries.get(id)));
+        return {itemDataMap: entries};
       });
   }
   deleteFactory(id: number){
     return () => {
-      let index = this.lookup(id);
-      if (index > -1){
-        this.setState(prev =>{
-          prev.itemData.splice(index,1);
-          return {itemData:prev.itemData};
-        })
-      }
+      this.setState(prev =>{
+        prev.itemDataMap.delete(id);
+        return {
+          itemDataMap: prev.itemDataMap, 
+          itemOrder: prev.itemOrder.filter(item => item !== id)
+        };
+      });
     };
   }
   createTask(data: itemDataProps){
@@ -74,10 +70,10 @@ class SearchPanel extends React.Component<Props,State> {
       let newIndex:number = undefined
       do{
         newIndex = Math.floor(Math.random() * 1000 * 1000);
-      }while(this.lookup(newIndex) != -1);
-      let newItem:itemRecordProps = {id:newIndex, ...data};
-      prev.itemData.push(newItem);
-      return {itemData: prev.itemData};
+      }while(prev.itemDataMap.has(newIndex));
+      prev.itemDataMap.set(newIndex, data);
+      prev.itemOrder.push(newIndex);
+      return {itemDataMap: prev.itemDataMap, itemOrder: prev.itemOrder};
     })
   }
 
@@ -89,16 +85,17 @@ class SearchPanel extends React.Component<Props,State> {
       + "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "
       + "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
     const longTagList = ["Monday", "Pets", "PraiseMami", "DabHarder", "Dab", "MemesMemesMemes", "OhGodWhy", "AO3Tags", "Ipsum", "Lorem", "Tabs"].sort();
-    const testData = 
-      [{ id: 1111, done:false, task:"Go Jog", tags:["Monday", "Latin"] }
-      ,{ id: 888, done:true, task:longFillerText, tags:["Latin"] }
-      ,{ id: 1234, done:true, task:"Walk the Dog", tags:longTagList}
-    ]
+    const testData = new Map<number,itemDataProps>();
+    testData.set(1111,{done:false, task:"Go Jog", tags:["Monday", "Latin"]})
+    testData.set(888, {done:true, task:longFillerText, tags:["Latin"] })
+    testData.set(1234,{done:true, task:"Walk the Dog", tags:longTagList})
+    const testOrder = [1111,888,1234];
     const tagCloud = ["Monday", "Pets", "PraiseMami", "DabHarder", "Dab", 
       "MemesMemesMemes", "OhGodWhy", "AO3Tags", "Ipsum", "Lorem", "Tabs", "Latin"].sort();
     const searchList = [[],["Monday"],["Latin"]];
     this.state = {
-      itemData: testData,
+      itemDataMap: testData,
+      itemOrder: testOrder,
       searchData: searchList,
       tabCloud: tagCloud,
       tabState: 2,
@@ -120,6 +117,12 @@ class SearchPanel extends React.Component<Props,State> {
         return {searchData: searchList};
       })
     }
+    const buildOrderedItems = ():itemRecordProps[] => {
+      let data:itemRecordProps[] = [];
+      this.state.itemOrder.forEach(id => 
+        data.push({id: id, ...this.state.itemDataMap.get(id)}));
+      return data;
+    } 
     return (
       <React.Fragment>
         <Tabs value={this.state.tabState} onChange={handleChange}>
@@ -128,7 +131,7 @@ class SearchPanel extends React.Component<Props,State> {
         {this.state.searchData.map((value,index) => 
           <TabPanel value={this.state.tabState} index={index}>
             <ListBody 
-              entries={this.state.itemData} 
+              entries={buildOrderedItems()} 
               moveEntriesGenerator={this.moveEntriesFuncGenerator}
               onUpdateTask={this.updateTask}
               deleteFactory={this.deleteFactory}
