@@ -10,7 +10,7 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import Divider from '@material-ui/core/Divider';
 import EditTextDialog from './EditTextDialog'
 
-interface itemDataProps {
+export interface itemDataProps {
   done: boolean,
   task: string,
   tags: string[],

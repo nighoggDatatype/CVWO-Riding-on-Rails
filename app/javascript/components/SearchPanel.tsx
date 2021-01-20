@@ -3,7 +3,7 @@ import ListBody from "./ListBody"
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
-import {itemRecordProps, updateFunc} from "./Item";
+import {itemRecordProps, updateFunc, itemDataProps} from "./Item";
 import {updateTags} from "./TagRender";
 
 function TabPanel(props: { [x: string]: any; children: any; value: number; index: number; }) {
@@ -69,6 +69,17 @@ class SearchPanel extends React.Component<Props,State> {
       }
     };
   }
+  createTask(data: itemDataProps){
+    this.setState((prev) => {
+      let newIndex:number = undefined
+      do{
+        newIndex = Math.floor(Math.random() * 1000 * 1000);
+      }while(this.lookup(newIndex) != -1);
+      let newItem:itemRecordProps = {id:newIndex, ...data};
+      prev.itemData.push(newItem);
+      return {itemData: prev.itemData};
+    })
+  }
 
   constructor(props) {
     super(props);
@@ -95,6 +106,7 @@ class SearchPanel extends React.Component<Props,State> {
     this.moveEntriesFuncGenerator = this.moveEntriesFuncGenerator.bind(this);
     this.updateTask = this.updateTask.bind(this);
     this.deleteFactory = this.deleteFactory.bind(this);
+    this.createTask = this.createTask.bind(this);
   }
   render () {
     const handleChange = (_event, newValue) => {
@@ -122,7 +134,8 @@ class SearchPanel extends React.Component<Props,State> {
               deleteFactory={this.deleteFactory}
               tagCloud={this.state.tabCloud}
               searchTags={value}
-              onUpdateSearch={handleSearch}/>
+              onUpdateSearch={handleSearch}
+              onCreate={this.createTask}/>
           </TabPanel>)}
       </React.Fragment>
     );

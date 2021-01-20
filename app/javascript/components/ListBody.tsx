@@ -1,5 +1,5 @@
 import React from "react";
-import Item, {itemRecordProps, updateFunc} from "./Item";
+import Item, {itemRecordProps, updateFunc, itemDataProps} from "./Item";
 import TagRender, {updateTags, togglerGenerator} from "./TagRender";
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
@@ -8,6 +8,7 @@ import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
 import SortIcon from '@material-ui/icons/Sort';
 import AddIcon from '@material-ui/icons/Add';
+import EditTextDialog from './EditTextDialog'
 
 
 interface Props {
@@ -18,9 +19,20 @@ interface Props {
   tagCloud: string[],
   searchTags: string[]
   onUpdateSearch:  (updater: updateTags) => void,
+  onCreate: (newItem: itemDataProps) => void,
 };
 
-class ListBody extends React.Component<Props> {
+interface State {
+  editDialogOpen:boolean
+}
+
+class ListBody extends React.Component<Props, State> {
+  constructor(props) {
+    super(props);
+    this.state = {
+        editDialogOpen: false, 
+    }
+  }
   render () {
     var props = this.props;
     const paperStyle = {
@@ -73,6 +85,10 @@ class ListBody extends React.Component<Props> {
       }
       return <Item {...data}/>
     }
+    const handleClose = () => this.setState({editDialogOpen: false});
+    const handleOpen = () => this.setState({editDialogOpen: true});
+    const handleSubmit = (newTask:string) => 
+      props.onCreate({done: false, task: newTask, tags: props.searchTags}) 
     return (
       <React.Fragment>
         <Paper style={paperStyle}>
@@ -86,9 +102,13 @@ class ListBody extends React.Component<Props> {
           {filteredList.map(ItemHTMLBuilder)}
           <div style={{margin: "4px", display:"flex", alignItems:"safe center"}}>
             <Button variant="contained" color="primary" 
-              size="large" startIcon={<AddIcon />} fullWidth>
+              size="large" startIcon={<AddIcon />} onClick={handleOpen} fullWidth>
               Add New Item
             </Button>
+          <EditTextDialog 
+            open={this.state.editDialogOpen} defaultInput="" textName='New Task'
+            onSubmit={handleSubmit} onClose={handleClose}
+          />
           </div>
         </Paper>
       </React.Fragment>
