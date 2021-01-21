@@ -3,7 +3,7 @@ import TagCloud from "./TagCloud"
 
 interface TagData {
   name:string,
-  parentId?:number,
+  tags_id?:number,
   cachedFullName?:string
 }
 
@@ -24,9 +24,9 @@ class TodoApp extends React.Component<Props,State> {
     let built: Map<number,string> = new Map<number,string>();
     while (built.size < dataStruct.size){
       dataStruct.forEach((value, id) => {
-        if (value.parentId !== undefined){
-          let parentTag = built.get(value.parentId);
-          if (parentTag !== undefined){
+        if (value.tags_id != null){
+          let parentTag = built.get(value.tags_id);
+          if (parentTag != null){
             built.set(id, parentTag + ":" + value.name);
           }
         } else {
@@ -45,7 +45,7 @@ class TodoApp extends React.Component<Props,State> {
     super(props);
     var tempCloud = new Map<number,TagData>();
     props.tags.forEach(element => {
-      tempCloud.set(element.id, {name: element.name, parentId: element.parentId})
+      tempCloud.set(element.id, {name: element.name, tags_id: element.tags_id})
     });
     this.state = {
       tagCloud: this.buildFullNames(tempCloud),
@@ -58,7 +58,7 @@ class TodoApp extends React.Component<Props,State> {
   }
 
   reverseLookUp(fullTag:string){
-    if (fullTag === undefined) return undefined;
+    if (fullTag === null) return null;
     for(let [id,data] of this.state.tagCloud){
       if (data.cachedFullName == fullTag){
         return id;
@@ -71,13 +71,13 @@ class TodoApp extends React.Component<Props,State> {
     const state = this.state;
     const onCreate = (domain:string, newName:string) => //TODO: Replace with proper code
       this.setState((prev) => {
-        let newIndex:number = undefined
+        let newIndex:number = null
         do{
           newIndex = Math.floor(Math.random() * 1000 * 1000);  
-        }while(prev.tagCloud.get(newIndex) !== undefined);
+        }while(prev.tagCloud.get(newIndex) != null);
         prev.tagCloud.set(newIndex, {
           name: newName,
-          parentId: this.reverseLookUp(domain.slice(0,-1)),
+          tags_id: this.reverseLookUp(domain.slice(0,-1)),
           cachedFullName: domain+newName, })
         return {tagCloud: prev.tagCloud}
       });
@@ -97,7 +97,7 @@ class TodoApp extends React.Component<Props,State> {
         for(let i = 0; i < deleteIdTargets.length; i+=1){
           cloud.delete(deleteIdTargets[i])
           for(let [key,value] of cloud){
-            if (value.parentId == deleteIdTargets[i]){
+            if (value.tags_id == deleteIdTargets[i]){
               deleteIdTargets.push(key);
             }
           }
