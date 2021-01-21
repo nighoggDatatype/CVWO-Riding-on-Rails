@@ -1,22 +1,13 @@
 import React from "react"
 import TagCloud from "./TagCloud"
-
-interface TagData {
-  name:string,
-  tags_id?:number,
-  cachedFullName?:string
-}
-
-interface TagJson extends TagData {
-  id:number
-}
+import {TagJson, TagData} from "./ModelTypes"
 
 interface Props {
   tags: TagJson[]
 };
 
 interface State {
-  tagCloud:Map<number,TagData> //To get key array from hashmap: Array.from(state.tagCloud.keys())
+  tagCloud:Map<number,TagData>
   tagState:string[]
 };
 class TodoApp extends React.Component<Props,State> {
