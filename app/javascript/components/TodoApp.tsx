@@ -1,10 +1,6 @@
 import React from "react"
 import TagCloud from "./TagCloud"
 
-interface Props {
-  tags: TagJson[]
-};
-
 interface TagData {
   name:string,
   parentId?:number,
@@ -14,6 +10,10 @@ interface TagData {
 interface TagJson extends TagData {
   id:number
 }
+
+interface Props {
+  tags: TagJson[]
+};
 
 interface State {
   tagCloud:Map<number,TagData> //To get key array from hashmap: Array.from(state.tagCloud.keys())
@@ -41,15 +41,15 @@ class TodoApp extends React.Component<Props,State> {
     }
     return dataStruct;
   }
-  constructor(props) {
+  constructor(props: Props | Readonly<Props>) {
     super(props);
     var tempCloud = new Map<number,TagData>();
-    tempCloud.set(1,{name: "Test String"});
-    tempCloud.set(2,{name: "TAG"});
-    tempCloud.set(3,{name: "Kill", parentId: 2});
+    props.tags.forEach(element => {
+      tempCloud.set(element.id, {name: element.name, parentId: element.parentId})
+    });
     this.state = {
       tagCloud: this.buildFullNames(tempCloud),
-      tagState: ["Test String"]
+      tagState: []
     }
   }
   extractCachedNames(){
