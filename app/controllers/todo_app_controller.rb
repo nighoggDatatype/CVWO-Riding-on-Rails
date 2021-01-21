@@ -9,7 +9,7 @@ class TodoAppController < ApplicationController
     if @user.blank?
       head :forbidden
     else
-      @items = Item.where(user: @user).order(:list_order)
+      @items = Item.where(user: @user).order(:list_order).select(:id, :done, :task, :tags)
       @tags = Tag.where(user: @user).order(:name).select(:id, :name, :tags_id)
       #Variable setup completed, they will be used in the index.html.erb code file.
     end
