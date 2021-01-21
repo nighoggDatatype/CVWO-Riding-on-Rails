@@ -1,5 +1,5 @@
 <h1>TodoApp#index</h1>
 <p>Find me in app/views/todo_app/index.html.erb</p>
 
-<%= react_component("TodoApp", {}) %>
+<%= react_component("TodoApp", {tags: get_json_as_var("tags/index.json", { :tags => @tags }) }) %>
 <%= react_component("SearchPanel", {garbage: "TestString"}) %>

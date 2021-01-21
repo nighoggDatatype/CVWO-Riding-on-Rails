@@ -2,12 +2,17 @@ import React from "react"
 import TagCloud from "./TagCloud"
 
 interface Props {
+  tags: TagJson[]
 };
 
 interface TagData {
   name:string,
   parentId?:number,
   cachedFullName?:string
+}
+
+interface TagJson extends TagData {
+  id:number
 }
 
 interface State {
