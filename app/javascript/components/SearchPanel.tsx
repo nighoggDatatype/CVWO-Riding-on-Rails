@@ -32,7 +32,7 @@ interface State {
   itemDataMap: Map<number,itemDataProps>
   itemOrder: number[]
   searchData: string[][]
-  tabCloud: string[]
+  tagCloud: string[]
   tabState:number
 }
 
@@ -97,7 +97,7 @@ class SearchPanel extends React.Component<Props,State> {
       itemDataMap: testData,
       itemOrder: testOrder,
       searchData: searchList,
-      tabCloud: tagCloud,
+      tagCloud: tagCloud,
       tabState: 2,
     }
     this.moveEntriesFuncGenerator = this.moveEntriesFuncGenerator.bind(this);
@@ -135,7 +135,7 @@ class SearchPanel extends React.Component<Props,State> {
               moveEntriesGenerator={this.moveEntriesFuncGenerator}
               onUpdateTask={this.updateTask}
               deleteFactory={this.deleteFactory}
-              tagCloud={this.state.tabCloud}
+              tagCloud={this.state.tagCloud}
               searchTags={value}
               onUpdateSearch={handleSearch}
               onCreate={this.createTask}/>
