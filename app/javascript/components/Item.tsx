@@ -10,6 +10,7 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import Divider from '@material-ui/core/Divider';
 import EditTextDialog from './EditTextDialog';
 import {ItemData, ItemJson} from './ModelTypes';
+
 export interface updateItemDataFunc{
   (prev:ItemData): ItemData
 }
