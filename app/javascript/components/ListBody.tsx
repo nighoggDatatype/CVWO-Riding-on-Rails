@@ -11,6 +11,7 @@ import SortIcon from '@material-ui/icons/Sort';
 import AddIcon from '@material-ui/icons/Add';
 import EditTextDialog from './EditTextDialog'
 import { ItemStore, updateItemStoreFunc } from "./SearchPanel";
+import { generateTempId } from "./ModelTypes";
 
 
 interface Props {
@@ -57,10 +58,7 @@ class ListBody extends React.Component<Props, State> {
   }
   createTask(data: ItemDataProps){
     this.props.onItemStoreUpdate((prev) => {
-      let newIndex:number = undefined
-      do{
-        newIndex = Math.floor(Math.random() * 1000 * 1000);
-      }while(prev.itemDataMap.has(newIndex));
+      let newIndex:number = generateTempId(prev.itemDataMap);
       prev.itemDataMap.set(newIndex, data);
       prev.itemOrder.push(newIndex);
       return prev;

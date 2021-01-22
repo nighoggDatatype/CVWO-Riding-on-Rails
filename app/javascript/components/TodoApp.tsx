@@ -1,6 +1,6 @@
 import React from "react"
 import TagCloud from "./TagCloud"
-import {TagJson, TagData, ItemJson} from "./ModelTypes"
+import {TagJson, TagData, ItemJson, generateTempId} from "./ModelTypes"
 import {ItemDataProps} from "./Item"
 import SearchPanel, {ItemStore, updateItemStoreFunc} from "./SearchPanel"
 
@@ -72,15 +72,11 @@ class TodoApp extends React.Component<Props,State> {
     }
     return;
   }
-
   render () {
     const state = this.state;
-    const onCreate = (domain:string, newName:string) => //TODO: Replace with proper code
+    const onCreate = (domain:string, newName:string) =>
       this.setState((prev) => {
-        let newIndex:number = null
-        do{
-          newIndex = Math.floor(Math.random() * 1000 * 1000);  
-        }while(prev.tagCloud.get(newIndex) != null);
+        let newIndex:number = generateTempId(prev.tagCloud);
         prev.tagCloud.set(newIndex, {
           name: newName,
           tags_id: this.reverseLookUp(domain.slice(0,-1)),

@@ -25,3 +25,10 @@ export interface SearchTabData {
 export interface SearchTabJson extends SearchTabData{
     id: number,
 }
+export function generateTempId(existingData: Map<number,any>){
+    let newIndex:number = null
+    do{
+      newIndex = Math.floor(Math.random() * 1000 * 1000);  
+    }while(existingData.get(newIndex) != null);
+    return newIndex
+  }

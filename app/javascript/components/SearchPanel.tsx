@@ -69,7 +69,6 @@ interface State {
 }
 
 class SearchPanel extends React.Component<Props,State> {
-
   constructor(props: Props | Readonly<Props>) {
     super(props);
     const searchMap = new Map<number,SearchTabDataProp>();
@@ -111,7 +110,7 @@ class SearchPanel extends React.Component<Props,State> {
     const tabState = this.state.tabState;
     const genericStyle = {margin: "4px"}
     const sectionStyle = {
-      flex: 1, //Test this out, by making the text and tags very long
+      flex: 1, 
       display:"flex", 
       alignItems:"safe center",
     }
