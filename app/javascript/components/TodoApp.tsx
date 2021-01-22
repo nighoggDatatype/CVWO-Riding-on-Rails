@@ -1,7 +1,7 @@
 import React from "react"
 import TagCloud from "./TagCloud"
-import {TagJson, TagData} from "./ModelTypes"
-import SearchPanel from "./SearchPanel"
+import {TagJson, TagData, ItemData} from "./ModelTypes"
+import SearchPanel, {ItemStore, updateItemStoreFunc} from "./SearchPanel"
 
 interface Props {
   tags: TagJson[]
@@ -10,6 +10,7 @@ interface Props {
 interface State {
   tagCloud:Map<number,TagData>
   tagState:string[]
+  itemStore: ItemStore
 };
 class TodoApp extends React.Component<Props,State> {
   buildFullNames (dataStruct:Map<number,TagData>) {
@@ -39,9 +40,25 @@ class TodoApp extends React.Component<Props,State> {
     props.tags.forEach(element => {
       tempCloud.set(element.id, {name: element.name, tags_id: element.tags_id})
     });
+
+
+    const longFillerText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, "
+      + "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
+      + "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+      + "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "
+      + "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+    const longTagList = ["Monday", "Pets", "PraiseMami", "DabHarder", "Dab", "MemesMemesMemes", "OhGodWhy", "AO3Tags", "Ipsum", "Lorem", "Tabs"].sort();
+    const testData = new Map<number,ItemData>();
+    testData.set(1111,{done:false, task:"Go Jog", tags:["Monday", "Latin"]})
+    testData.set(888, {done:true, task:longFillerText, tags:["Latin"] })
+    testData.set(1234,{done:true, task:"Walk the Dog", tags:longTagList})
+    const testOrder = [1111,888,1234];
+    const itemStore = {itemDataMap: testData,itemOrder: testOrder};
+
     this.state = {
       tagCloud: this.buildFullNames(tempCloud),
-      tagState: []
+      tagState: [],
+      itemStore: itemStore,
     }
   }
   extractCachedNames(){
@@ -97,6 +114,13 @@ class TodoApp extends React.Component<Props,State> {
         return {tagCloud: cloud};
       })
     }
+
+    const handleItemStoreUpdate = (updater: updateItemStoreFunc) => {
+      this.setState((prev) => {
+        return {itemStore: updater(prev.itemStore)}
+      })
+    }
+
     return (
       <React.Fragment>
         <TagCloud 
@@ -106,7 +130,7 @@ class TodoApp extends React.Component<Props,State> {
           onUpdate={onUpdate}
           onDestroy={onDestroy}
         />
-        <SearchPanel/>
+        <SearchPanel itemStore={state.itemStore} onItemStoreUpdate={handleItemStoreUpdate} />
       </React.Fragment>
     );
   }

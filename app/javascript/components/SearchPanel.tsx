@@ -25,16 +25,21 @@ function TabPanel(props: { [x: string]: any; children: any; value: number; index
   );
 }
 
-interface ItemStore {
+export interface ItemStore {
   itemDataMap: Map<number,ItemData>
   itemOrder: number[]
 }
 
+export interface updateItemStoreFunc{
+  (prev:ItemStore): ItemStore
+}
+
 interface Props {
+  itemStore: ItemStore
+  onItemStoreUpdate: (prev:updateItemStoreFunc) => void
 }
 
 interface State {
-  itemStore: ItemStore
   searchData: string[][]
   tagCloud: string[]
   tabState:number
@@ -42,71 +47,52 @@ interface State {
 
 class SearchPanel extends React.Component<Props,State> {
   moveEntriesFuncGenerator(srcId: number, dstId: number){
-    return () => this.setState(prev => {
+    return () => this.props.onItemStoreUpdate((prev:ItemStore) => {
       //Get Variables
-      let itemStore = prev.itemStore;
-      let order = itemStore.itemOrder;
+      let order = prev.itemOrder;
       //Perform Swap
       let srcIndex = order.indexOf(srcId)
       let dstIndex = order.indexOf(dstId);
       order[srcIndex] = dstId;
       order[dstIndex] = srcId;
-      //Onloading
-      itemStore.itemOrder = order;
-      return {itemStore: itemStore};
+
+      return {itemDataMap: prev.itemDataMap, itemOrder: order};
     });
   }
   updateTask(id: number, func: updateItemDataFunc){
-      this.setState(prev => {
-        let itemStore = prev.itemStore;
-        let entries = itemStore.itemDataMap;
+    this.props.onItemStoreUpdate(prev => {
+        let entries = prev.itemDataMap;
         entries.set(id, func(entries.get(id)));
-        return {itemStore: itemStore};
+        return {itemDataMap: entries, itemOrder: prev.itemOrder};
       });
   }
   deleteFactory(id: number){
     return () => {
-      this.setState(prev =>{
-        let itemStore = prev.itemStore;
-        itemStore.itemDataMap.delete(id);
-        itemStore.itemOrder = itemStore.itemOrder.filter(item => item !== id)
-        return {
-          itemStore: itemStore
-        };
+      this.props.onItemStoreUpdate(prev =>{
+        prev.itemDataMap.delete(id);
+        prev.itemOrder = prev.itemOrder.filter(item => item !== id)
+        return prev;
       });
     };
   }
   createTask(data: ItemData){
-    this.setState((prev) => {
-      let itemStore = prev.itemStore;
+    this.props.onItemStoreUpdate((prev) => {
       let newIndex:number = undefined
       do{
         newIndex = Math.floor(Math.random() * 1000 * 1000);
-      }while(itemStore.itemDataMap.has(newIndex));
-      itemStore.itemDataMap.set(newIndex, data);
-      itemStore.itemOrder.push(newIndex);
-      return {itemStore: itemStore};
+      }while(prev.itemDataMap.has(newIndex));
+      prev.itemDataMap.set(newIndex, data);
+      prev.itemOrder.push(newIndex);
+      return prev;
     })
   }
 
   constructor(props) {
     super(props);
-    const longFillerText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, "
-      + "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
-      + "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
-      + "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "
-      + "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-    const longTagList = ["Monday", "Pets", "PraiseMami", "DabHarder", "Dab", "MemesMemesMemes", "OhGodWhy", "AO3Tags", "Ipsum", "Lorem", "Tabs"].sort();
-    const testData = new Map<number,ItemData>();
-    testData.set(1111,{done:false, task:"Go Jog", tags:["Monday", "Latin"]})
-    testData.set(888, {done:true, task:longFillerText, tags:["Latin"] })
-    testData.set(1234,{done:true, task:"Walk the Dog", tags:longTagList})
-    const testOrder = [1111,888,1234];
     const tagCloud = ["Monday", "Pets", "PraiseMami", "DabHarder", "Dab", 
       "MemesMemesMemes", "OhGodWhy", "AO3Tags", "Ipsum", "Lorem", "Tabs", "Latin"].sort();
     const searchList = [[],["Monday"],["Latin"]];
     this.state = {
-      itemStore: {itemDataMap: testData,itemOrder: testOrder},
       searchData: searchList,
       tagCloud: tagCloud,
       tabState: 2,
@@ -130,8 +116,8 @@ class SearchPanel extends React.Component<Props,State> {
     }
     const buildOrderedItems = ():ItemJson[] => {
       let data:ItemJson[] = [];
-      this.state.itemStore.itemOrder.forEach(id => 
-        data.push({id: id, ...this.state.itemStore.itemDataMap.get(id)}));
+      this.props.itemStore.itemOrder.forEach(id => 
+        data.push({id: id, ...this.props.itemStore.itemDataMap.get(id)}));
       return data;
     } 
     return (
