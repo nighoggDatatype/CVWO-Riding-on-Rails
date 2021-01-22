@@ -34,6 +34,20 @@ export interface updateItemStoreFunc{
   (prev:ItemStore): ItemStore
 }
 
+export interface SearchTabDataProp {
+  name: string,
+  tags: string[],
+}
+
+export interface SearchTabStore {
+  tabDataMap: Map<number,SearchTabDataProp>,
+  tabOrder: number,
+}
+
+export interface updateTabStoreFunc{
+  (prev:SearchTabStore): SearchTabStore
+}
+
 interface Props {
   itemStore: ItemStore,
   onItemStoreUpdate: (prev:updateItemStoreFunc) => void,

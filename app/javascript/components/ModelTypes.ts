@@ -14,5 +14,14 @@ export interface ItemData {
 }
 
 export interface ItemJson extends ItemData{
+  id: number,
+}
+
+export interface SearchTabData {
+  name: string,
+  tags: number[],
+}
+
+export interface SearchTabJson extends SearchTabData{
     id: number,
-  }
+}
