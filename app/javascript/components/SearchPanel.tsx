@@ -69,46 +69,6 @@ interface State {
 }
 
 class SearchPanel extends React.Component<Props,State> {
-  moveEntriesFuncGenerator(srcId: number, dstId: number){
-    return () => this.props.onItemStoreUpdate((prev:ItemStore) => {
-      //Get Variables
-      let order = prev.itemOrder;
-      //Perform Swap
-      let srcIndex = order.indexOf(srcId)
-      let dstIndex = order.indexOf(dstId);
-      order[srcIndex] = dstId;
-      order[dstIndex] = srcId;
-
-      return {itemDataMap: prev.itemDataMap, itemOrder: order};
-    });
-  }
-  updateTask(id: number, func: updateItemDataFunc){
-    this.props.onItemStoreUpdate(prev => {
-        let entries = prev.itemDataMap;
-        entries.set(id, func(entries.get(id)));
-        return {itemDataMap: entries, itemOrder: prev.itemOrder};
-      });
-  }
-  deleteFactory(id: number){
-    return () => {
-      this.props.onItemStoreUpdate(prev =>{
-        prev.itemDataMap.delete(id);
-        prev.itemOrder = prev.itemOrder.filter(item => item !== id)
-        return prev;
-      });
-    };
-  }
-  createTask(data: ItemDataProps){
-    this.props.onItemStoreUpdate((prev) => {
-      let newIndex:number = undefined
-      do{
-        newIndex = Math.floor(Math.random() * 1000 * 1000);
-      }while(prev.itemDataMap.has(newIndex));
-      prev.itemDataMap.set(newIndex, data);
-      prev.itemOrder.push(newIndex);
-      return prev;
-    })
-  }
 
   constructor(props) {
     super(props);
@@ -126,10 +86,6 @@ class SearchPanel extends React.Component<Props,State> {
       searchData: {tabDataMap: searchMap, tabOrder: searchOrder},
       tabState: 2,
     }
-    this.moveEntriesFuncGenerator = this.moveEntriesFuncGenerator.bind(this);
-    this.updateTask = this.updateTask.bind(this);
-    this.deleteFactory = this.deleteFactory.bind(this);
-    this.createTask = this.createTask.bind(this);
   }
   render () {
     const handleChange = (_event, newValue) => {
@@ -191,13 +147,10 @@ class SearchPanel extends React.Component<Props,State> {
           <TabPanel value={this.state.tabState} index={index}>
             <ListBody 
               entries={buildOrderedItems()} 
-              moveEntriesGenerator={this.moveEntriesFuncGenerator}
-              onUpdateTask={this.updateTask}
-              deleteFactory={this.deleteFactory}
               tagCloud={this.props.tagCloud}
               searchTags={searchData.tabDataMap.get(value).tags}
               onUpdateSearch={handleSearch}
-              onCreate={this.createTask}/>
+              onItemStoreUpdate={this.props.onItemStoreUpdate}/>
           </TabPanel>)}
       </React.Fragment>
     );

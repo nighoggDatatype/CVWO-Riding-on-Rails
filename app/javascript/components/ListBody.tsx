@@ -10,17 +10,15 @@ import Divider from '@material-ui/core/Divider';
 import SortIcon from '@material-ui/icons/Sort';
 import AddIcon from '@material-ui/icons/Add';
 import EditTextDialog from './EditTextDialog'
+import { ItemStore, updateItemStoreFunc } from "./SearchPanel";
 
 
 interface Props {
-  moveEntriesGenerator: (srcId: number, dstId: number) => () => void,
-  onUpdateTask: (id: number, func: updateItemDataFunc) => void,
-  deleteFactory: (id: number) => () => void,
+  onItemStoreUpdate: (prev:updateItemStoreFunc) => void,
   entries: ItemRecordProps[],
   tagCloud: string[],
   searchTags: string[]
   onUpdateSearch:  (updater: updateTags) => void,
-  onCreate: (newItem: ItemDataProps) => void,
 };
 
 interface State {
@@ -28,11 +26,56 @@ interface State {
 }
 
 class ListBody extends React.Component<Props, State> {
+  moveEntriesFuncGenerator(srcId: number, dstId: number){
+    return () => this.props.onItemStoreUpdate((prev:ItemStore) => {
+      //Get Variables
+      let order = prev.itemOrder;
+      //Perform Swap
+      let srcIndex = order.indexOf(srcId)
+      let dstIndex = order.indexOf(dstId);
+      order[srcIndex] = dstId;
+      order[dstIndex] = srcId;
+
+      return {itemDataMap: prev.itemDataMap, itemOrder: order};
+    });
+  }
+  updateTask(id: number, func: updateItemDataFunc){
+    this.props.onItemStoreUpdate(prev => {
+        let entries = prev.itemDataMap;
+        entries.set(id, func(entries.get(id)));
+        return {itemDataMap: entries, itemOrder: prev.itemOrder};
+      });
+  }
+  deleteFactory(id: number){
+    return () => {
+      this.props.onItemStoreUpdate(prev =>{
+        prev.itemDataMap.delete(id);
+        prev.itemOrder = prev.itemOrder.filter(item => item !== id)
+        return prev;
+      });
+    };
+  }
+  createTask(data: ItemDataProps){
+    this.props.onItemStoreUpdate((prev) => {
+      let newIndex:number = undefined
+      do{
+        newIndex = Math.floor(Math.random() * 1000 * 1000);
+      }while(prev.itemDataMap.has(newIndex));
+      prev.itemDataMap.set(newIndex, data);
+      prev.itemOrder.push(newIndex);
+      return prev;
+    })
+  }
+
   constructor(props) {
     super(props);
     this.state = {
         editDialogOpen: false, 
     }
+    this.moveEntriesFuncGenerator = this.moveEntriesFuncGenerator.bind(this);
+    this.updateTask = this.updateTask.bind(this);
+    this.deleteFactory = this.deleteFactory.bind(this);
+    this.createTask = this.createTask.bind(this);
   }
   render () {
     var props = this.props;
@@ -71,26 +114,26 @@ class ListBody extends React.Component<Props, State> {
       };//See: https://www.reddit.com/r/reactjs/comments/4dya4z/where_to_put_helper_functions_in_a_react_component/
       type ItemProps = Mutable<Item['props']>
       let data:ItemProps = {
-        onUpdate: props.onUpdateTask,
-        onDelete: props.deleteFactory(value.id),
+        onUpdate: this.updateTask,
+        onDelete: this.deleteFactory(value.id),
         tagCloud: props.tagCloud,
         onToggleSearch: togglerHandler,
         ...value
       };
       if (index != 0){
         let prev = array[index-1];
-        data.onMoveUp = props.moveEntriesGenerator(data.id, prev.id);
+        data.onMoveUp = this.moveEntriesFuncGenerator(data.id, prev.id);
       }
       if (index < array.length - 1){
         let next = array[index+1];
-        data.onMoveDown = props.moveEntriesGenerator(data.id, next.id);
+        data.onMoveDown = this.moveEntriesFuncGenerator(data.id, next.id);
       }
       return <Item {...data}/>
     }
     const handleClose = () => this.setState({editDialogOpen: false});
     const handleOpen = () => this.setState({editDialogOpen: true});
     const handleSubmit = (newTask:string) => 
-      props.onCreate({done: false, task: newTask, tags: props.searchTags}) 
+      this.createTask({done: false, task: newTask, tags: props.searchTags}) 
     return (
       <React.Fragment>
         <Paper style={paperStyle}>
