@@ -11,8 +11,10 @@ interface Props {
   textName:string
   open:boolean
   defaultInput:string
-  onSubmit:(text:String)=>void
+  onSubmit:(text:string)=>void
   onClose:()=>void //TODO: See if I should format this properly to be more like actual onClose
+  isValid?:(text:string)=>boolean
+  isMultiline:boolean
 }
 interface State {
   editTextField: string,
@@ -39,6 +41,10 @@ class EditTextDialog extends React.Component<Props,State> {
   }
   
   isInvalidDescription(potentialDescription: string){
+    let optional = true;
+    if (this.props.isValid != undefined){
+      optional = this.props.isValid(potentialDescription);
+    }
     return !/\S/.test(potentialDescription);
   }
   
@@ -71,7 +77,7 @@ class EditTextDialog extends React.Component<Props,State> {
             id="task-name-field"
             label={this.props.textName}
             fullWidth 
-            multiline
+            multiline={this.props.isMultiline}
             value={this.state.editTextField}
             rowsMax={7}
             onChange={handleTextbox}

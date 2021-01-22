@@ -150,7 +150,7 @@ class ListBody extends React.Component<Props, State> {
             </Button>
           <EditTextDialog 
             open={this.state.editDialogOpen} defaultInput="" textName='New Task'
-            onSubmit={handleSubmit} onClose={handleClose} actionString="Add"
+            onSubmit={handleSubmit} onClose={handleClose} actionString="Add" isMultiline={true}
           />
           </div>
         </Paper>

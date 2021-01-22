@@ -15,6 +15,7 @@ import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { generateTempId } from "./ModelTypes";
+import EditTextDialog from "./EditTextDialog";
 
 function TabPanel(props: { [x: string]: any; children: any; value: number; index: number; }) {
   const { children, value, index, ...other } = props;
@@ -66,6 +67,9 @@ interface Props {
 
 interface State {
   searchData: SearchTabStore
+  editDialogOpen: boolean
+  defaultInput: string
+  actionString: string
 }
 
 class SearchPanel extends React.Component<Props,State> {
@@ -119,6 +123,9 @@ class SearchPanel extends React.Component<Props,State> {
     const searchOrder = [11,1234,343,111,112,113,114,222];
     this.state = {
       searchData: {tabDataMap: searchMap, tabOrder: searchOrder, tabState: 2},
+      editDialogOpen: false,
+      defaultInput: "",
+      actionString: "",
     }
   }
   render () {
@@ -181,11 +188,36 @@ class SearchPanel extends React.Component<Props,State> {
       alignItems:"safe center"
     }
     const length = searchData.tabOrder.length;
+    const handleClose = () => this.setState({editDialogOpen: false, defaultInput:"", actionString:""});
+    const handleOpenEdit = () => this.setState(prev => {
+      let searchData = prev.searchData;
+      let pos = searchData.tabState
+      let id = searchData.tabOrder[pos];
+      let currentName = searchData.tabDataMap.get(id).name;
+      return {editDialogOpen: true, defaultInput: currentName, actionString: "Edit"}
+    });
+    const handleOpenAdd = () => this.setState({editDialogOpen: true, defaultInput: "", actionString: "Add"})
+    const handleSubmit = (newTask:string) => {
+      switch(this.state.actionString){
+        case "Edit":
+          this.renameTag(newTask);
+          break;
+        case "Add":
+          this.createTab(newTask);
+          break;
+      }
+      handleClose()
+    }
+    const isValid = (candidate:string) =>{
+      return /^\w+$/.test(candidate);
+    }
     return (
       <React.Fragment>
         <Paper style={paperStyle}>
-          <Button color="primary" variant="contained" style={genericStyle}><AddIcon/>Add New Tab</Button>
-          <Button color="primary" variant="outlined" style={genericStyle}><EditIcon/>Rename Current Tab</Button>
+          <Button color="primary" variant="contained" style={genericStyle}
+            onClick={handleOpenAdd}><AddIcon/>Add New Tab</Button>
+          <Button color="primary" variant="outlined" style={genericStyle} 
+            onClick={handleOpenEdit}><EditIcon/>Rename Current Tab</Button>
           <Divider style={genericStyle} orientation="vertical" flexItem />
           <div style={sectionStyle}>
             <IconButton style={genericStyle} 
@@ -202,6 +234,10 @@ class SearchPanel extends React.Component<Props,State> {
           <div style={pushRightStyle}>
             <Button color="secondary" variant="contained" onClick={deleteTag}><DeleteForeverIcon/>Delete Current Tab</Button>
           </div>
+          <EditTextDialog 
+            open={this.state.editDialogOpen} defaultInput="" textName='Search Tab'
+            onSubmit={handleSubmit} onClose={handleClose} actionString={this.state.actionString}
+            isMultiline={false} isValid={isValid}/>
         </Paper>
         <Tabs value={tabState} onChange={handleChange} variant="scrollable" scrollButtons="on">
           {searchData.tabOrder.map((value,index) => 
