@@ -72,6 +72,7 @@ class SearchPanel extends React.Component<Props,State> {
   createTab(name:string){
     this.setState(prev =>{
       let searchData = prev.searchData;
+      searchData.tabState = searchData.tabOrder.length; //Give focus to new tab
       let tempId = generateTempId(searchData.tabDataMap);
       searchData.tabDataMap.set(tempId, {name: name, tags: []});
       searchData.tabOrder.push(tempId);
@@ -84,10 +85,11 @@ class SearchPanel extends React.Component<Props,State> {
       let src = searchData.tabState;
       let dest = searchData.tabState + (isRight ? 1 : -1);
       let order = searchData.tabOrder;
-      if (0 <= dest && dest < searchData.tabOrder.length){
+      if (0 <= dest && dest < order.length){
         let temp = order[src];
         order[src] = order[dest];
         order[dest] = temp;
+        searchData.tabState = dest; //Adjust focus to moved tab
       }
       searchData.tabOrder = order;
       return {searchData: searchData}
@@ -106,7 +108,11 @@ class SearchPanel extends React.Component<Props,State> {
   deleteTag(){
     this.setState(prev =>{
       let searchData = prev.searchData;
-      let id = searchData.tabOrder[searchData.tabState];
+      let pos = searchData.tabState;
+      let id = searchData.tabOrder[pos];
+      if (pos >= searchData.tabOrder.length){
+        searchData.tabState = pos - 1; //Remove focus from deleted tag
+      }
       searchData.tabDataMap.delete(id);
       searchData.tabOrder = searchData.tabOrder.filter(order_id => order_id !== id);
       return {searchData: searchData};
