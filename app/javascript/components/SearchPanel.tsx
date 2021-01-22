@@ -4,7 +4,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
 import {ItemData, ItemJson} from './ModelTypes';
-import {updateFunc} from "./Item";
+import {updateItemDataFunc} from "./Item";
 import {updateTags} from "./TagRender";
 
 function TabPanel(props: { [x: string]: any; children: any; value: number; index: number; }) {
@@ -47,7 +47,7 @@ class SearchPanel extends React.Component<Props,State> {
       return {itemOrder: order};
     });
   }
-  updateTask(id: number, func: updateFunc){
+  updateTask(id: number, func: updateItemDataFunc){
       this.setState(prev => {
         let entries = prev.itemDataMap;
         entries.set(id, func(entries.get(id)));

@@ -10,11 +10,11 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import Divider from '@material-ui/core/Divider';
 import EditTextDialog from './EditTextDialog';
 import {ItemData, ItemJson} from './ModelTypes';
-export interface updateFunc{
+export interface updateItemDataFunc{
   (prev:ItemData): ItemData
 }
 interface ListFunctionProps  {
-  onUpdate: (id: number, func: updateFunc) => void,
+  onUpdate: (id: number, func: updateItemDataFunc) => void,
   onMoveUp?: () => void,
   onMoveDown?: () => void,
   onDelete: () => void,

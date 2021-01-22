@@ -1,6 +1,6 @@
 import React from "react";
 import {ItemData, ItemJson} from './ModelTypes';
-import Item, {updateFunc} from "./Item";
+import Item, {updateItemDataFunc} from "./Item";
 import TagRender, {updateTags, togglerGenerator} from "./TagRender";
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
@@ -14,7 +14,7 @@ import EditTextDialog from './EditTextDialog'
 
 interface Props {
   moveEntriesGenerator: (srcId: number, dstId: number) => () => void,
-  onUpdateTask: (id: number, func: updateFunc) => void,
+  onUpdateTask: (id: number, func: updateItemDataFunc) => void,
   deleteFactory: (id: number) => () => void,
   entries: ItemJson[],
   tagCloud: string[],
