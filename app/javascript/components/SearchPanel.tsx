@@ -3,9 +3,18 @@ import ListBody from "./ListBody"
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
+import Paper from "@material-ui/core/Paper"
 import {ItemDataProps, ItemRecordProps} from './Item';
 import {updateItemDataFunc} from "./Item";
 import {updateTags} from "./TagRender";
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import IconButton from "@material-ui/core/IconButton";
+import Divider from "@material-ui/core/Divider";
+import Button from "@material-ui/core/Button";
+import AddIcon from "@material-ui/icons/Add";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 
 function TabPanel(props: { [x: string]: any; children: any; value: number; index: number; }) {
   const { children, value, index, ...other } = props;
@@ -141,8 +150,39 @@ class SearchPanel extends React.Component<Props,State> {
       return data;
     } 
     const searchData = this.state.searchData
+    const tabState = this.state.tabState;
+    const genericStyle = {margin: "4px"}
+    const sectionStyle = {
+      flex: 1, //Test this out, by making the text and tags very long
+      display:"flex", 
+      alignItems:"safe center",
+    }
+    const pushRightStyle = {
+      margin: genericStyle.margin,
+      marginLeft: "auto"
+    }
+    const paperStyle = {
+      padding: "4px", 
+      margin: "2px", 
+      display:"flex", 
+      alignItems:"safe center"
+    }
     return (
       <React.Fragment>
+        <Paper style={paperStyle}>
+          <Button color="primary" variant="contained" style={genericStyle}><AddIcon/>Add New Tab</Button>
+          <Button color="primary" variant="outlined" style={genericStyle}><EditIcon/>Rename Current Tab</Button>
+          <Divider style={genericStyle} orientation="vertical" flexItem />
+          <div style={sectionStyle}>
+            <IconButton style={genericStyle}><ArrowBackIosIcon/></IconButton>
+            {"Move Tab " + (tabState+1) + ": \"" + searchData.tabDataMap.get(searchData.tabOrder[tabState]).name + "\""}
+            <IconButton style={genericStyle}><ArrowForwardIosIcon/></IconButton>
+          </div>
+          <Divider style={genericStyle} orientation="vertical" flexItem />
+          <div style={pushRightStyle}>
+            <Button color="secondary" variant="contained"><DeleteForeverIcon/>Delete Current Tab</Button>
+          </div>
+        </Paper>
         <Tabs value={this.state.tabState} onChange={handleChange} variant="scrollable" scrollButtons="on">
           {searchData.tabOrder.map((value,index) => 
             <Tab id={index.toString()} label={searchData.tabDataMap.get(value).name}/>)}
