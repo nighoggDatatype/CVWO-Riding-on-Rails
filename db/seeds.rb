@@ -33,3 +33,8 @@ Item.create([
     {user: @user, done: true,  task: "Now try deleting the task itself. Don't worry. I'm done.", 
             tags:[@tag_example, @tag_delete_me]},
 ])
+Tab.create([
+    {user: @user, tab_order: 0, name: "All_Items"             , tags: []},
+    {user: @user, tab_order: 1, name: "Examples"              , tags: [@tag_example]},
+    {user: @user, tab_order: 2, name: "Click_Me_For_Tutorials", tags: [@tag_tutorial]},
+])

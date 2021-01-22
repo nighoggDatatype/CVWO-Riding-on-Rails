@@ -1,12 +1,13 @@
 import React from "react"
 import TagCloud from "./TagCloud"
-import {TagJson, TagData, ItemJson, generateTempId} from "./ModelTypes"
+import {TagJson, TagData, ItemJson, generateTempId, SearchTabJson} from "./ModelTypes"
 import {ItemDataProps} from "./Item"
 import SearchPanel, {ItemStore, SearchTabDataProp, SearchTabStore, updateItemStoreFunc, updateTabStoreFunc} from "./SearchPanel"
 
 interface Props {
   tags: TagJson[]
   items: ItemJson[]
+  tabs: SearchTabJson[]
 };
 
 interface State {
@@ -54,18 +55,15 @@ class TodoApp extends React.Component<Props,State> {
     const itemStore:ItemStore = {itemDataMap: itemData, itemOrder: itemOrder};
 
     const searchMap = new Map<number,SearchTabDataProp>();
-    searchMap.set(11,  {name: "All_Items",tags:[]});
-    searchMap.set(1234, {name: "Examples_Only", tags: ["Example"]});
-    searchMap.set(343, {name: "Arbitary_name", tags: ["Tutorial"]});
-    searchMap.set(111,  {name: "All_Items",tags:[]});
-    searchMap.set(112,  {name: "All_Items",tags:[]});
-    searchMap.set(113,  {name: "All_Items",tags:[]});
-    searchMap.set(114,  {name: "All_Items",tags:[]});
-    searchMap.set(222, {name: "Arbitary_names", tags: ["Tutorial"]});
-    const searchOrder = [11,1234,343,111,112,113,114,222];
+    let searchOrder:number[] = []
+    props.tabs.forEach(element => {
+      let tagNames = element.tags.map(tag => tagCloud.get(tag).cachedFullName);
+      searchMap.set(element.id, {name: element.name, tags: tagNames});
+      searchOrder.push(element.id);
+    })
 
     this.state = {
-      searchStore: {tabDataMap: searchMap, tabOrder: searchOrder, tabState: 2},
+      searchStore: {tabDataMap: searchMap, tabOrder: searchOrder, tabState: 2}, //TODO: Make tabState part of user
       tagCloud: tagCloud,
       tagState: [],
       itemStore: itemStore,
