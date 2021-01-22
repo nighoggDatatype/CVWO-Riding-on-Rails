@@ -8,7 +8,6 @@ import TextField from "@material-ui/core/TextField";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import StringToColour from "./StringToColour";
-import { Search } from "@material-ui/icons";
 
 export interface updateTags {
   (tag:string[]): string[]
