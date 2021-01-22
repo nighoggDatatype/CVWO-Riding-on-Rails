@@ -104,10 +104,15 @@ class SearchPanel extends React.Component<Props,State> {
   constructor(props) {
     super(props);
     const searchMap = new Map<number,SearchTabDataProp>();
-    searchMap.set(11,  {name: "All Items",tags:[]});
-    searchMap.set(1234, {name: "Examples Only", tags: ["Example"]});
-    searchMap.set(343, {name: "Arbitary name", tags: ["Tutorial"]});
-    const searchOrder = [11,1234,343];
+    searchMap.set(11,  {name: "All_Items",tags:[]});
+    searchMap.set(1234, {name: "Examples_Only", tags: ["Example"]});
+    searchMap.set(343, {name: "Arbitary_name", tags: ["Tutorial"]});
+    searchMap.set(111,  {name: "All_Items",tags:[]});
+    searchMap.set(112,  {name: "All_Items",tags:[]});
+    searchMap.set(113,  {name: "All_Items",tags:[]});
+    searchMap.set(114,  {name: "All_Items",tags:[]});
+    searchMap.set(222, {name: "Arbitary_names", tags: ["Tutorial"]});
+    const searchOrder = [11,1234,343,111,112,113,114,222];
     this.state = {
       searchData: {tabDataMap: searchMap, tabOrder: searchOrder},
       tabState: 2,
@@ -138,7 +143,7 @@ class SearchPanel extends React.Component<Props,State> {
     const searchData = this.state.searchData
     return (
       <React.Fragment>
-        <Tabs value={this.state.tabState} onChange={handleChange}>
+        <Tabs value={this.state.tabState} onChange={handleChange} variant="scrollable" scrollButtons="on">
           {searchData.tabOrder.map((value,index) => 
             <Tab id={index.toString()} label={searchData.tabDataMap.get(value).name}/>)}
         </Tabs>
