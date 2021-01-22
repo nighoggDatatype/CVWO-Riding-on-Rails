@@ -42,7 +42,6 @@ interface Props {
 
 interface State {
   searchData: string[][]
-  tagCloud: string[]
   tabState:number
 }
 
@@ -93,7 +92,6 @@ class SearchPanel extends React.Component<Props,State> {
     const searchList = [[],["Example"],["Tutorial"]];
     this.state = {
       searchData: searchList,
-      tagCloud: props.tagCloud,
       tabState: 2,
     }
     this.moveEntriesFuncGenerator = this.moveEntriesFuncGenerator.bind(this);
@@ -131,7 +129,7 @@ class SearchPanel extends React.Component<Props,State> {
               moveEntriesGenerator={this.moveEntriesFuncGenerator}
               onUpdateTask={this.updateTask}
               deleteFactory={this.deleteFactory}
-              tagCloud={this.state.tagCloud}
+              tagCloud={this.props.tagCloud}
               searchTags={value}
               onUpdateSearch={handleSearch}
               onCreate={this.createTask}/>
