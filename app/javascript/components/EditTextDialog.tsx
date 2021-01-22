@@ -51,7 +51,7 @@ class EditTextDialog extends React.Component<Props,State> {
   
   componentDidUpdate(prevProps:Props | Readonly<Props>){
     if(this.props.open && !prevProps.open){
-      this.setState({editTextField: prevProps.defaultInput})//Properly load default on open
+      this.setState({editTextField: this.props.defaultInput})//Properly load default on open
     }
     if(this.state.textBoxEnter){
       this.setState({textBoxEnter : false});
