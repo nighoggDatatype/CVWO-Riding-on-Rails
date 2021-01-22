@@ -105,19 +105,6 @@ class SearchPanel extends React.Component<Props,State> {
       return {searchData: searchData};
     });
   }
-  deleteTag(){
-    this.setState(prev =>{
-      let searchData = prev.searchData;
-      let pos = searchData.tabState;
-      let id = searchData.tabOrder[pos];
-      if (pos >= searchData.tabOrder.length){
-        searchData.tabState = pos - 1; //Remove focus from deleted tag
-      }
-      searchData.tabDataMap.delete(id);
-      searchData.tabOrder = searchData.tabOrder.filter(order_id => order_id !== id);
-      return {searchData: searchData};
-    });
-  }
   constructor(props: Props | Readonly<Props>) {
     super(props);
     const searchMap = new Map<number,SearchTabDataProp>();
@@ -135,6 +122,22 @@ class SearchPanel extends React.Component<Props,State> {
     }
   }
   render () {
+    const deleteTag = () => { 
+      //Note: For some reason, defining this in render instead of as a method of SearchPanel prevents error
+      //      And I wish I knew why. :/ 
+      //      This is basically an example of it works now and I don't know why.
+      this.setState(prev =>{
+        let searchData = prev.searchData;
+        let pos = searchData.tabState;
+        let id = searchData.tabOrder[pos];
+        if (pos >= searchData.tabOrder.length - 1){
+          searchData.tabState = pos - 1; //Remove focus from deleted tag
+        }
+        searchData.tabDataMap.delete(id);
+        searchData.tabOrder = searchData.tabOrder.filter(order_id => order_id !== id);
+        return {searchData: searchData};
+      });
+    }
     const handleChange = (_event: any, newValue: any) => {
       this.setState(prev => {
         let searchData = prev.searchData;
@@ -177,6 +180,7 @@ class SearchPanel extends React.Component<Props,State> {
       display:"flex", 
       alignItems:"safe center"
     }
+    const length = searchData.tabOrder.length;
     return (
       <React.Fragment>
         <Paper style={paperStyle}>
@@ -184,13 +188,19 @@ class SearchPanel extends React.Component<Props,State> {
           <Button color="primary" variant="outlined" style={genericStyle}><EditIcon/>Rename Current Tab</Button>
           <Divider style={genericStyle} orientation="vertical" flexItem />
           <div style={sectionStyle}>
-            <IconButton style={genericStyle}><ArrowBackIosIcon/></IconButton>
+            <IconButton style={genericStyle} 
+              onClick={() => this.moveTab(false)} disabled={tabState < 1}>
+              <ArrowBackIosIcon/>
+            </IconButton>
             {"Move Tab " + (tabState+1) + ": \"" + searchData.tabDataMap.get(searchData.tabOrder[tabState]).name + "\""}
-            <IconButton style={genericStyle}><ArrowForwardIosIcon/></IconButton>
+            <IconButton style={genericStyle} 
+              onClick={() => this.moveTab(true)} disabled={tabState < 0 || tabState > length - 2}>
+              <ArrowForwardIosIcon/>
+            </IconButton>
           </div>
           <Divider style={genericStyle} orientation="vertical" flexItem />
           <div style={pushRightStyle}>
-            <Button color="secondary" variant="contained"><DeleteForeverIcon/>Delete Current Tab</Button>
+            <Button color="secondary" variant="contained" onClick={deleteTag}><DeleteForeverIcon/>Delete Current Tab</Button>
           </div>
         </Paper>
         <Tabs value={tabState} onChange={handleChange} variant="scrollable" scrollButtons="on">
