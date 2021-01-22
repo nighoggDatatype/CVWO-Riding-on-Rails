@@ -108,7 +108,7 @@ class Item extends React.Component<Props,State> {
             onClick={props.onMoveDown} disabled={!props.onMoveDown}>
             <ArrowDownwardIcon/>
           </IconButton>
-          <IconButton style={genericDivStyle} size='small' onClick={props.onDelete}><DeleteForeverIcon/></IconButton>
+          <IconButton style={genericDivStyle} color='secondary' size='small' onClick={props.onDelete}><DeleteForeverIcon/></IconButton>
         </Paper>
       </li>
     );
