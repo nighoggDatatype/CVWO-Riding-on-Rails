@@ -9,13 +9,9 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import Divider from '@material-ui/core/Divider';
 import EditTextDialog from './EditTextDialog';
-import {itemDataProps} from './ModelTypes';
-
-export interface itemRecordProps extends itemDataProps{
-  id: number,
-}
+import {ItemData, ItemJson} from './ModelTypes';
 export interface updateFunc{
-  (prev:itemDataProps): itemDataProps
+  (prev:ItemData): ItemData
 }
 interface ListFunctionProps  {
   onUpdate: (id: number, func: updateFunc) => void,
@@ -27,7 +23,7 @@ interface TagCloudProps {
   tagCloud: string[], //TODO: Move this to tag render probably
   onToggleSearch: (tag: string) => void,
 }
-interface Props extends itemRecordProps, ListFunctionProps, TagCloudProps{}
+interface Props extends ItemJson, ListFunctionProps, TagCloudProps{}
 
 interface State {
   editDialogOpen: boolean,

@@ -3,8 +3,8 @@ import ListBody from "./ListBody"
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
-import {itemDataProps} from './ModelTypes';
-import {itemRecordProps, updateFunc} from "./Item";
+import {ItemData, ItemJson} from './ModelTypes';
+import {updateFunc} from "./Item";
 import {updateTags} from "./TagRender";
 
 function TabPanel(props: { [x: string]: any; children: any; value: number; index: number; }) {
@@ -29,7 +29,7 @@ interface Props {
 }
 
 interface State {
-  itemDataMap: Map<number,itemDataProps>
+  itemDataMap: Map<number,ItemData>
   itemOrder: number[]
   searchData: string[][]
   tagCloud: string[]
@@ -65,7 +65,7 @@ class SearchPanel extends React.Component<Props,State> {
       });
     };
   }
-  createTask(data: itemDataProps){
+  createTask(data: ItemData){
     this.setState((prev) => {
       let newIndex:number = undefined
       do{
@@ -85,7 +85,7 @@ class SearchPanel extends React.Component<Props,State> {
       + "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "
       + "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
     const longTagList = ["Monday", "Pets", "PraiseMami", "DabHarder", "Dab", "MemesMemesMemes", "OhGodWhy", "AO3Tags", "Ipsum", "Lorem", "Tabs"].sort();
-    const testData = new Map<number,itemDataProps>();
+    const testData = new Map<number,ItemData>();
     testData.set(1111,{done:false, task:"Go Jog", tags:["Monday", "Latin"]})
     testData.set(888, {done:true, task:longFillerText, tags:["Latin"] })
     testData.set(1234,{done:true, task:"Walk the Dog", tags:longTagList})
@@ -117,8 +117,8 @@ class SearchPanel extends React.Component<Props,State> {
         return {searchData: searchList};
       })
     }
-    const buildOrderedItems = ():itemRecordProps[] => {
-      let data:itemRecordProps[] = [];
+    const buildOrderedItems = ():ItemJson[] => {
+      let data:ItemJson[] = [];
       this.state.itemOrder.forEach(id => 
         data.push({id: id, ...this.state.itemDataMap.get(id)}));
       return data;
