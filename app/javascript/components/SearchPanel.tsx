@@ -187,7 +187,7 @@ class SearchPanel extends React.Component<Props,State> {
       display:"flex", 
       alignItems:"safe center"
     }
-    const length = searchData.tabOrder.length;
+    const length = searchData.tabOrder.length; //TODO: When this is zero, show something special
     const handleClose = () => this.setState({editDialogOpen: false, defaultInput:"", actionString:""});
     const handleOpenEdit = () => this.setState(prev => {
       let searchData = prev.searchData;
@@ -232,7 +232,8 @@ class SearchPanel extends React.Component<Props,State> {
           </div>
           <Divider style={genericStyle} orientation="vertical" flexItem />
           <div style={pushRightStyle}>
-            <Button color="secondary" variant="contained" onClick={deleteTag}><DeleteForeverIcon/>Delete Current Tab</Button>
+            <Button color="secondary" variant="contained" 
+              onClick={deleteTag} disabled={length < 2}><DeleteForeverIcon/>Delete Current Tab</Button>
           </div>
           <EditTextDialog 
             open={this.state.editDialogOpen} defaultInput={this.state.defaultInput} textName='Search Tab'
