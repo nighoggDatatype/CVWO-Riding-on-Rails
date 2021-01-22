@@ -1,11 +1,12 @@
 import React from "react"
 import TagCloud from "./TagCloud"
-import {TagJson, TagData} from "./ModelTypes"
+import {TagJson, TagData, ItemJson} from "./ModelTypes"
 import {ItemDataProps} from "./Item"
 import SearchPanel, {ItemStore, updateItemStoreFunc} from "./SearchPanel"
 
 interface Props {
   tags: TagJson[]
+  items: ItemJson[]
 };
 
 interface State {
@@ -37,27 +38,22 @@ class TodoApp extends React.Component<Props,State> {
   }
   constructor(props: Props | Readonly<Props>) {
     super(props);
-    var tempCloud = new Map<number,TagData>();
+    var tagCloud = new Map<number,TagData>();
     props.tags.forEach(element => {
-      tempCloud.set(element.id, {name: element.name, tags_id: element.tags_id})
+      tagCloud.set(element.id, {name: element.name, tags_id: element.tags_id})
     });
-
-
-    const longFillerText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, "
-      + "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
-      + "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
-      + "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "
-      + "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-    const longTagList = ["Monday", "Pets", "PraiseMami", "DabHarder", "Dab", "MemesMemesMemes", "OhGodWhy", "AO3Tags", "Ipsum", "Lorem", "Tabs"].sort();
-    const testData = new Map<number,ItemDataProps>();
-    testData.set(1111,{done:false, task:"Go Jog", tags:["Monday", "Latin"]})
-    testData.set(888, {done:true, task:longFillerText, tags:["Latin"] })
-    testData.set(1234,{done:true, task:"Walk the Dog", tags:longTagList})
-    const testOrder = [1111,888,1234];
-    const itemStore = {itemDataMap: testData,itemOrder: testOrder};
+    tagCloud = this.buildFullNames(tagCloud)
+    const itemData = new Map<number,ItemDataProps>();
+    const itemOrder = [];
+    props.items.forEach(element => {
+      let tagNames = element.tags.map(tag => tagCloud.get(tag).cachedFullName);
+      itemData.set(element.id, {done: element.done, task: element.task, tags: tagNames});
+      itemOrder.push(element.id);
+    })
+    const itemStore:ItemStore = {itemDataMap: itemData, itemOrder: itemOrder};
 
     this.state = {
-      tagCloud: this.buildFullNames(tempCloud),
+      tagCloud: tagCloud,
       tagState: [],
       itemStore: itemStore,
     }
@@ -131,7 +127,11 @@ class TodoApp extends React.Component<Props,State> {
           onUpdate={onUpdate}
           onDestroy={onDestroy}
         />
-        <SearchPanel itemStore={state.itemStore} onItemStoreUpdate={handleItemStoreUpdate} />
+        <SearchPanel 
+          itemStore={state.itemStore} 
+          onItemStoreUpdate={handleItemStoreUpdate} 
+          tagCloud={Array.from(state.tagCloud.values()).map(x => x.cachedFullName)}
+        />
       </React.Fragment>
     );
   }

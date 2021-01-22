@@ -35,8 +35,9 @@ export interface updateItemStoreFunc{
 }
 
 interface Props {
-  itemStore: ItemStore
-  onItemStoreUpdate: (prev:updateItemStoreFunc) => void
+  itemStore: ItemStore,
+  onItemStoreUpdate: (prev:updateItemStoreFunc) => void,
+  tagCloud: string[],
 }
 
 interface State {
@@ -89,12 +90,10 @@ class SearchPanel extends React.Component<Props,State> {
 
   constructor(props) {
     super(props);
-    const tagCloud = ["Monday", "Pets", "PraiseMami", "DabHarder", "Dab", 
-      "MemesMemesMemes", "OhGodWhy", "AO3Tags", "Ipsum", "Lorem", "Tabs", "Latin"].sort();
-    const searchList = [[],["Monday"],["Latin"]];
+    const searchList = [[],["Example"],["Tutorial"]];
     this.state = {
       searchData: searchList,
-      tagCloud: tagCloud,
+      tagCloud: props.tagCloud,
       tabState: 2,
     }
     this.moveEntriesFuncGenerator = this.moveEntriesFuncGenerator.bind(this);

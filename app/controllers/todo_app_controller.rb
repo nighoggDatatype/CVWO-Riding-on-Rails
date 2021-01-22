@@ -9,7 +9,9 @@ class TodoAppController < ApplicationController
     if @user.blank?
       head :forbidden
     else
-      @items = Item.where(user: @user).order(:list_order).select(:id, :done, :task, :tags)
+      Item.joins(reviews: :customer)
+      itemQuery = Item.where(user: @user).order(:list_order).pluck(:id, :done, :task)
+      @items = itemQuery.map{|item| [:id, :done, :task, :tags].zip(item << Item.find(item[0]).tag_ids).to_h}
       @tags = Tag.where(user: @user).order(:name).select(:id, :name, :tags_id)
       #Variable setup completed, they will be used in the index.html.erb code file.
     end
