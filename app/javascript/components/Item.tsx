@@ -93,7 +93,7 @@ class Item extends React.Component<Props,State> {
             {!done && <IconButton onClick={handleOpen} style={genericDivStyle}><EditIcon/></IconButton>}
             <EditTextDialog 
               open={this.state.editDialogOpen} defaultInput={props.task} textName='Task Description'
-              onSubmit={handleSubmit} onClose={handleClose}/>
+              onSubmit={handleSubmit} onClose={handleClose} actionString="Edit"/>
           </div>
           <Divider style={genericDivStyle} orientation="vertical" flexItem />
           <div style={tagStyle}>

@@ -7,6 +7,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 
 interface Props {
+  actionString:string
   textName:string
   open:boolean
   defaultInput:string
@@ -62,7 +63,7 @@ class EditTextDialog extends React.Component<Props,State> {
         onClose={this.handleClose} 
         aria-labelledby="form-dialog-title" 
         fullWidth maxWidth='md'>
-        <DialogTitle id="form-dialog-title">Edit {this.props.textName}</DialogTitle>
+        <DialogTitle id="form-dialog-title">{this.props.actionString + " " + this.props.textName}</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
