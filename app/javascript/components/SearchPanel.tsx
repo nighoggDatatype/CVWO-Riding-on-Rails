@@ -44,7 +44,7 @@ export interface updateItemStoreFunc{
   (prev:ItemStore): ItemStore
 }
 
-export interface SearchTabDataProp {
+interface SearchTabDataProp {
   name: string,
   tags: string[],
 }
