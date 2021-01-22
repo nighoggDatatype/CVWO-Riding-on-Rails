@@ -41,7 +41,7 @@ export interface SearchTabDataProp {
 
 export interface SearchTabStore {
   tabDataMap: Map<number,SearchTabDataProp>,
-  tabOrder: number,
+  tabOrder: number[],
 }
 
 export interface updateTabStoreFunc{
@@ -55,7 +55,7 @@ interface Props {
 }
 
 interface State {
-  searchData: string[][]
+  searchData: SearchTabStore
   tabState:number
 }
 
@@ -103,9 +103,13 @@ class SearchPanel extends React.Component<Props,State> {
 
   constructor(props) {
     super(props);
-    const searchList = [[],["Example"],["Tutorial"]];
+    const searchMap = new Map<number,SearchTabDataProp>();
+    searchMap.set(11,  {name: "All Items",tags:[]});
+    searchMap.set(1234, {name: "Examples Only", tags: ["Example"]});
+    searchMap.set(343, {name: "Arbitary name", tags: ["Tutorial"]});
+    const searchOrder = [11,1234,343];
     this.state = {
-      searchData: searchList,
+      searchData: {tabDataMap: searchMap, tabOrder: searchOrder},
       tabState: 2,
     }
     this.moveEntriesFuncGenerator = this.moveEntriesFuncGenerator.bind(this);
@@ -131,12 +135,14 @@ class SearchPanel extends React.Component<Props,State> {
         data.push({id: id, ...this.props.itemStore.itemDataMap.get(id)}));
       return data;
     } 
+    const searchData = this.state.searchData
     return (
       <React.Fragment>
         <Tabs value={this.state.tabState} onChange={handleChange}>
-          {this.state.searchData.map((_value,index) => <Tab id={index.toString()} label={"Tab "+ (index+1).toString()}/>)}
+          {searchData.tabOrder.map((value,index) => 
+            <Tab id={index.toString()} label={searchData.tabDataMap.get(value).name}/>)}
         </Tabs>
-        {this.state.searchData.map((value,index) => 
+        {searchData.tabOrder.map((value,index) => 
           <TabPanel value={this.state.tabState} index={index}>
             <ListBody 
               entries={buildOrderedItems()} 
@@ -144,7 +150,7 @@ class SearchPanel extends React.Component<Props,State> {
               onUpdateTask={this.updateTask}
               deleteFactory={this.deleteFactory}
               tagCloud={this.props.tagCloud}
-              searchTags={value}
+              searchTags={searchData.tabDataMap.get(value).tags}
               onUpdateSearch={handleSearch}
               onCreate={this.createTask}/>
           </TabPanel>)}
