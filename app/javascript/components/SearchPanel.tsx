@@ -26,7 +26,6 @@ function TabPanel(props: { [x: string]: any; children: any; value: number; index
 }
 
 interface Props {
-  garbage:string,
 }
 
 interface State {

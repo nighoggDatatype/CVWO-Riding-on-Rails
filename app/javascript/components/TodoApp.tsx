@@ -1,6 +1,7 @@
 import React from "react"
 import TagCloud from "./TagCloud"
 import {TagJson, TagData} from "./ModelTypes"
+import SearchPanel from "./SearchPanel"
 
 interface Props {
   tags: TagJson[]
@@ -105,6 +106,7 @@ class TodoApp extends React.Component<Props,State> {
           onUpdate={onUpdate}
           onDestroy={onDestroy}
         />
+        <SearchPanel/>
       </React.Fragment>
     );
   }
