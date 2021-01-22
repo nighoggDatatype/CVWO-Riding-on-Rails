@@ -62,8 +62,8 @@ class TodoApp extends React.Component<Props,State> {
       searchOrder.push(element.id);
     })
 
-    this.state = {
-      searchStore: {tabDataMap: searchMap, tabOrder: searchOrder, tabState: 2}, //TODO: Make tabState part of user
+    this.state = {//TODO: Make tabState part of user, and make data for default user = 2
+      searchStore: {tabDataMap: searchMap, tabOrder: searchOrder, tabState: 0}, 
       tagCloud: tagCloud,
       tagState: [],
       itemStore: itemStore,
