@@ -235,7 +235,7 @@ class SearchPanel extends React.Component<Props,State> {
             <Button color="secondary" variant="contained" onClick={deleteTag}><DeleteForeverIcon/>Delete Current Tab</Button>
           </div>
           <EditTextDialog 
-            open={this.state.editDialogOpen} defaultInput="" textName='Search Tab'
+            open={this.state.editDialogOpen} defaultInput={this.state.defaultInput} textName='Search Tab'
             onSubmit={handleSubmit} onClose={handleClose} actionString={this.state.actionString}
             isMultiline={false} isValid={isValid}/>
         </Paper>

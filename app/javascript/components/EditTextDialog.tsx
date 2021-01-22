@@ -28,7 +28,7 @@ class EditTextDialog extends React.Component<Props,State> {
     super(props);
     this.state = {
         editTextField : props.defaultInput,
-        textBoxEnter : false
+        textBoxEnter : false,
     }
     this.handleClose = () => {
       props.onClose();
@@ -41,14 +41,18 @@ class EditTextDialog extends React.Component<Props,State> {
   }
   
   isInvalidDescription(potentialDescription: string){
-    let optional = true;
-    if (this.props.isValid != undefined){
-      optional = this.props.isValid(potentialDescription);
+    let isGood = true;
+    if (this.props.isValid != null){
+      isGood = this.props.isValid(potentialDescription);
     }
-    return !/\S/.test(potentialDescription);
+    let notEmpty = /\S/.test(potentialDescription)
+    return !(notEmpty && isGood);
   }
   
-  componentDidUpdate(){
+  componentDidUpdate(prevProps:Props | Readonly<Props>){
+    if(this.props.open && !prevProps.open){
+      this.setState({editTextField: prevProps.defaultInput})//Properly load default on open
+    }
     if(this.state.textBoxEnter){
       this.setState({textBoxEnter : false});
       this.handleSubmit();
