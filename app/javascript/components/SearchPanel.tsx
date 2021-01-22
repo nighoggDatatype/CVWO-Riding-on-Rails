@@ -5,7 +5,6 @@ import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper"
 import {ItemDataProps, ItemRecordProps} from './Item';
-import {updateItemDataFunc} from "./Item";
 import {updateTags} from "./TagRender";
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
@@ -15,6 +14,7 @@ import Button from "@material-ui/core/Button";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import { generateTempId } from "./ModelTypes";
 
 function TabPanel(props: { [x: string]: any; children: any; value: number; index: number; }) {
   const { children, value, index, ...other } = props;
@@ -51,6 +51,7 @@ export interface SearchTabDataProp {
 export interface SearchTabStore {
   tabDataMap: Map<number,SearchTabDataProp>,
   tabOrder: number[],
+  tabState: number,
 }
 
 export interface updateTabStoreFunc{
@@ -65,10 +66,52 @@ interface Props {
 
 interface State {
   searchData: SearchTabStore
-  tabState:number
 }
 
 class SearchPanel extends React.Component<Props,State> {
+  createTab(name:string){
+    this.setState(prev =>{
+      let searchData = prev.searchData;
+      let tempId = generateTempId(searchData.tabDataMap);
+      searchData.tabDataMap.set(tempId, {name: name, tags: []});
+      searchData.tabOrder.push(tempId);
+      return {searchData: searchData};
+    });
+  }
+  moveTab(isRight:boolean){
+    this.setState(prev => {
+      let searchData = prev.searchData;
+      let src = searchData.tabState;
+      let dest = searchData.tabState + (isRight ? 1 : -1);
+      let order = searchData.tabOrder;
+      if (0 <= dest && dest < searchData.tabOrder.length){
+        let temp = order[src];
+        order[src] = order[dest];
+        order[dest] = temp;
+      }
+      searchData.tabOrder = order;
+      return {searchData: searchData}
+    })
+  }
+  renameTag(newName:string){
+    this.setState(prev =>{
+      let searchData = prev.searchData;
+      let id = searchData.tabOrder[searchData.tabState];
+      let data = searchData.tabDataMap.get(id);
+      data.name = newName;
+      searchData.tabDataMap.set(id, data);
+      return {searchData: searchData};
+    });
+  }
+  deleteTag(){
+    this.setState(prev =>{
+      let searchData = prev.searchData;
+      let id = searchData.tabOrder[searchData.tabState];
+      searchData.tabDataMap.delete(id);
+      searchData.tabOrder = searchData.tabOrder.filter(order_id => order_id !== id);
+      return {searchData: searchData};
+    });
+  }
   constructor(props: Props | Readonly<Props>) {
     super(props);
     const searchMap = new Map<number,SearchTabDataProp>();
@@ -82,21 +125,25 @@ class SearchPanel extends React.Component<Props,State> {
     searchMap.set(222, {name: "Arbitary_names", tags: ["Tutorial"]});
     const searchOrder = [11,1234,343,111,112,113,114,222];
     this.state = {
-      searchData: {tabDataMap: searchMap, tabOrder: searchOrder},
-      tabState: 2,
+      searchData: {tabDataMap: searchMap, tabOrder: searchOrder, tabState: 2},
     }
   }
   render () {
     const handleChange = (_event: any, newValue: any) => {
-      this.setState({tabState: newValue});
+      this.setState(prev => {
+        let searchData = prev.searchData;
+        searchData.tabState = newValue;
+        return {searchData: searchData};
+      });
     };
     const handleSearch = (updater: updateTags) =>{
       this.setState(prev => {
-        let tabPos = prev.tabState;
-        let tabId = prev.searchData.tabOrder[tabPos];
-        let tabData = prev.searchData.tabDataMap.get(tabId);
+        let searchData = prev.searchData
+        let tabPos = searchData.tabState;
+        let tabId = searchData.tabOrder[tabPos];
+        let tabData = searchData.tabDataMap.get(tabId);
         tabData.tags = updater(tabData.tags);
-        prev.searchData.tabDataMap.set(tabId,tabData);
+        searchData.tabDataMap.set(tabId,tabData);
         return {searchData: prev.searchData};
       })
     }
@@ -107,7 +154,7 @@ class SearchPanel extends React.Component<Props,State> {
       return data;
     } 
     const searchData = this.state.searchData
-    const tabState = this.state.tabState;
+    const tabState = searchData.tabState;
     const genericStyle = {margin: "4px"}
     const sectionStyle = {
       flex: 1, 
@@ -140,12 +187,12 @@ class SearchPanel extends React.Component<Props,State> {
             <Button color="secondary" variant="contained"><DeleteForeverIcon/>Delete Current Tab</Button>
           </div>
         </Paper>
-        <Tabs value={this.state.tabState} onChange={handleChange} variant="scrollable" scrollButtons="on">
+        <Tabs value={tabState} onChange={handleChange} variant="scrollable" scrollButtons="on">
           {searchData.tabOrder.map((value,index) => 
             <Tab id={index.toString()} label={searchData.tabDataMap.get(value).name}/>)}
         </Tabs>
         {searchData.tabOrder.map((value,index) => 
-          <TabPanel value={this.state.tabState} index={index}>
+          <TabPanel value={tabState} index={index}>
             <ListBody 
               entries={buildOrderedItems()} 
               tagCloud={this.props.tagCloud}
