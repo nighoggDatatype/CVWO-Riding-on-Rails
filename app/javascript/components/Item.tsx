@@ -8,13 +8,9 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import Divider from '@material-ui/core/Divider';
-import EditTextDialog from './EditTextDialog'
+import EditTextDialog from './EditTextDialog';
+import {itemDataProps} from './ModelTypes';
 
-export interface itemDataProps {
-  done: boolean,
-  task: string,
-  tags: string[],
-}
 export interface itemRecordProps extends itemDataProps{
   id: number,
 }

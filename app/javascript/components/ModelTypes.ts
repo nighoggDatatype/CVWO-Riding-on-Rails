@@ -7,3 +7,8 @@ export interface TagData {
 export interface TagJson extends TagData {
   id:number,
 }
+export interface itemDataProps {
+  done: boolean,
+  task: string,
+  tags: string[],
+}

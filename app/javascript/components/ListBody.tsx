@@ -1,5 +1,6 @@
 import React from "react";
-import Item, {itemRecordProps, updateFunc, itemDataProps} from "./Item";
+import {itemDataProps} from './ModelTypes';
+import Item, {itemRecordProps, updateFunc} from "./Item";
 import TagRender, {updateTags, togglerGenerator} from "./TagRender";
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';

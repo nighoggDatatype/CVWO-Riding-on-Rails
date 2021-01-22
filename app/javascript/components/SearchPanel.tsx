@@ -3,7 +3,8 @@ import ListBody from "./ListBody"
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
-import {itemRecordProps, updateFunc, itemDataProps} from "./Item";
+import {itemDataProps} from './ModelTypes';
+import {itemRecordProps, updateFunc} from "./Item";
 import {updateTags} from "./TagRender";
 
 function TabPanel(props: { [x: string]: any; children: any; value: number; index: number; }) {
