@@ -3,7 +3,7 @@ import ListBody from "./ListBody"
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
-import {ItemData, ItemJson} from './ModelTypes';
+import {ItemDataProps, ItemRecordProps} from './Item';
 import {updateItemDataFunc} from "./Item";
 import {updateTags} from "./TagRender";
 
@@ -26,7 +26,7 @@ function TabPanel(props: { [x: string]: any; children: any; value: number; index
 }
 
 export interface ItemStore {
-  itemDataMap: Map<number,ItemData>
+  itemDataMap: Map<number,ItemDataProps>
   itemOrder: number[]
 }
 
@@ -75,7 +75,7 @@ class SearchPanel extends React.Component<Props,State> {
       });
     };
   }
-  createTask(data: ItemData){
+  createTask(data: ItemDataProps){
     this.props.onItemStoreUpdate((prev) => {
       let newIndex:number = undefined
       do{
@@ -114,8 +114,8 @@ class SearchPanel extends React.Component<Props,State> {
         return {searchData: searchList};
       })
     }
-    const buildOrderedItems = ():ItemJson[] => {
-      let data:ItemJson[] = [];
+    const buildOrderedItems = ():ItemRecordProps[] => {
+      let data:ItemRecordProps[] = [];
       this.props.itemStore.itemOrder.forEach(id => 
         data.push({id: id, ...this.props.itemStore.itemDataMap.get(id)}));
       return data;

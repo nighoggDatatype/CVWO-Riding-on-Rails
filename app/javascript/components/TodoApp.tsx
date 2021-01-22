@@ -1,6 +1,7 @@
 import React from "react"
 import TagCloud from "./TagCloud"
-import {TagJson, TagData, ItemData} from "./ModelTypes"
+import {TagJson, TagData} from "./ModelTypes"
+import {ItemDataProps} from "./Item"
 import SearchPanel, {ItemStore, updateItemStoreFunc} from "./SearchPanel"
 
 interface Props {
@@ -48,7 +49,7 @@ class TodoApp extends React.Component<Props,State> {
       + "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "
       + "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
     const longTagList = ["Monday", "Pets", "PraiseMami", "DabHarder", "Dab", "MemesMemesMemes", "OhGodWhy", "AO3Tags", "Ipsum", "Lorem", "Tabs"].sort();
-    const testData = new Map<number,ItemData>();
+    const testData = new Map<number,ItemDataProps>();
     testData.set(1111,{done:false, task:"Go Jog", tags:["Monday", "Latin"]})
     testData.set(888, {done:true, task:longFillerText, tags:["Latin"] })
     testData.set(1234,{done:true, task:"Walk the Dog", tags:longTagList})

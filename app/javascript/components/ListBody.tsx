@@ -1,5 +1,5 @@
 import React from "react";
-import {ItemData, ItemJson} from './ModelTypes';
+import {ItemDataProps, ItemRecordProps} from './Item';
 import Item, {updateItemDataFunc} from "./Item";
 import TagRender, {updateTags, togglerGenerator} from "./TagRender";
 import IconButton from '@material-ui/core/IconButton';
@@ -16,11 +16,11 @@ interface Props {
   moveEntriesGenerator: (srcId: number, dstId: number) => () => void,
   onUpdateTask: (id: number, func: updateItemDataFunc) => void,
   deleteFactory: (id: number) => () => void,
-  entries: ItemJson[],
+  entries: ItemRecordProps[],
   tagCloud: string[],
   searchTags: string[]
   onUpdateSearch:  (updater: updateTags) => void,
-  onCreate: (newItem: ItemData) => void,
+  onCreate: (newItem: ItemDataProps) => void,
 };
 
 interface State {
@@ -63,7 +63,7 @@ class ListBody extends React.Component<Props, State> {
       }
       return true;
     })
-    const ItemHTMLBuilder = (value: ItemJson, index: number, array: string | any[]) => {
+    const ItemHTMLBuilder = (value: ItemRecordProps, index: number, array: string | any[]) => {
       //From: https://stackoverflow.com/a/50769802
       type Mutable<T> = {//TODO: Move this into its own helper file
         -readonly [P in keyof T]: T[P];
