@@ -36,7 +36,7 @@ interface State {
 }
 
 class TagCloud extends React.Component<Props, State> {
-  constructor(props) {
+  constructor(props: Props | Readonly<Props>) {
     super(props);
     this.state = {
       anchor: null, 
@@ -101,7 +101,7 @@ class TagCloud extends React.Component<Props, State> {
       }
     }
     //Menu Interactions + Tag Creation
-    const handleMenuClickFactory = (data: string) => (event) => {
+    const handleMenuClickFactory = (data: string) => (event: { currentTarget: any; }) => {
       this.setState({anchor: event.currentTarget, menuFocus: data});
     };
     const handleCloseMenu = () => {

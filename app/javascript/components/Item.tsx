@@ -40,7 +40,7 @@ interface State {
 }
 class Item extends React.Component<Props,State> {
   handleSubmit: () => void;
-  constructor(props) {
+  constructor(props: Props | Readonly<Props>) {
     super(props);
     this.state = {
         editDialogOpen: false, 

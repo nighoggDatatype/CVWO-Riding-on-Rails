@@ -44,7 +44,7 @@ class TodoApp extends React.Component<Props,State> {
     });
     tagCloud = this.buildFullNames(tagCloud)
     const itemData = new Map<number,ItemDataProps>();
-    const itemOrder = [];
+    const itemOrder: number[] = [];
     props.items.forEach(element => {
       let tagNames = element.tags.map(tag => tagCloud.get(tag).cachedFullName);
       itemData.set(element.id, {done: element.done, task: element.task, tags: tagNames});

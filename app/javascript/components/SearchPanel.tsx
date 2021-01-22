@@ -70,7 +70,7 @@ interface State {
 
 class SearchPanel extends React.Component<Props,State> {
 
-  constructor(props) {
+  constructor(props: Props | Readonly<Props>) {
     super(props);
     const searchMap = new Map<number,SearchTabDataProp>();
     searchMap.set(11,  {name: "All_Items",tags:[]});
@@ -88,15 +88,17 @@ class SearchPanel extends React.Component<Props,State> {
     }
   }
   render () {
-    const handleChange = (_event, newValue) => {
+    const handleChange = (_event: any, newValue: any) => {
       this.setState({tabState: newValue});
     };
     const handleSearch = (updater: updateTags) =>{
       this.setState(prev => {
-        let tabID = prev.tabState;
-        let searchList = prev.searchData;
-        searchList[tabID] = updater(searchList[tabID]);
-        return {searchData: searchList};
+        let tabPos = prev.tabState;
+        let tabId = prev.searchData.tabOrder[tabPos];
+        let tabData = prev.searchData.tabDataMap.get(tabId);
+        tabData.tags = updater(tabData.tags);
+        prev.searchData.tabDataMap.set(tabId,tabData);
+        return {searchData: prev.searchData};
       })
     }
     const buildOrderedItems = ():ItemRecordProps[] => {

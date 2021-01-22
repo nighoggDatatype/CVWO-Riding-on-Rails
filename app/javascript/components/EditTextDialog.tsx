@@ -37,7 +37,7 @@ class EditTextDialog extends React.Component<Props,State> {
     }
   }
   
-  isInvalidDescription(potentialDescription){
+  isInvalidDescription(potentialDescription: string){
     return !/\S/.test(potentialDescription);
   }
   
@@ -49,7 +49,7 @@ class EditTextDialog extends React.Component<Props,State> {
   }
 
   render () {
-    const handleTextbox = (e) => {
+    const handleTextbox = (e: { target: { value: string; }; }) => {
         let newInputRaw:string = e.target.value;
         let newInput = newInputRaw.replace("\n","");
         let altEnter = !this.isInvalidDescription(newInput) && newInputRaw.includes('\n');

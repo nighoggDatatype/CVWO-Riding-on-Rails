@@ -67,7 +67,7 @@ class ListBody extends React.Component<Props, State> {
     })
   }
 
-  constructor(props) {
+  constructor(props: Props | Readonly<Props>) {
     super(props);
     this.state = {
         editDialogOpen: false, 
