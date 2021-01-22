@@ -57,7 +57,8 @@ class ListBody extends React.Component<Props, State> {
     const togglerHandler = (toToggle: string) => props.onUpdateSearch(togglerGenerator(toToggle));
     const filteredList = props.entries.filter((entry) => {
       for(let i = 0; i < props.searchTags.length; i++){
-        if (!entry.tags.includes(props.searchTags[i])){
+        let searchTerm = props.searchTags[i];
+        if (!entry.tags.some(entryTag => entryTag.indexOf(searchTerm) == 0)){
           return false;
         }
       }
