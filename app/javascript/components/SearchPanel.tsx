@@ -44,7 +44,7 @@ export interface updateItemStoreFunc{
   (prev:ItemStore): ItemStore
 }
 
-interface SearchTabDataProp {
+export interface SearchTabDataProp {
   name: string,
   tags: string[],
 }
@@ -62,11 +62,12 @@ export interface updateTabStoreFunc{
 interface Props {
   itemStore: ItemStore,
   onItemStoreUpdate: (prev:updateItemStoreFunc) => void,
+  searchData: SearchTabStore,
+  onTabStoreUpdate: (prev:updateTabStoreFunc) => void,
   tagCloud: string[],
 }
 
 interface State {
-  searchData: SearchTabStore
   editDialogOpen: boolean
   defaultInput: string
   actionString: string
@@ -74,18 +75,16 @@ interface State {
 
 class SearchPanel extends React.Component<Props,State> {
   createTab(name:string){
-    this.setState(prev =>{
-      let searchData = prev.searchData;
+    this.props.onTabStoreUpdate(searchData =>{
       searchData.tabState = searchData.tabOrder.length; //Give focus to new tab
       let tempId = generateTempId(searchData.tabDataMap);
       searchData.tabDataMap.set(tempId, {name: name, tags: []});
       searchData.tabOrder.push(tempId);
-      return {searchData: searchData};
+      return searchData;
     });
   }
   moveTab(isRight:boolean){
-    this.setState(prev => {
-      let searchData = prev.searchData;
+    this.props.onTabStoreUpdate(searchData =>{
       let src = searchData.tabState;
       let dest = searchData.tabState + (isRight ? 1 : -1);
       let order = searchData.tabOrder;
@@ -96,33 +95,21 @@ class SearchPanel extends React.Component<Props,State> {
         searchData.tabState = dest; //Adjust focus to moved tab
       }
       searchData.tabOrder = order;
-      return {searchData: searchData}
+      return searchData;
     })
   }
   renameTag(newName:string){
-    this.setState(prev =>{
-      let searchData = prev.searchData;
+    this.props.onTabStoreUpdate(searchData =>{
       let id = searchData.tabOrder[searchData.tabState];
       let data = searchData.tabDataMap.get(id);
       data.name = newName;
       searchData.tabDataMap.set(id, data);
-      return {searchData: searchData};
+      return searchData;
     });
   }
   constructor(props: Props | Readonly<Props>) {
     super(props);
-    const searchMap = new Map<number,SearchTabDataProp>();
-    searchMap.set(11,  {name: "All_Items",tags:[]});
-    searchMap.set(1234, {name: "Examples_Only", tags: ["Example"]});
-    searchMap.set(343, {name: "Arbitary_name", tags: ["Tutorial"]});
-    searchMap.set(111,  {name: "All_Items",tags:[]});
-    searchMap.set(112,  {name: "All_Items",tags:[]});
-    searchMap.set(113,  {name: "All_Items",tags:[]});
-    searchMap.set(114,  {name: "All_Items",tags:[]});
-    searchMap.set(222, {name: "Arbitary_names", tags: ["Tutorial"]});
-    const searchOrder = [11,1234,343,111,112,113,114,222];
     this.state = {
-      searchData: {tabDataMap: searchMap, tabOrder: searchOrder, tabState: 2},
       editDialogOpen: false,
       defaultInput: "",
       actionString: "",
@@ -133,8 +120,7 @@ class SearchPanel extends React.Component<Props,State> {
       //Note: For some reason, defining this in render instead of as a method of SearchPanel prevents error
       //      And I wish I knew why. :/ 
       //      This is basically an example of it works now and I don't know why.
-      this.setState(prev =>{
-        let searchData = prev.searchData;
+    this.props.onTabStoreUpdate(searchData =>{
         let pos = searchData.tabState;
         let id = searchData.tabOrder[pos];
         if (pos >= searchData.tabOrder.length - 1){
@@ -142,25 +128,23 @@ class SearchPanel extends React.Component<Props,State> {
         }
         searchData.tabDataMap.delete(id);
         searchData.tabOrder = searchData.tabOrder.filter(order_id => order_id !== id);
-        return {searchData: searchData};
+        return searchData;
       });
     }
     const handleChange = (_event: any, newValue: any) => {
-      this.setState(prev => {
-        let searchData = prev.searchData;
+      this.props.onTabStoreUpdate(searchData =>{
         searchData.tabState = newValue;
-        return {searchData: searchData};
+        return searchData;
       });
     };
     const handleSearch = (updater: updateTags) =>{
-      this.setState(prev => {
-        let searchData = prev.searchData
+      this.props.onTabStoreUpdate(searchData =>{
         let tabPos = searchData.tabState;
         let tabId = searchData.tabOrder[tabPos];
         let tabData = searchData.tabDataMap.get(tabId);
         tabData.tags = updater(tabData.tags);
         searchData.tabDataMap.set(tabId,tabData);
-        return {searchData: prev.searchData};
+        return searchData;
       })
     }
     const buildOrderedItems = ():ItemRecordProps[] => {
@@ -169,7 +153,7 @@ class SearchPanel extends React.Component<Props,State> {
         data.push({id: id, ...this.props.itemStore.itemDataMap.get(id)}));
       return data;
     } 
-    const searchData = this.state.searchData
+    const searchData = this.props.searchData;
     const tabState = searchData.tabState;
     const genericStyle = {margin: "4px"}
     const sectionStyle = {
@@ -189,8 +173,7 @@ class SearchPanel extends React.Component<Props,State> {
     }
     const length = searchData.tabOrder.length; //TODO: When this is zero, show something special
     const handleClose = () => this.setState({editDialogOpen: false, defaultInput:"", actionString:""});
-    const handleOpenEdit = () => this.setState(prev => {
-      let searchData = prev.searchData;
+    const handleOpenEdit = () => this.setState(() => {
       let pos = searchData.tabState
       let id = searchData.tabOrder[pos];
       let currentName = searchData.tabDataMap.get(id).name;

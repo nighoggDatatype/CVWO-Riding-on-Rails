@@ -2,7 +2,7 @@ import React from "react"
 import TagCloud from "./TagCloud"
 import {TagJson, TagData, ItemJson, generateTempId} from "./ModelTypes"
 import {ItemDataProps} from "./Item"
-import SearchPanel, {ItemStore, updateItemStoreFunc} from "./SearchPanel"
+import SearchPanel, {ItemStore, SearchTabDataProp, SearchTabStore, updateItemStoreFunc, updateTabStoreFunc} from "./SearchPanel"
 
 interface Props {
   tags: TagJson[]
@@ -11,8 +11,9 @@ interface Props {
 
 interface State {
   tagCloud:Map<number,TagData>
-  tagState:string[]
-  itemStore: ItemStore
+  tagState:string[],
+  itemStore: ItemStore,
+  searchStore: SearchTabStore,
 };
 class TodoApp extends React.Component<Props,State> {
   buildFullNames (dataStruct:Map<number,TagData>) {
@@ -52,7 +53,19 @@ class TodoApp extends React.Component<Props,State> {
     })
     const itemStore:ItemStore = {itemDataMap: itemData, itemOrder: itemOrder};
 
+    const searchMap = new Map<number,SearchTabDataProp>();
+    searchMap.set(11,  {name: "All_Items",tags:[]});
+    searchMap.set(1234, {name: "Examples_Only", tags: ["Example"]});
+    searchMap.set(343, {name: "Arbitary_name", tags: ["Tutorial"]});
+    searchMap.set(111,  {name: "All_Items",tags:[]});
+    searchMap.set(112,  {name: "All_Items",tags:[]});
+    searchMap.set(113,  {name: "All_Items",tags:[]});
+    searchMap.set(114,  {name: "All_Items",tags:[]});
+    searchMap.set(222, {name: "Arbitary_names", tags: ["Tutorial"]});
+    const searchOrder = [11,1234,343,111,112,113,114,222];
+
     this.state = {
+      searchStore: {tabDataMap: searchMap, tabOrder: searchOrder, tabState: 2},
       tagCloud: tagCloud,
       tagState: [],
       itemStore: itemStore,
@@ -114,6 +127,12 @@ class TodoApp extends React.Component<Props,State> {
       })
     }
 
+    const handleSearchStoreUpdate = (updater: updateTabStoreFunc) => {
+      this.setState((prev) => {
+        return {searchStore: updater(prev.searchStore)}
+      })
+    }
+
     return (
       <React.Fragment>
         <TagCloud 
@@ -124,6 +143,8 @@ class TodoApp extends React.Component<Props,State> {
           onDestroy={onDestroy}
         />
         <SearchPanel 
+          searchData={state.searchStore}
+          onTabStoreUpdate={handleSearchStoreUpdate}
           itemStore={state.itemStore} 
           onItemStoreUpdate={handleItemStoreUpdate} 
           tagCloud={Array.from(state.tagCloud.values()).map(x => x.cachedFullName)}
