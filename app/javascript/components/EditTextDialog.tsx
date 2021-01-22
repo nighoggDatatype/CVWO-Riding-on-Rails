@@ -81,9 +81,9 @@ class EditTextDialog extends React.Component<Props,State> {
             id="task-name-field"
             label={this.props.textName}
             fullWidth 
-            multiline={this.props.isMultiline}
+            multiline
             value={this.state.editTextField}
-            rowsMax={7}
+            rowsMax={this.props.isMultiline ? 7 : 1}
             onChange={handleTextbox}
             error={dialogIsEmpty}
             helperText={`${this.props.textName} cannot be empty`}
