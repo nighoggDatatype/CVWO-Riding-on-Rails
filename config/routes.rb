@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   root to: 'todo_app#index', default: {username: nil}
   get 'todo_app/index', to: 'todo_app#index', default: {username: nil}, format: false
   get 'todo_app/:username', to: 'todo_app#index', format: false #TOOD: Add constraints on username
-  resources :user, only: [:show, :create, :update, :destroy], constraints: { format: 'json' }, :defaults => { :format => 'json' } do
+  resources :user, only: [:index, :show, :create, :update], constraints: { format: 'json' }, :defaults => { :format => 'json' } do
     resources :tags , only: [:index, :show, :create, :update, :destroy]
     resources :items, only: [:index, :show, :create, :update, :destroy]
     resources :tabs , only: [:index, :show, :create, :update, :destroy]
