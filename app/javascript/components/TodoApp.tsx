@@ -105,17 +105,30 @@ class TodoApp extends React.Component<Props,State> {
       });
     const onDestroy = (deleteTarget:string) => {
       this.setState((prev) => {
-        let deleteIdTargets = [this.reverseLookUp(deleteTarget)]; //Used when deleteing item tags later
+        let deleteIdTargets = [this.reverseLookUp(deleteTarget)];
+        let deleteNameTargets = [deleteTarget] //To comb through other data structures
         let cloud = prev.tagCloud;
         for(let i = 0; i < deleteIdTargets.length; i+=1){
-          cloud.delete(deleteIdTargets[i])
+          let target = deleteIdTargets[i]
+          deleteNameTargets.push(cloud.get(target).cachedFullName)
+          cloud.delete(target)
           for(let [key,value] of cloud){
-            if (value.tags_id == deleteIdTargets[i]){
+            if (value.tags_id == target){
               deleteIdTargets.push(key);
             }
           }
         }
-        return {tagCloud: cloud};
+        let itemMap = prev.itemStore.itemDataMap;
+        for (let [key,value] of itemMap ){
+          value.tags = value.tags.filter(e => !deleteNameTargets.includes(e));
+          itemMap.set(key, value);
+        }
+        let searchMap = prev.searchStore.tabDataMap;
+        for (let [key,value] of searchMap ){
+          value.tags = value.tags.filter(e => !deleteNameTargets.includes(e));
+          searchMap.set(key, value);
+        }
+        return {tagCloud: cloud, itemStore: prev.itemStore, searchStore: prev.searchStore};
       })
     }
 
