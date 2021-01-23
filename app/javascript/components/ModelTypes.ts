@@ -35,5 +35,5 @@ export function generateTempId(existingData: Map<number,any>){
 
 export interface UserJson {
     id: number
-    name: string
+    username: string
 }

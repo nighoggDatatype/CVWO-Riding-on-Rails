@@ -4,15 +4,17 @@ import {TagJson, TagData, ItemJson, generateTempId, SearchTabJson, UserJson} fro
 import {ItemDataProps} from "./Item"
 import SearchPanel, {ItemStore, SearchTabDataProp, 
     SearchTabStore, updateItemStoreFunc, updateTabStoreFunc} from "./SearchPanel"
+import UserControl from "./UserControl"
 
 interface Props {
   tags: TagJson[]
   items: ItemJson[]
   tabs: SearchTabJson[]
-  user: UserJson[]
+  user: UserJson
 };
 
 interface State {
+  user: UserJson
   tagCloud:Map<number,TagData>
   tagState:string[],
   itemStore: ItemStore,
@@ -69,6 +71,7 @@ class TodoApp extends React.Component<Props,State> {
       tagCloud: tagCloud,
       tagState: [],
       itemStore: itemStore,
+      user: props.user
     }
   }
   extractCachedNames(){
@@ -165,6 +168,7 @@ class TodoApp extends React.Component<Props,State> {
 
     return (
       <React.Fragment>
+        <UserControl username={state.user.username}/>
         <TagCloud 
           tagCloud={this.extractCachedNames()}
           tagSelection={state.tagState}
