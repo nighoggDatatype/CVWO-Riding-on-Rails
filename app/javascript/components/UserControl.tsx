@@ -96,7 +96,8 @@ class UserControl extends React.Component<Props,State> {
     const usernameGroupStyle = {
       flex: 3, //Test this out, by making the text and tags very long
       display:"flex", 
-      alignItems:"safe center"
+      alignItems:"safe center",
+      justifyContent: "center"
     }
     const textStyle = {
       margin: "4px",
@@ -132,6 +133,13 @@ class UserControl extends React.Component<Props,State> {
           <Divider style={genericStyle} orientation="vertical" flexItem />
           <Button disabled={dialogIsBad} style={checkGroupStyle} onClick={this.checkUserName}>Check</Button>
           {this.getCloudIcon(checkGroupStyle)}
+          </div>
+        }
+        {!isDefault &&
+          <div style={usernameGroupStyle}>
+            <h2>
+              {`Username: ${this.props.username}`}
+            </h2>
           </div>
         }
         <Divider style={genericStyle} orientation="vertical" flexItem />
