@@ -37,3 +37,9 @@ export interface UserJson {
     id: number
     username: string
 }
+
+export interface StateJson{
+    tags: TagJson[],
+    items: ItemJson[],
+    tabs: SearchTabJson[],
+}

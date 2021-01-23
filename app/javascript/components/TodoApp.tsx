@@ -1,6 +1,6 @@
 import React from "react"
 import TagCloud from "./TagCloud"
-import {TagJson, TagData, ItemJson, generateTempId, SearchTabJson, UserJson} from "./ModelTypes"
+import {TagJson, TagData, ItemJson, generateTempId, SearchTabJson, UserJson, StateJson} from "./ModelTypes"
 import {ItemDataProps} from "./Item"
 import SearchPanel, {ItemStore, SearchTabDataProp, 
     SearchTabStore, updateItemStoreFunc, updateTabStoreFunc} from "./SearchPanel"
@@ -51,33 +51,55 @@ class TodoApp extends React.Component<Props,State> {
     }
     return reverse;
   }
-  fullState(){
+  tagState(){
     let state = this.state;
     let tags: TagJson[] = [];
-    const reverseIndex = new Map<string,number>()
     for(let [key, value] of state.tagCloud){
       tags.push({id: key, name: value.name, tags_id: value.tags_id})
-      reverseIndex.set(value.cachedFullName, key);
     }
+    return tags;
+  }
+  itemState(){
+    let state = this.state;
     let items: ItemJson[] = [];
     state.itemStore.itemOrder.forEach(id => {
       let value = state.itemStore.itemDataMap.get(id);
+      items.push({
+        id: id, 
+        done: value.done, 
+        task: value.task, 
+        tags: value.tags.map(x => this.reverseLookUp(x)),
+      });
     });
-    //TODO: finish this
+    return items;
+  }
+  searchState(){
+    let state = this.state;
+    let search: SearchTabJson[] = [];
+    state.searchStore.tabOrder.forEach(id => {
+      let value = state.searchStore.tabDataMap.get(id);
+      search.push({
+        id: id,
+        name: value.name,
+        tags: value.tags.map(x => this.reverseLookUp(x)),
+      })
+    })
+    return search;
+  }
+  fullState():StateJson{
+    return {tags: this.tagState(), items: this.itemState(), tabs: this.searchState()};
   }
   handleNewUser(user:string){
     const url = user_index(user);
-    return;
-    //TODO: Test this later.
-    // fetch(url, {headers:{'Content-Type': 'application/json'}, body: JSON.stringify(fullState())})
-    //   .then(
-    //     (results) => {
-    //       //TODO:
-    //     },
-    //     (error) => {
-    //       //TODO:
-    //     }
-    //   )
+     fetch(url, {headers:{'Content-Type': 'application/json'}, body: JSON.stringify(this.fullState())})
+       .then(
+         (results) => {
+           //TODO:
+         },
+         (error) => {
+           //TODO:
+         }
+       )
   }
   constructor(props: Props | Readonly<Props>) {
     super(props);
