@@ -5,6 +5,7 @@ import {ItemDataProps} from "./Item"
 import SearchPanel, {ItemStore, SearchTabDataProp, 
     SearchTabStore, updateItemStoreFunc, updateTabStoreFunc} from "./SearchPanel"
 import UserControl from "./UserControl"
+import { user_index } from "./Routes"
 
 interface Props {
   tags: TagJson[]
@@ -16,9 +17,10 @@ interface Props {
 interface State {
   user: UserJson
   tagCloud:Map<number,TagData>
-  tagState:string[],
+  tagState:string[],//TODO: Figure this out if have time, or delete
   itemStore: ItemStore,
   searchStore: SearchTabStore,
+  reverseTagLookup:Map<string,number>
 };
 class TodoApp extends React.Component<Props,State> {
   buildFullNames (dataStruct:Map<number,TagData>) {
@@ -41,6 +43,41 @@ class TodoApp extends React.Component<Props,State> {
       dataStruct.set(id, oldData);
     }
     return dataStruct;
+  }
+  generateReverseLookup(dataStruct:Map<number,TagData>):Map<string,number>{
+    let reverse = new Map<string,number>()
+    for(const [key,value] of dataStruct){
+      reverse.set(value.cachedFullName, key);
+    }
+    return reverse;
+  }
+  fullState(){
+    let state = this.state;
+    let tags: TagJson[] = [];
+    const reverseIndex = new Map<string,number>()
+    for(let [key, value] of state.tagCloud){
+      tags.push({id: key, name: value.name, tags_id: value.tags_id})
+      reverseIndex.set(value.cachedFullName, key);
+    }
+    let items: ItemJson[] = [];
+    state.itemStore.itemOrder.forEach(id => {
+      let value = state.itemStore.itemDataMap.get(id);
+    });
+    //TODO: finish this
+  }
+  handleNewUser(user:string){
+    const url = user_index(user);
+    return;
+    //TODO: Test this later.
+    // fetch(url, {headers:{'Content-Type': 'application/json'}, body: JSON.stringify(fullState())})
+    //   .then(
+    //     (results) => {
+    //       //TODO:
+    //     },
+    //     (error) => {
+    //       //TODO:
+    //     }
+    //   )
   }
   constructor(props: Props | Readonly<Props>) {
     super(props);
@@ -71,8 +108,10 @@ class TodoApp extends React.Component<Props,State> {
       tagCloud: tagCloud,
       tagState: [],
       itemStore: itemStore,
-      user: props.user
+      user: props.user,
+      reverseTagLookup: this.generateReverseLookup(tagCloud),
     }
+    this.handleNewUser = this.handleNewUser.bind(this);
   }
   extractCachedNames(){
     let cloud = this.state.tagCloud;
@@ -81,12 +120,7 @@ class TodoApp extends React.Component<Props,State> {
 
   reverseLookUp(fullTag:string){
     if (fullTag === null) return null;
-    for(let [id,data] of this.state.tagCloud){
-      if (data.cachedFullName == fullTag){
-        return id;
-      }
-    }
-    return;
+    return this.state.reverseTagLookup.get(fullTag);
   }
   render () {
     const state = this.state;
@@ -97,21 +131,17 @@ class TodoApp extends React.Component<Props,State> {
           name: newName,
           tags_id: this.reverseLookUp(domain.slice(0,-1)),
           cachedFullName: domain+newName, })
-        return {tagCloud: prev.tagCloud}
+        return {tagCloud: prev.tagCloud, reverseTagLookup: this.generateReverseLookup(prev.tagCloud)}
       });
     const onUpdate = (originalTag:string, newName:string) =>
       this.setState((prev) =>{
-        const reverseIndex = new Map<string,number>()
-        for (let [key,value] of prev.tagCloud ){
-          reverseIndex.set(value.cachedFullName, key);
-        }
-        const index = reverseIndex.get(originalTag);
+        const index = this.reverseLookUp(originalTag);
         let data = prev.tagCloud.get(index);
         data.name = newName
         prev.tagCloud.set(index,data);
         let tagCloud = this.buildFullNames(prev.tagCloud);
         const transformString = (old:string):string => 
-          tagCloud.get(reverseIndex.get(old)).cachedFullName;
+          tagCloud.get(this.reverseLookUp(old)).cachedFullName;
         
         let itemMap = prev.itemStore.itemDataMap;
         for (let [key,value] of itemMap ){
@@ -123,7 +153,11 @@ class TodoApp extends React.Component<Props,State> {
           value.tags = value.tags.map(e => transformString(e));
           searchMap.set(key, value);
         }
-        return {tagCloud: tagCloud, itemStore: prev.itemStore, searchStore: prev.searchStore};
+        return {
+          tagCloud: tagCloud, 
+          itemStore: prev.itemStore, 
+          searchStore: prev.searchStore,
+          reverseTagLookup: this.generateReverseLookup(tagCloud)};
       });
     const onDestroy = (deleteTarget:string) => {
       this.setState((prev) => {
@@ -168,7 +202,7 @@ class TodoApp extends React.Component<Props,State> {
 
     return (
       <React.Fragment>
-        <UserControl username={state.user.username}/>
+        <UserControl username={state.user.username} onNewUser={this.handleNewUser}/>
         <TagCloud 
           tagCloud={this.extractCachedNames()}
           tagSelection={state.tagState}

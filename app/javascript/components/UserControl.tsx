@@ -14,7 +14,7 @@ import Divider from '@material-ui/core/Divider';
 
 interface Props {
   username:string,
-  //onSubmitAttempt: (username:string) => void
+  onNewUser: (username:string) => void
 }
 interface State {
   editTextField:string,
@@ -113,6 +113,12 @@ class UserControl extends React.Component<Props,State> {
       marginRight: "auto",
     }
     const genericStyle = {margin: "4px"}
+
+    let pushToServer = () => {
+      this.props.onNewUser(this.state.editTextField);
+    }
+    pushToServer = pushToServer.bind(this);
+
     return (
       <Paper style={paperStyle}>
         {isDefault &&
@@ -144,7 +150,7 @@ class UserControl extends React.Component<Props,State> {
         }
         <Divider style={genericStyle} orientation="vertical" flexItem />
         <Divider style={genericStyle} orientation="vertical" flexItem />
-        <Button disabled={!avaliableUserName} style={submitStyle}>{isDefault ? "Create User" : "Save"}</Button>
+        <Button disabled={!avaliableUserName} style={submitStyle} onClick={pushToServer}>{isDefault ? "Create User" : "Save"}</Button>
       </Paper>
     );
   }
