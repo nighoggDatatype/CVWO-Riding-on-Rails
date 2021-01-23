@@ -96,12 +96,29 @@ class TodoApp extends React.Component<Props,State> {
       });
     const onUpdate = (originalTag:string, newName:string) =>
       this.setState((prev) =>{
-        const index = this.reverseLookUp(originalTag)
+        const reverseIndex = new Map<string,number>()
+        for (let [key,value] of prev.tagCloud ){
+          reverseIndex.set(value.cachedFullName, key);
+        }
+        const index = reverseIndex.get(originalTag);
         let data = prev.tagCloud.get(index);
         data.name = newName
         prev.tagCloud.set(index,data);
-
-        return {tagCloud: this.buildFullNames(prev.tagCloud)}
+        let tagCloud = this.buildFullNames(prev.tagCloud);
+        const transformString = (old:string):string => 
+          tagCloud.get(reverseIndex.get(old)).cachedFullName;
+        
+        let itemMap = prev.itemStore.itemDataMap;
+        for (let [key,value] of itemMap ){
+          value.tags = value.tags.map(e => transformString(e));
+          itemMap.set(key, value);
+        }
+        let searchMap = prev.searchStore.tabDataMap;
+        for (let [key,value] of searchMap ){
+          value.tags = value.tags.map(e => transformString(e));
+          searchMap.set(key, value);
+        }
+        return {tagCloud: tagCloud, itemStore: prev.itemStore, searchStore: prev.searchStore};
       });
     const onDestroy = (deleteTarget:string) => {
       this.setState((prev) => {
