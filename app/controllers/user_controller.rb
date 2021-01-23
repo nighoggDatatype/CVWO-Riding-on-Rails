@@ -1,5 +1,6 @@
 class UserController < ApplicationController
   #before_action :set_user_and_verify, only: [:show, :update, :destroy]
+  skip_before_action :verify_authenticity_token #This will do since we don't bother to authenticate.
   #TODO: Figure out mass updates
 
   # GET /user.json
@@ -17,8 +18,56 @@ class UserController < ApplicationController
   end
 
   # POST /user.json
+
   def create
-    #TODO: Figure this out
+    @parentAlreadyFound = [nil]
+    @tag_sorted = []
+    @tag_data = tag_params
+    while @tag_sorted.length < @tag_data.length do
+        @tag_data = @tag_data.delete_if {|tag|
+            if @parentAlreadyFound.include?(tag.fetch(:tags_id))
+                @tag_sorted << tag
+                @parentAlreadyFound << tag.fetch(:id)
+                true
+            end
+        }
+    end
+    ActiveRecord::Base.transaction do
+      #User
+      @user = User.create!(username: username_params)
+
+      #Tags
+      @tagIdMap = Hash.new
+      @tagsWithIds = []
+      @tag_sorted.each{|tag| 
+        #Generate and save tag
+        safeTag = {name: tag.fetch(:name), tags_id: @tagIdMap[tag.fetch(:tags_id)]}
+        newTag = @user.tags.create!(safeTag)
+        #Build Dependency
+        @tagIdMap[tag.fetch(:id)] = newTag.id
+        @tagsWithIds << newTag
+      }
+      
+      #Items
+      @item_data = item_params.map{|item|{
+            done: item.fetch(:done), 
+            task: item.fetch(:task), 
+            tag_ids: item.fetch(:tag_ids,[]).map{|tag| @tagIdMap[tag]}
+        }
+      }
+      @itemsWithIds = @user.items.create!(@item_data)
+
+      #Tabs
+      @search_data = search_params.map{|tab|{
+          name: tab.fetch(:name), 
+          tag_ids: tab.fetch(:tag_ids,[]).map{|tag| @tagIdMap[tag]}
+        }
+      }
+      @tabsWithIds= @user.tabs.create!(@search_data)
+    end
+    respond_to do |format|
+        format.json { render :show, status: :created, location: todo_app_index_url(@user.username) }
+    end
   end
 
   # PATCH/PUT /user/1.json 
@@ -47,4 +96,17 @@ class UserController < ApplicationController
     def username_params
       params.fetch(:username, "")
     end
+
+    def tag_params
+      params.permit(tags: [:id, :tags_id, :name]).fetch(:tags, [])
+    end
+
+    def item_params
+      params.permit(items: [:id, :done, :task, :tag_ids]).fetch(:items, [])
+    end
+
+    def search_params
+      params.permit(tabs: [:id, :name, :tag_ids]).fetch(:tabs, [])
+    end
+    
 end
