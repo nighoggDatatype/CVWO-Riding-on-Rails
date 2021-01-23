@@ -1,13 +1,15 @@
 import React from "react"
 import TagCloud from "./TagCloud"
-import {TagJson, TagData, ItemJson, generateTempId, SearchTabJson} from "./ModelTypes"
+import {TagJson, TagData, ItemJson, generateTempId, SearchTabJson, UserJson} from "./ModelTypes"
 import {ItemDataProps} from "./Item"
-import SearchPanel, {ItemStore, SearchTabDataProp, SearchTabStore, updateItemStoreFunc, updateTabStoreFunc} from "./SearchPanel"
+import SearchPanel, {ItemStore, SearchTabDataProp, 
+    SearchTabStore, updateItemStoreFunc, updateTabStoreFunc} from "./SearchPanel"
 
 interface Props {
   tags: TagJson[]
   items: ItemJson[]
   tabs: SearchTabJson[]
+  user: UserJson[]
 };
 
 interface State {

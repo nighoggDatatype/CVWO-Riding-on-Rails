@@ -1,9 +1,9 @@
 class TodoAppController < ApplicationController
   def index
     if app_params.blank?
-      @user = User.default
+      @user = User.select(:id, :username).default
     else
-      @user = User.find_by(username: app_params)
+      @user = User.select(:id, :username).find_by(username: app_params)
     end
 
     if @user.blank?
