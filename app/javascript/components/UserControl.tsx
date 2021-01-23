@@ -10,6 +10,7 @@ import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import {user_index} from "./Routes";
 import BlockIcon from '@material-ui/icons/Block';
 import CheckIcon from '@material-ui/icons/Check';
+import Divider from '@material-ui/core/Divider';
 
 interface Props {
   username:string,
@@ -99,7 +100,7 @@ class UserControl extends React.Component<Props,State> {
     }
     const textStyle = {
       margin: "4px",
-      flex: 2,
+      flex: 5,
     }
     const checkGroupStyle = {
       flex: 1,
@@ -110,6 +111,7 @@ class UserControl extends React.Component<Props,State> {
       marginLeft: "auto",
       marginRight: "auto",
     }
+    const genericStyle = {margin: "4px"}
     return (
       <Paper style={paperStyle}>
         {isDefault &&
@@ -125,11 +127,15 @@ class UserControl extends React.Component<Props,State> {
             error={dialogIsBad}
             helperText="Username is invalid"
           />
-          <Button disabled={dialogIsBad} style={checkGroupStyle} onClick={this.checkUserName}>Check</Button>
           {this.getValidationIcon(checkGroupStyle)}
+          <Divider style={genericStyle} orientation="vertical" flexItem />
+          <Divider style={genericStyle} orientation="vertical" flexItem />
+          <Button disabled={dialogIsBad} style={checkGroupStyle} onClick={this.checkUserName}>Check</Button>
           {this.getCloudIcon(checkGroupStyle)}
           </div>
         }
+        <Divider style={genericStyle} orientation="vertical" flexItem />
+        <Divider style={genericStyle} orientation="vertical" flexItem />
         <Button disabled={!avaliableUserName} style={submitStyle}>{isDefault ? "Create User" : "Save"}</Button>
       </Paper>
     );
