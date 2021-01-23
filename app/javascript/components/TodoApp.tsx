@@ -68,7 +68,7 @@ class TodoApp extends React.Component<Props,State> {
         id: id, 
         done: value.done, 
         task: value.task, 
-        tags: value.tags.map(x => this.reverseLookUp(x)),
+        tag_ids: value.tags.map(x => this.reverseLookUp(x)),
       });
     });
     return items;
@@ -81,7 +81,7 @@ class TodoApp extends React.Component<Props,State> {
       search.push({
         id: id,
         name: value.name,
-        tags: value.tags.map(x => this.reverseLookUp(x)),
+        tag_ids: value.tags.map(x => this.reverseLookUp(x)),
       })
     })
     return search;
@@ -111,7 +111,7 @@ class TodoApp extends React.Component<Props,State> {
     const itemData = new Map<number,ItemDataProps>();
     const itemOrder: number[] = [];
     props.items.forEach(element => {
-      let tagNames = element.tags.map(tag => tagCloud.get(tag).cachedFullName);
+      let tagNames = element.tag_ids.map(tag => tagCloud.get(tag).cachedFullName);
       itemData.set(element.id, {done: element.done, task: element.task, tags: tagNames});
       itemOrder.push(element.id);
     })
@@ -120,7 +120,7 @@ class TodoApp extends React.Component<Props,State> {
     const searchMap = new Map<number,SearchTabDataProp>();
     let searchOrder:number[] = []
     props.tabs.forEach(element => {
-      let tagNames = element.tags.map(tag => tagCloud.get(tag).cachedFullName);
+      let tagNames = element.tag_ids.map(tag => tagCloud.get(tag).cachedFullName);
       searchMap.set(element.id, {name: element.name, tags: tagNames});
       searchOrder.push(element.id);
     })

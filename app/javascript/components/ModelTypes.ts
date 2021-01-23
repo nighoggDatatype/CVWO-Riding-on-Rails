@@ -10,7 +10,7 @@ export interface TagJson extends TagData {
 export interface ItemData {
   done: boolean,
   task: string,
-  tags: number[],
+  tag_ids: number[],
 }
 
 export interface ItemJson extends ItemData{
@@ -19,7 +19,7 @@ export interface ItemJson extends ItemData{
 
 export interface SearchTabData {
   name: string,
-  tags: number[],
+  tag_ids: number[],
 }
 
 export interface SearchTabJson extends SearchTabData{
