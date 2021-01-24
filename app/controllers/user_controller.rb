@@ -30,7 +30,7 @@ class UserController < ApplicationController
       @tagsWithIds = []
       @tag_sorted.each{|tag| 
         #Generate and save tag
-        safeTag = {name: tag.fetch(:name), tags_id: @tagIdMap[tag.fetch(:tags_id)]}
+        safeTag = {name: tag.fetch(:name), tags_id: @tagIdMap[tag.fetch(:tags_id, nil)]}
         newTag = @user.tags.create!(safeTag)
         #Build Dependency
         @tagIdMap[tag.fetch(:id)] = newTag.id
