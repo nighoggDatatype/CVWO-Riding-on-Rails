@@ -33,15 +33,15 @@ class TabsControllerTest < ActionDispatch::IntegrationTest
     assert_response :created
 
     assert_equal "Hello_World", json_response["name"]
-    assert_equal 2, json_response["tags"].length
+    assert_equal 2, json_response["tag_ids"].length
     tag_data_one = {}
     tag_data_two = {}
-    if json_response["tags"][0]["id"] == @tag_one.id
-      tag_data_one = json_response["tags"][0]
-      tag_data_two = json_response["tags"][1]
+    if json_response["tag_ids"][0]["id"] == @tag_one.id
+      tag_data_one = json_response["tag_ids"][0]
+      tag_data_two = json_response["tag_ids"][1]
     else
-      tag_data_one = json_response["tags"][1]
-      tag_data_two = json_response["tags"][0]
+      tag_data_one = json_response["tag_ids"][1]
+      tag_data_two = json_response["tag_ids"][0]
     end
     assert_equal @tag_one.id, tag_data_one["id"]
     assert_equal @tag_two.id, tag_data_two["id"]
@@ -75,15 +75,15 @@ class TabsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     assert_equal "Tab_1", json_response["name"]
-    assert_equal 2, json_response["tags"].length
+    assert_equal 2, json_response["tag_ids"].length
     tag_data_two = {}
     tag_data_three = {}
-    if json_response["tags"][0]["id"] == @tag_two.id
-      tag_data_two = json_response["tags"][0]
-      tag_data_three = json_response["tags"][1]
+    if json_response["tag_ids"][0]["id"] == @tag_two.id
+      tag_data_two = json_response["tag_ids"][0]
+      tag_data_three = json_response["tag_ids"][1]
     else
-      tag_data_two = json_response["tags"][1]
-      tag_data_three = json_response["tags"][0]
+      tag_data_two = json_response["tag_ids"][1]
+      tag_data_three = json_response["tag_ids"][0]
     end
     assert_equal @tag_two.id, tag_data_two["id"]
     assert_equal @tag_three.id, tag_data_three["id"]
@@ -113,7 +113,7 @@ class TabsControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
 
     assert_equal "Tab_1", json_response["name"]
-    assert_equal 0, json_response["tags"].length
+    assert_equal 0, json_response["tag_ids"].length
 
     updated_tab = Tab.find(json_response["id"])
     assert_equal "Tab_1", updated_tab.name

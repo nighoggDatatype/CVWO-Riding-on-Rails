@@ -1,4 +1,4 @@
 json.extract! tab, :id, :name
-json.tags do
+json.tag_ids do
   json.array! tab.tags, partial: "tags/tag", as: :tag
 end

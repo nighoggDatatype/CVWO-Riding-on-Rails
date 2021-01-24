@@ -1,4 +1,6 @@
-json.extract! @user, :id, :username
+json.user do
+    json.extract! @user, :id, :username
+end
 json.tags do
     json.array! @tagsWithIds, partial: "tags/tag", as: :tag
 end

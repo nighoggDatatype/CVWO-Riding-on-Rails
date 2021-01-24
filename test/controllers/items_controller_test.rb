@@ -34,15 +34,15 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal "Hello World", json_response["task"]
     assert_not json_response["done"]
-    assert_equal 2, json_response["tags"].length
+    assert_equal 2, json_response["tag_ids"].length
     tag_data_one = {}
     tag_data_two = {}
-    if json_response["tags"][0]["id"] == @tag_one.id
-      tag_data_one = json_response["tags"][0]
-      tag_data_two = json_response["tags"][1]
+    if json_response["tag_ids"][0]["id"] == @tag_one.id
+      tag_data_one = json_response["tag_ids"][0]
+      tag_data_two = json_response["tag_ids"][1]
     else
-      tag_data_one = json_response["tags"][1]
-      tag_data_two = json_response["tags"][0]
+      tag_data_one = json_response["tag_ids"][1]
+      tag_data_two = json_response["tag_ids"][0]
     end
     assert_equal @tag_one.id, tag_data_one["id"]
     assert_equal @tag_two.id, tag_data_two["id"]
@@ -77,15 +77,15 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal "Kill_kill_kill", json_response["task"]
     assert_equal @item.done, json_response["done"]
-    assert_equal 2, json_response["tags"].length
+    assert_equal 2, json_response["tag_ids"].length
     tag_data_two = {}
     tag_data_three = {}
-    if json_response["tags"][0]["id"] == @tag_two.id
-      tag_data_two = json_response["tags"][0]
-      tag_data_three = json_response["tags"][1]
+    if json_response["tag_ids"][0]["id"] == @tag_two.id
+      tag_data_two = json_response["tag_ids"][0]
+      tag_data_three = json_response["tag_ids"][1]
     else
-      tag_data_two = json_response["tags"][1]
-      tag_data_three = json_response["tags"][0]
+      tag_data_two = json_response["tag_ids"][1]
+      tag_data_three = json_response["tag_ids"][0]
     end
     assert_equal @tag_two.id, tag_data_two["id"]
     assert_equal @tag_three.id, tag_data_three["id"]
@@ -116,8 +116,8 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal "Kill_kill_kill", json_response["task"]
     assert_equal @item.done, json_response["done"]
-    assert_equal 1, json_response["tags"].length
-    assert_equal @tag_two.id, json_response["tags"][0]["id"]
+    assert_equal 1, json_response["tag_ids"].length
+    assert_equal @tag_two.id, json_response["tag_ids"][0]["id"]
 
     updated_item = Item.find(json_response["id"])
     assert_equal "Kill_kill_kill", updated_item.task
