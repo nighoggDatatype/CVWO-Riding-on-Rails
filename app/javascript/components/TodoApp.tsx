@@ -181,6 +181,7 @@ class TodoApp extends React.Component<Props,State> {
       reverseTagLookup: this.generateReverseLookup(tagCloud),
     }
     this.handleNewUser = this.handleNewUser.bind(this);
+    this.saveCurrentContent = this.saveCurrentContent.bind(this);
   }
   extractCachedNames(){
     let cloud = this.state.tagCloud;

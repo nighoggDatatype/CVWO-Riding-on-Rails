@@ -61,8 +61,9 @@ class UserController < ApplicationController
 
   # PATCH/PUT /user/1.json 
   def update
-    if @user = User.default
+    if @user == User.default
       head :forbidden
+      return
     end
     @tag_sorted = sorted_tag_params
     ActiveRecord::Base.transaction do
@@ -76,7 +77,7 @@ class UserController < ApplicationController
       @tagsWithIds = []
       @tag_sorted.each{|tag| 
         #Generate and save tag
-        safeTag = {name: tag.fetch(:name), tags_id: @tagIdMap[tag.fetch(:tags_id)]}
+        safeTag = {name: tag.fetch(:name), tags_id: @tagIdMap[tag.fetch(:tags_id, nil)]}
         newTag = @user.tags.create!(safeTag)
         #Build Dependency
         @tagIdMap[tag.fetch(:id)] = newTag.id
@@ -117,7 +118,7 @@ class UserController < ApplicationController
 
   private
     def set_user_and_verify #TODO: Make this common to both tabs and tags
-      @user = User.find_by(id: params[:user_id])
+      @user = User.find_by(id: params[:id])
       if @user.blank?
         head :forbidden
       end
@@ -138,7 +139,7 @@ class UserController < ApplicationController
       target = tag_data.length
       while tag_sorted.length < target do
           tag_data = tag_data.delete_if {|tag|
-              if parentAlreadyFound.include?(tag.fetch(:tags_id))
+              if parentAlreadyFound.include?(tag.fetch(:tags_id, nil))
                   tag_sorted << tag
                   parentAlreadyFound << tag.fetch(:id)
                   true
