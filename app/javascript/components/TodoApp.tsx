@@ -1,6 +1,6 @@
 import React from "react"
 import TagCloud from "./TagCloud"
-import {TagJson, TagData, ItemJson, generateTempId, SearchTabJson, UserJson, StateJson} from "./ModelTypes"
+import {TagJson, TagData, ItemJson, generateTempId, SearchTabJson, UserJson, StateJson, TotalStateJson} from "./ModelTypes"
 import {ItemDataProps} from "./Item"
 import SearchPanel, {ItemStore, SearchTabDataProp, 
     SearchTabStore, updateItemStoreFunc, updateTabStoreFunc} from "./SearchPanel"
@@ -89,15 +89,50 @@ class TodoApp extends React.Component<Props,State> {
   fullState():StateJson{
     return {tags: this.tagState(), items: this.itemState(), tabs: this.searchState()};
   }
+
+  reloadState(newProps:TotalStateJson){
+    var tagCloud = new Map<number,TagData>();
+    newProps.tags.forEach(element => {
+      tagCloud.set(element.id, {name: element.name, tags_id: element.tags_id})
+    });
+    tagCloud = this.buildFullNames(tagCloud)
+    const itemData = new Map<number,ItemDataProps>();
+    const itemOrder: number[] = [];
+    newProps.items.forEach(element => {
+      let tagNames = element.tag_ids.map(tag => tagCloud.get(tag).cachedFullName);
+      itemData.set(element.id, {done: element.done, task: element.task, tags: tagNames});
+      itemOrder.push(element.id);
+    })
+    const itemStore:ItemStore = {itemDataMap: itemData, itemOrder: itemOrder};
+
+    const searchMap = new Map<number,SearchTabDataProp>();
+    let searchOrder:number[] = []
+    newProps.tabs.forEach(element => {
+      let tagNames = element.tag_ids.map(tag => tagCloud.get(tag).cachedFullName);
+      searchMap.set(element.id, {name: element.name, tags: tagNames});
+      searchOrder.push(element.id);
+    })
+
+    this.setState(prev => {
+      return {//TODO: Make tabState part of user, and make data for default user = 2
+        searchStore: {tabDataMap: searchMap, tabOrder: searchOrder, tabState: prev.searchStore.tabState}, 
+        tagCloud: tagCloud,
+        itemStore: itemStore,
+        user: newProps.user,
+        reverseTagLookup: this.generateReverseLookup(tagCloud),
+      };
+    });
+  }
+
   handleNewUser(user:string){
     const url = user_index(user);
-     fetch(url, {headers:{'Content-Type': 'application/json'}, body: JSON.stringify(this.fullState())})
+     fetch(url, {method: 'POST', 
+                 headers:{'Content-Type': 'application/json'}, 
+                 body: JSON.stringify(this.fullState())})
+     .then(res => res.json())
        .then(
          (results) => {
-           //TODO:
-         },
-         (error) => {
-           //TODO:
+            this.reloadState(results)
          }
        )
   }

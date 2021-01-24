@@ -43,3 +43,6 @@ export interface StateJson{
     items: ItemJson[],
     tabs: SearchTabJson[],
 }
+export interface TotalStateJson extends StateJson{
+    user: UserJson
+}
