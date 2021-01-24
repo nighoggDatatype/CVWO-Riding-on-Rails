@@ -20,7 +20,8 @@ interface State {
   tagState:string[],//TODO: Figure this out if have time, or delete
   itemStore: ItemStore,
   searchStore: SearchTabStore,
-  reverseTagLookup:Map<string,number>
+  reverseTagLookup:Map<string,number>,
+  saved: boolean,
 };
 class TodoApp extends React.Component<Props,State> {
   buildFullNames (dataStruct:Map<number,TagData>) {
@@ -120,6 +121,7 @@ class TodoApp extends React.Component<Props,State> {
         itemStore: itemStore,
         user: newProps.user,
         reverseTagLookup: this.generateReverseLookup(tagCloud),
+        saved: true,
       };
     });
   }
@@ -179,6 +181,7 @@ class TodoApp extends React.Component<Props,State> {
       itemStore: itemStore,
       user: props.user,
       reverseTagLookup: this.generateReverseLookup(tagCloud),
+      saved: props.user.username != "default",
     }
     this.handleNewUser = this.handleNewUser.bind(this);
     this.saveCurrentContent = this.saveCurrentContent.bind(this);
@@ -201,7 +204,11 @@ class TodoApp extends React.Component<Props,State> {
           name: newName,
           tags_id: this.reverseLookUp(domain.slice(0,-1)),
           cachedFullName: domain+newName, })
-        return {tagCloud: prev.tagCloud, reverseTagLookup: this.generateReverseLookup(prev.tagCloud)}
+        return {
+          tagCloud: prev.tagCloud, 
+          reverseTagLookup: this.generateReverseLookup(prev.tagCloud), 
+          saved: false
+        }
       });
     const onUpdate = (originalTag:string, newName:string) =>
       this.setState((prev) =>{
@@ -227,7 +234,8 @@ class TodoApp extends React.Component<Props,State> {
           tagCloud: tagCloud, 
           itemStore: prev.itemStore, 
           searchStore: prev.searchStore,
-          reverseTagLookup: this.generateReverseLookup(tagCloud)};
+          reverseTagLookup: this.generateReverseLookup(tagCloud), 
+          saved: false};
       });
     const onDestroy = (deleteTarget:string) => {
       this.setState((prev) => {
@@ -254,19 +262,19 @@ class TodoApp extends React.Component<Props,State> {
           value.tags = value.tags.filter(e => !deleteNameTargets.includes(e));
           searchMap.set(key, value);
         }
-        return {tagCloud: cloud, itemStore: prev.itemStore, searchStore: prev.searchStore};
+        return {tagCloud: cloud, itemStore: prev.itemStore, searchStore: prev.searchStore, saved: false};
       })
     }
 
     const handleItemStoreUpdate = (updater: updateItemStoreFunc) => {
       this.setState((prev) => {
-        return {itemStore: updater(prev.itemStore)}
+        return {itemStore: updater(prev.itemStore), saved: false}
       })
     }
 
     const handleSearchStoreUpdate = (updater: updateTabStoreFunc) => {
       this.setState((prev) => {
-        return {searchStore: updater(prev.searchStore)}
+        return {searchStore: updater(prev.searchStore), saved: false}
       })
     }
 
@@ -276,6 +284,7 @@ class TodoApp extends React.Component<Props,State> {
           username={state.user.username} 
           onNewUser={this.handleNewUser} 
           onSave={this.saveCurrentContent}
+          saved={this.state.saved}
         />
         <TagCloud 
           tagCloud={this.extractCachedNames()}
