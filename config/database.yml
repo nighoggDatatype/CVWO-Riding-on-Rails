@@ -21,8 +21,8 @@ default: &default
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: myapp
-  password: YXdIO7bI5VNdqRoYfowr #Shity password for insecure applications. TODO: Recreate the db with myapp as the superuser since I don't care about security here for a proof of concept project
+  username: <%= ENV['MY_APP_DATABASE_USERNAME'] %>
+  password: <%= ENV['MY_APP_DATABASE_PASSWORD'] %> 
 
 development:
   <<: *default
