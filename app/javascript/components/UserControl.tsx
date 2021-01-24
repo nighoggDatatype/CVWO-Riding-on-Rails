@@ -7,10 +7,13 @@ import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import CloudOffIcon from '@material-ui/icons/CloudOff';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
-import {user_index} from "./Routes";
+import {todo_app, user_index} from "./Routes";
 import BlockIcon from '@material-ui/icons/Block';
 import CheckIcon from '@material-ui/icons/Check';
 import Divider from '@material-ui/core/Divider';
+import Snackbar from "@material-ui/core/Snackbar";
+import CloseIcon from "@material-ui/icons/Close";
+import IconButton from "@material-ui/core/IconButton";
 
 interface Props {
   username:string,
@@ -24,6 +27,7 @@ interface State {
   success: boolean,
   isLoaded: boolean,
   isWaiting: boolean,
+  snackbarOpen: boolean,
 }
 
 class UserControl extends React.Component<Props,State> {
@@ -49,6 +53,7 @@ class UserControl extends React.Component<Props,State> {
         success: false,
         error: false,
         isWaiting: false,
+        snackbarOpen: false,
     }
     this.checkUserName = this.checkUserName.bind(this);
   }
@@ -82,6 +87,7 @@ class UserControl extends React.Component<Props,State> {
   render () {
     const state = this.state;
     const saved = this.props.saved;
+    const link = todo_app(this.props.username);
     const paperStyle = {
       padding: "4px", 
       margin: "2px", 
@@ -126,6 +132,12 @@ class UserControl extends React.Component<Props,State> {
     }
     pushToServer = pushToServer.bind(this);
 
+    const openSnackbar = () => this.setState({snackbarOpen: true});
+    const closeSnackBar = () => this.setState({snackbarOpen: false});
+    const copyLink = () => {
+      navigator.clipboard.writeText(link)
+      openSnackbar();
+    }
     return (
       <Paper style={paperStyle}>
         {isDefault &&
@@ -149,11 +161,27 @@ class UserControl extends React.Component<Props,State> {
           </div>
         }
         {!isDefault &&
-          <div style={usernameGroupStyle}>
-            <h2>
-              {`Username: ${this.props.username}`}
-            </h2>
-          </div>
+        <div style={usernameGroupStyle}>
+          <h2 style={genericStyle}>
+            {`Username: ${this.props.username}`}
+          </h2>
+          <Button style={genericStyle} variant="outlined"onClick={copyLink}>
+              Copy Link
+          </Button>
+          <Snackbar
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            open={this.state.snackbarOpen}
+            autoHideDuration={4500}
+            onClose={closeSnackBar}
+            message="Link copied"
+            key={'Snackbar'}
+            action={
+              <IconButton size="small" aria-label="close" color="inherit" onClick={closeSnackBar}>
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            }
+          />
+        </div>
         }
         <Divider style={genericStyle} orientation="vertical" flexItem />
         <Divider style={genericStyle} orientation="vertical" flexItem />

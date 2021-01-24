@@ -6,3 +6,6 @@ export function user_index(username:string) {
 export function user_url(user_id:number) {
     return baseUrl + `user/${user_id}`;
 }
+export function todo_app(username:string) {
+    return baseUrl + `todo_app/${username}`;
+}
