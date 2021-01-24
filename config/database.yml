@@ -15,7 +15,7 @@
 # gem 'pg'
 #
 default: &default
-  host: 127.0.0.1
+  host: <%= ENV['DATABASE_URL'] %>
   adapter: postgresql
   encoding: unicode
   # For details on connection pooling, see Rails configuration guide
@@ -83,6 +83,6 @@ test:
 #
 production:
   <<: *default
-  database: my_app_production
+  database: <%= ENV['MY_APP_DATABASE_NAME'] %>
   #username: my_app
   #password: <%= ENV['MY_APP_DATABASE_PASSWORD'] %>
