@@ -1,5 +1,5 @@
 class UserController < ApplicationController
-  #before_action :set_user_and_verify, only: [:show, :update, :destroy]
+  before_action :set_user_and_verify, only: [:show, :update, :destroy]
   skip_before_action :verify_authenticity_token #This will do since we don't bother to authenticate.
   #TODO: Figure out mass updates
 
@@ -20,18 +20,7 @@ class UserController < ApplicationController
   # POST /user.json
 
   def create
-    @parentAlreadyFound = [nil]
-    @tag_sorted = []
-    @tag_data = tag_params
-    while @tag_sorted.length < @tag_data.length do
-        @tag_data = @tag_data.delete_if {|tag|
-            if @parentAlreadyFound.include?(tag.fetch(:tags_id))
-                @tag_sorted << tag
-                @parentAlreadyFound << tag.fetch(:id)
-                true
-            end
-        }
-    end
+    @tag_sorted = sorted_tag_params
     ActiveRecord::Base.transaction do
       #User
       @user = User.create!(username: username_params)
@@ -72,7 +61,48 @@ class UserController < ApplicationController
 
   # PATCH/PUT /user/1.json 
   def update
-    #TODO: See about doing it properly some other time
+    if @user = User.default
+      head :forbidden
+    end
+    @tag_sorted = sorted_tag_params
+    ActiveRecord::Base.transaction do
+      #Clean house and reset
+      @user.tags.clear
+      @user.items.clear
+      @user.tabs.clear
+
+      #Tags
+      @tagIdMap = Hash.new
+      @tagsWithIds = []
+      @tag_sorted.each{|tag| 
+        #Generate and save tag
+        safeTag = {name: tag.fetch(:name), tags_id: @tagIdMap[tag.fetch(:tags_id)]}
+        newTag = @user.tags.create!(safeTag)
+        #Build Dependency
+        @tagIdMap[tag.fetch(:id)] = newTag.id
+        @tagsWithIds << newTag
+      }
+      
+      #Items
+      @item_data = item_params.map{|item|{
+            done: item.fetch(:done), 
+            task: item.fetch(:task), 
+            tag_ids: item.fetch(:tag_ids,[]).map{|tag| @tagIdMap[tag]}
+        }
+      }
+      @itemsWithIds = @user.items.create!(@item_data)
+
+      #Tabs
+      @search_data = search_params.map{|tab|{
+          name: tab.fetch(:name), 
+          tag_ids: tab.fetch(:tag_ids,[]).map{|tag| @tagIdMap[tag]}
+        }
+      }
+      @tabsWithIds= @user.tabs.create!(@search_data)
+    end
+    respond_to do |format|
+        format.json { render :show, status: :created, location: todo_app_index_url(@user.username) }
+    end
   end
 
   # def destroy #TODO: Add this back if I ever implement passwords
@@ -101,6 +131,22 @@ class UserController < ApplicationController
       params.permit(tags: [:id, :tags_id, :name]).fetch(:tags, [])
     end
 
+    def sorted_tag_params
+      parentAlreadyFound = [nil]
+      tag_sorted = []
+      tag_data = tag_params
+      while tag_sorted.length < tag_data.length do
+          tag_data = tag_data.delete_if {|tag|
+              if parentAlreadyFound.include?(tag.fetch(:tags_id))
+                  tag_sorted << tag
+                  parentAlreadyFound << tag.fetch(:id)
+                  true
+              end
+          }
+      end
+      return tag_sorted
+    end
+
     def item_params
       params.permit(items: [:id, :done, :task, :tag_ids]).fetch(:items, [])
     end
@@ -108,5 +154,4 @@ class UserController < ApplicationController
     def search_params
       params.permit(tabs: [:id, :name, :tag_ids]).fetch(:tabs, [])
     end
-    
 end

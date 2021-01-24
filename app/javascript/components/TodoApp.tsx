@@ -5,7 +5,7 @@ import {ItemDataProps} from "./Item"
 import SearchPanel, {ItemStore, SearchTabDataProp, 
     SearchTabStore, updateItemStoreFunc, updateTabStoreFunc} from "./SearchPanel"
 import UserControl from "./UserControl"
-import { user_index } from "./Routes"
+import { user_index, user_url } from "./Routes"
 
 interface Props {
   tags: TagJson[]
@@ -127,6 +127,18 @@ class TodoApp extends React.Component<Props,State> {
   handleNewUser(user:string){
     const url = user_index(user);
      fetch(url, {method: 'POST', 
+                 headers:{'Content-Type': 'application/json'}, 
+                 body: JSON.stringify(this.fullState())})
+     .then(res => res.json())
+       .then(
+         (results) => {
+            this.reloadState(results)
+         }
+       )
+  }
+  saveCurrentContent(){
+    const url = user_url(this.state.user.id);
+     fetch(url, {method: 'PATCH', 
                  headers:{'Content-Type': 'application/json'}, 
                  body: JSON.stringify(this.fullState())})
      .then(res => res.json())
@@ -259,7 +271,11 @@ class TodoApp extends React.Component<Props,State> {
 
     return (
       <React.Fragment>
-        <UserControl username={state.user.username} onNewUser={this.handleNewUser}/>
+        <UserControl 
+          username={state.user.username} 
+          onNewUser={this.handleNewUser} 
+          onSave={this.saveCurrentContent}
+        />
         <TagCloud 
           tagCloud={this.extractCachedNames()}
           tagSelection={state.tagState}

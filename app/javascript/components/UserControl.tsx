@@ -15,6 +15,7 @@ import Divider from '@material-ui/core/Divider';
 interface Props {
   username:string,
   onNewUser: (username:string) => void
+  onSave: () => void
 }
 interface State {
   editTextField:string,
@@ -115,7 +116,11 @@ class UserControl extends React.Component<Props,State> {
     const genericStyle = {margin: "4px"}
 
     let pushToServer = () => {
-      this.props.onNewUser(this.state.editTextField);
+      if (isDefault){
+        this.props.onNewUser(this.state.editTextField);
+      }else{
+        this.props.onSave();
+      }
     }
     pushToServer = pushToServer.bind(this);
 
