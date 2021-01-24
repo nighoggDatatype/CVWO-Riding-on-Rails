@@ -36,17 +36,15 @@ class TabsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 2, json_response["tag_ids"].length
     tag_data_one = {}
     tag_data_two = {}
-    if json_response["tag_ids"][0]["id"] == @tag_one.id
+    if json_response["tag_ids"][0] == @tag_one.id
       tag_data_one = json_response["tag_ids"][0]
       tag_data_two = json_response["tag_ids"][1]
     else
       tag_data_one = json_response["tag_ids"][1]
       tag_data_two = json_response["tag_ids"][0]
     end
-    assert_equal @tag_one.id, tag_data_one["id"]
-    assert_equal @tag_two.id, tag_data_two["id"]
-    assert_equal @tag_one.name, tag_data_one["name"]
-    assert_equal @tag_two.name, tag_data_two["name"]
+    assert_equal @tag_one.id, tag_data_one
+    assert_equal @tag_two.id, tag_data_two
 
     updated_tab = Tab.find(json_response["id"])
     assert_equal @user, updated_tab.user
@@ -78,19 +76,15 @@ class TabsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 2, json_response["tag_ids"].length
     tag_data_two = {}
     tag_data_three = {}
-    if json_response["tag_ids"][0]["id"] == @tag_two.id
+    if json_response["tag_ids"][0] == @tag_two.id
       tag_data_two = json_response["tag_ids"][0]
       tag_data_three = json_response["tag_ids"][1]
     else
       tag_data_two = json_response["tag_ids"][1]
       tag_data_three = json_response["tag_ids"][0]
     end
-    assert_equal @tag_two.id, tag_data_two["id"]
-    assert_equal @tag_three.id, tag_data_three["id"]
-    assert_equal @tag_two.name, tag_data_two["name"]
-    assert_equal @tag_three.name, tag_data_three["name"]
-    assert_nil tag_data_two["tags_id"]
-    assert_equal @tag_one.id, tag_data_three["tags_id"]
+    assert_equal @tag_two.id, tag_data_two
+    assert_equal @tag_three.id, tag_data_three
   end
 
   test "should not show tab to bad user" do

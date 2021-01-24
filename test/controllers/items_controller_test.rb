@@ -37,17 +37,15 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 2, json_response["tag_ids"].length
     tag_data_one = {}
     tag_data_two = {}
-    if json_response["tag_ids"][0]["id"] == @tag_one.id
+    if json_response["tag_ids"][0] == @tag_one.id
       tag_data_one = json_response["tag_ids"][0]
       tag_data_two = json_response["tag_ids"][1]
     else
       tag_data_one = json_response["tag_ids"][1]
       tag_data_two = json_response["tag_ids"][0]
     end
-    assert_equal @tag_one.id, tag_data_one["id"]
-    assert_equal @tag_two.id, tag_data_two["id"]
-    assert_equal @tag_one.name, tag_data_one["name"]
-    assert_equal @tag_two.name, tag_data_two["name"]
+    assert_equal @tag_one.id, tag_data_one
+    assert_equal @tag_two.id, tag_data_two
 
     updated_item = Item.find(json_response["id"])
     assert_equal @user, updated_item.user
@@ -80,19 +78,15 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 2, json_response["tag_ids"].length
     tag_data_two = {}
     tag_data_three = {}
-    if json_response["tag_ids"][0]["id"] == @tag_two.id
+    if json_response["tag_ids"][0] == @tag_two.id
       tag_data_two = json_response["tag_ids"][0]
       tag_data_three = json_response["tag_ids"][1]
     else
       tag_data_two = json_response["tag_ids"][1]
       tag_data_three = json_response["tag_ids"][0]
     end
-    assert_equal @tag_two.id, tag_data_two["id"]
-    assert_equal @tag_three.id, tag_data_three["id"]
-    assert_equal @tag_two.name, tag_data_two["name"]
-    assert_equal @tag_three.name, tag_data_three["name"]
-    assert_nil tag_data_two["tags_id"]
-    assert_equal @tag_one.id, tag_data_three["tags_id"]
+    assert_equal @tag_two.id, tag_data_two
+    assert_equal @tag_three.id, tag_data_three
   end
 
   test "should not show item to bad user" do
@@ -113,11 +107,10 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
   test "should update item" do
     patch user_item_url(@user, @item), params: { item: {tag_ids: [@tag_two.id]} }
     assert_response :ok
-
     assert_equal "Kill_kill_kill", json_response["task"]
     assert_equal @item.done, json_response["done"]
     assert_equal 1, json_response["tag_ids"].length
-    assert_equal @tag_two.id, json_response["tag_ids"][0]["id"]
+    assert_equal @tag_two.id, json_response["tag_ids"][0]
 
     updated_item = Item.find(json_response["id"])
     assert_equal "Kill_kill_kill", updated_item.task
