@@ -135,7 +135,8 @@ class UserController < ApplicationController
       parentAlreadyFound = [nil]
       tag_sorted = []
       tag_data = tag_params
-      while tag_sorted.length < tag_data.length do
+      target = tag_data.length
+      while tag_sorted.length < target do
           tag_data = tag_data.delete_if {|tag|
               if parentAlreadyFound.include?(tag.fetch(:tags_id))
                   tag_sorted << tag
@@ -148,10 +149,10 @@ class UserController < ApplicationController
     end
 
     def item_params
-      params.permit(items: [:id, :done, :task, :tag_ids]).fetch(:items, [])
+      params.permit(items: [:id, :done, :task, tag_ids:[]]).fetch(:items, [])
     end
 
     def search_params
-      params.permit(tabs: [:id, :name, :tag_ids]).fetch(:tabs, [])
+      params.permit(tabs: [:id, :name, tag_ids:[]]).fetch(:tabs, [])
     end
 end
