@@ -7,14 +7,10 @@
 
 ### Personal Notes
 
-This README would normally document whatever steps are necessary to get the application up and running.
-TODO List of potential documentation to add:
-* Ruby version
-* System dependencies
-* Configuration
-* Database creation
-* Database initialization
-* How to run the test suite
-* Services (job queues, cache servers, search engines, etc.)
-* Deployment instructions
-* ...
+When setting up on Heroku, copy the following fields from the Resources tab into Config Vars
+* MY_APP_DATABASE_NAME
+* MY_APP_DATABASE_NAME
+* MY_APP_DATABASE_USERNAME
+* MY_APP_DATABASE_PASSWORD
+
+Then in Heroku console, run `rails db:migrate`, then `rails db:seed`
