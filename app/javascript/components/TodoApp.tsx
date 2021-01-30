@@ -6,6 +6,9 @@ import SearchPanel, {ItemStore, SearchTabDataProp,
     SearchTabStore, updateItemStoreFunc, updateTabStoreFunc} from "./SearchPanel"
 import UserControl from "./UserControl"
 import { user_index, user_url } from "./Routes"
+import IconButton from "@material-ui/core/IconButton"
+import CloseIcon from "@material-ui/icons/Close";
+import Snackbar from "@material-ui/core/Snackbar"
 
 interface Props {
   tags: TagJson[]
@@ -22,6 +25,7 @@ interface State {
   searchStore: SearchTabStore,
   reverseTagLookup:Map<string,number>,
   saved: boolean,
+  snackbarOpen: boolean
 };
 class TodoApp extends React.Component<Props,State> {
   buildFullNames (dataStruct:Map<number,TagData>) {
@@ -126,6 +130,10 @@ class TodoApp extends React.Component<Props,State> {
     });
   }
 
+  signalFailureToSave(){
+    this.setState({snackbarOpen:true});
+  }
+
   handleNewUser(user:string){
     const url = user_index(user);
      fetch(url, {method: 'POST', 
@@ -135,7 +143,8 @@ class TodoApp extends React.Component<Props,State> {
        .then(
          (results) => {
             this.reloadState(results)
-         }
+         },
+         (_error) => {this.signalFailureToSave()}
        )
   }
   saveCurrentContent(){
@@ -147,7 +156,8 @@ class TodoApp extends React.Component<Props,State> {
        .then(
          (results) => {
             this.reloadState(results)
-         }
+         },
+         (_error) => {this.signalFailureToSave()}
        )
   }
   constructor(props: Props | Readonly<Props>) {
@@ -182,6 +192,7 @@ class TodoApp extends React.Component<Props,State> {
       user: props.user,
       reverseTagLookup: this.generateReverseLookup(tagCloud),
       saved: props.user.username != "default",
+      snackbarOpen: false,
     }
     this.handleNewUser = this.handleNewUser.bind(this);
     this.saveCurrentContent = this.saveCurrentContent.bind(this);
@@ -277,9 +288,24 @@ class TodoApp extends React.Component<Props,State> {
         return {searchStore: updater(prev.searchStore), saved: false}
       })
     }
+    
+    const closeSnackBar = () => this.setState({snackbarOpen: false});
 
     return (
       <React.Fragment>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          open={this.state.snackbarOpen}
+          autoHideDuration={4500}
+          onClose={closeSnackBar}
+          message="Unable to Save Data"
+          key={'Snackbar Fail'}
+          action={
+            <IconButton size="small" aria-label="close" color="inherit" onClick={closeSnackBar}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          }
+        />
         <UserControl 
           username={state.user.username} 
           onNewUser={this.handleNewUser} 

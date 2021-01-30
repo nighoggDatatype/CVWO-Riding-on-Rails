@@ -138,6 +138,7 @@ class UserControl extends React.Component<Props,State> {
       navigator.clipboard.writeText(link)
       openSnackbar();
     }
+    const usernameLength = state.editTextField.length;
     return (
       <Paper style={paperStyle}>
         {isDefault &&
@@ -151,7 +152,11 @@ class UserControl extends React.Component<Props,State> {
             value={state.editTextField}
             onChange={handleTextbox}
             error={dialogIsBad}
-            helperText="Username is invalid"
+            helperText={usernameLength == 0
+              ? "Username cannot be empty"
+              : usernameLength < 10
+                ? "Username is too short"
+                : "Username is invalid"}
           />
           {this.getValidationIcon(checkGroupStyle)}
           <Divider style={genericStyle} orientation="vertical" flexItem />
