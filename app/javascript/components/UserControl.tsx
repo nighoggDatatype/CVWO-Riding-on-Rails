@@ -191,7 +191,7 @@ class UserControl extends React.Component<Props,State> {
         <Divider style={genericStyle} orientation="vertical" flexItem />
         <Divider style={genericStyle} orientation="vertical" flexItem />
         <Button 
-          disabled={!avaliableUserName || saved} 
+          disabled={isDefault ? !avaliableUserName : saved } 
           style={submitStyle} 
           onClick={pushToServer}
         >
